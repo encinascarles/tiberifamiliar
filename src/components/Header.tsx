@@ -9,7 +9,10 @@ const Header = () => (
   <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
     <div className="px-4 headerbp:px-8 container flex h-14 max-w-screen-2xl items-center">
       <div className="mr-4 hidden headerbp:flex">
-        <Link href="/" className="mr-6 flex items-center space-x-2 font-bold">
+        <Link
+          href="/"
+          className="mr-6 flex items-center space-x-2 font-bold text-orange-600"
+        >
           <span>Tiberi Familiar</span>
         </Link>
         <nav className="flex items-center gap-4 text-sm lg:gap-6">

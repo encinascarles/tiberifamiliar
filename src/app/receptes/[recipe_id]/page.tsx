@@ -83,7 +83,7 @@ export default function ShowRecipePage() {
           <CardTitle>Preparació</CardTitle>
         </CardHeader>
         <CardContent>
-          <ol className="list-decimal list-insidepl-6 marker:text-orange-600 marker:font-extrabold mx-4">
+          <ol className="list-decimal list-outside pl-6 marker:text-orange-600 marker:font-extrabold marker:text-2xl ml-4 ">
             {Array.from({ length: 10 }).map((_, i) => (
               <li key={i} className="text-lg my-3">
                 Minim proident do voluptate enim. Proident non id reprehenderit
