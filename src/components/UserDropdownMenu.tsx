@@ -47,7 +47,7 @@ export function UserDropdownMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
+          <span>Tancar sessió</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

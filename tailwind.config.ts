@@ -1,20 +1,13 @@
 import type { Config } from "tailwindcss";
-const { fontFamily } = require("tailwindcss/defaultTheme");
+import { fontFamily } from "tailwindcss/defaultTheme";
 
 const config = {
-  mode: "jit",
-  purge: [
-    "./pages/**/*.{ts,tsx}",
-    "./src/components/**/*.{ts,tsx}",
-    "./app/**/*.{ts,tsx}",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
-    "./src/components/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{ts,tsx}",
   ],
   prefix: "",
   theme: {
@@ -22,13 +15,15 @@ const config = {
       center: true,
       padding: "2rem",
       screens: {
-        "2xl": "1536px",
-        // => @media (min-width: 1536px) { ... }
+        "2xl": "1400px",
       },
     },
     extend: {
       screens: {
-        headerbp: "870px",
+        headerbp: "920px",
+      },
+      fontFamily: {
+        sans: ["var(--font-sans)", ...fontFamily.sans],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -83,9 +78,6 @@ const config = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-      },
-      fontFamily: {
-        sans: ["var(--font-sans)", ...fontFamily.sans],
       },
     },
   },
