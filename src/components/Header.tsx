@@ -40,7 +40,7 @@ const Header = () => (
         <Input
           type="text"
           placeholder="Cerca receptes"
-          className="headerbp:w-60 h-9"
+          className="lg:w-60 headerbp:w-44 h-9"
         />
         <div className="hidden headerbp:block">
           <UserDropdownMenu />

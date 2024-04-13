@@ -14,7 +14,7 @@ export default function RecipesCarousel() {
       className="md:mx-8 2xl:mx-0"
       opts={{
         align: "start",
-        loop: true,
+        //loop: true,
       }}
     >
       <CarouselContent className="mr-10 ml-6 md:-ml-4 md:mr-0">
