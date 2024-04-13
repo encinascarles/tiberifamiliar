@@ -11,7 +11,11 @@ import Link from "next/link";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 
-export default function MobileDrawerMenu() {
+export default function MobileDrawerMenu({
+  Personal = false,
+}: {
+  Personal?: boolean;
+}) {
   return (
     <Sheet>
       <SheetTrigger>
