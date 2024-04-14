@@ -117,7 +117,7 @@ export default function RegisterPage() {
                 name="username"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>Nom d'usuari</FormLabel>
+                    <FormLabel>Nom d&apos;usuari</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
