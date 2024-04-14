@@ -14,14 +14,15 @@ import { cn } from "@/lib/utils";
 
 const RecipeCard = ({ personal = false }: { personal?: boolean }) => (
   <Link href="/receptes/_recipeid_n">
-    <Card className="cursor-pointer">
-      <Image
-        src="/demo_images/recipe_image.jpg"
-        alt="Recipe Image"
-        width="800"
-        height="800"
-        className="rounded-t-lg"
-      />
+    <Card className="cursor-pointer w-[400] h-[400]">
+      <div className="relative aspect-square">
+        <Image
+          src="/demo_images/recipe_image.jpg"
+          alt="Recipe Image"
+          fill
+          className="rounded-t-lg aspect-square object-cover"
+        />
+      </div>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           Patates amb tomàquet

@@ -9,6 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Link from "next/link";
 
 export function UserDropdownMenu() {
   return (
@@ -33,7 +34,9 @@ export function UserDropdownMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Users className="mr-2 h-4 w-4" />
-          <span>Les meves Families</span>
+          <Link href="/families">
+            <span>Les meves Families</span>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Plus className="mr-2 h-4 w-4" />
