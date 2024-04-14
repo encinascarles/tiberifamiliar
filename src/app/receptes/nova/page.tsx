@@ -119,7 +119,7 @@ export default function NewRecipePage() {
                           );
                         }}
                       />
-                      <span className="absolute inset-y-0 left-12 text-gray-400 flex items-center text-sm pointer-events-none">
+                      <span className="absolute inset-y-0 left-12 text-gray-400 flex items-center text-base md:text-sm pointer-events-none">
                         minuts
                       </span>
                     </div>
@@ -142,7 +142,7 @@ export default function NewRecipePage() {
                           form.setValue("totalTime", parseInt(e.target.value));
                         }}
                       />
-                      <span className="absolute inset-y-0 left-12 text-gray-400 flex items-center text-sm pointer-events-none">
+                      <span className="absolute inset-y-0 left-12 text-gray-400 flex items-center text-base md:text-sm pointer-events-none">
                         minuts
                       </span>
                     </div>
