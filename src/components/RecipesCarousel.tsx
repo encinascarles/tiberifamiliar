@@ -27,9 +27,8 @@ export default function RecipesCarousel({
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselNext />
-      <CarouselPrevious />
-      <CarouselNext />
+      <CarouselPrevious className="hidden sm:block" />
+      <CarouselNext className="hidden sm:block" />
     </Carousel>
   );
 }
