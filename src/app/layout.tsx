@@ -35,9 +35,9 @@ export default function RootLayout({
           fontSans.variable
         )}
       >
-        <Header />
+        {/* <Header /> */}
         {children}
-        <Footer />
+        {/* <Footer /> */}
       </body>
     </html>
   );
