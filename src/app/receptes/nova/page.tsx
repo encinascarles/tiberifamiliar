@@ -1,22 +1,21 @@
 "use client";
-import { z } from "zod";
-import { useFieldArray } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Trash, Plus, Minus } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Minus, Plus, Trash } from "lucide-react";
 import { useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
+
+//@ dsg
 
 const formSchema = z.object({
   name: z
@@ -29,10 +28,18 @@ const formSchema = z.object({
     .number()
     .min(1, { message: "El tiempo total tiene que ser mayor a 0." }),
   ingredients: z
-    .array(z.string())
-    .nonempty({ message: "Debe agregar al menos un ingrediente." }),
+    .array(
+      z.object({
+        value: z.string().min(1, "No pot haver-hi un ingredient buit"),
+      })
+    )
+    .nonempty({ message: "Ha d'haver-hi com a mínim un ingredient" }),
   steps: z
-    .array(z.string())
+    .array(
+      z.object({
+        value: z.string().min(1, "No pot haver-hi un pas buit"),
+      })
+    )
     .nonempty({ message: "Debe agregar al menos un paso de preparación." }),
   origin: z.string().optional(),
   recommendations: z.string().optional(),
@@ -49,8 +56,8 @@ export default function NewRecipePage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      preparationTime: "",
-      totalTime: "",
+      preparationTime: 0,
+      totalTime: 0,
       ingredients: [],
       steps: [],
       origin: "",
@@ -162,7 +169,7 @@ export default function NewRecipePage() {
               <FormItem key={field.id} className="mt-2">
                 <FormControl>
                   <div className="flex">
-                    <Input {...form.register(`ingredients.${index}`)} />
+                    <Input {...form.register(`ingredients.${index}.value`)} />
                     <Button
                       type="button"
                       onClick={() => removeIngredient(index)}
@@ -178,7 +185,7 @@ export default function NewRecipePage() {
               variant="outline"
               type="button"
               className="mt-2 w-full"
-              onClick={() => appendIngredient("")}
+              onClick={() => appendIngredient({ value: "" })}
             >
               <Plus />
             </Button>
@@ -199,7 +206,7 @@ export default function NewRecipePage() {
                     </span>
                     <Textarea
                       autoResize={true}
-                      {...form.register(`steps.${index}`)}
+                      {...form.register(`steps.${index}.value`)}
                     />
                     <Button
                       type="button"
@@ -216,7 +223,7 @@ export default function NewRecipePage() {
               variant="outline"
               type="button"
               className="mt-2 w-full"
-              onClick={() => appendStep("")}
+              onClick={() => appendStep({ value: "" })}
             >
               <Plus />
             </Button>
