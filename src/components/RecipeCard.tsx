@@ -9,7 +9,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { CookingPot, Utensils } from "lucide-react";
+import { CookingPot, Utensils, ChefHat } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const RecipeCard = ({ personal = false }: { personal?: boolean }) => (
@@ -46,7 +46,7 @@ const RecipeCard = ({ personal = false }: { personal?: boolean }) => (
           )}
           <div className="flex gap-2">
             <div className="flex items-center">
-              <Utensils className="h-5" />
+              <ChefHat className="h-5" />
               <p>30 min</p>
             </div>
             <div className="flex items-center">
