@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { UserDropdownMenu } from "@/components/UserDropdownMenu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "./ui/button";
-import { Menu } from "lucide-react";
+import { Menu, Plus } from "lucide-react";
 import MobileDrawerMenu from "./MobileDrawerMenu";
 const Header = () => (
   <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -45,6 +45,11 @@ const Header = () => (
           placeholder="Cerca receptes"
           className="lg:w-60 headerbp:w-44 h-9"
         />
+        <Link href="/receptes/nova">
+          <Button className="rounded-full w-9 h-9 p-0">
+            <Plus className="h-6 w-6" />
+          </Button>
+        </Link>
         <div className="hidden headerbp:block">
           <UserDropdownMenu />
         </div>

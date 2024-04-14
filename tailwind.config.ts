@@ -20,7 +20,7 @@ const config = {
     },
     extend: {
       screens: {
-        headerbp: "870px",
+        headerbp: "915px",
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
