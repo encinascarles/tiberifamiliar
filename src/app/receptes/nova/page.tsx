@@ -15,8 +15,6 @@ import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 
-//@ dsg
-
 const formSchema = z.object({
   name: z
     .string()
