@@ -17,12 +17,10 @@ export default function AuthLayout({
           </div>
         </div>
         <div className="relative h-[80vh] w-full lg:w-6/12 flex justify-center items-center p-8">
-          <div className=" flex flex-col items-center gap-2 w-full mx-auto sm:w-[350px]">
-            <h1 className="absolute lg:hidden top-12 left-12 text-2xl font-bold text-orange-600">
-              Tiberi Familiar
-            </h1>
-            {children}
-          </div>
+          <h1 className="absolute lg:hidden top-12 left-12 text-2xl font-bold text-orange-600">
+            Tiberi Familiar
+          </h1>
+          {children}
         </div>
       </Card>
     </div>
