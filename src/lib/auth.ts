@@ -17,11 +17,17 @@ async function getUser(email: string): Promise<IUser | undefined> {
   }
 }
 
-export const { auth, signIn, signOut } = NextAuth({
+export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
+
+  session: { strategy: "jwt" },
   providers: [
     Credentials({
-      async authorize(credentials) {
+      credentials: {
+        email: {},
+        password: {},
+      },
+      authorize: async (credentials) => {
         const parsedCredentials = z
           .object({ email: z.string().email(), password: z.string().min(5) })
           .safeParse(credentials);
