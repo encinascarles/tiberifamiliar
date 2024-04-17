@@ -19,7 +19,6 @@ async function getUser(email: string): Promise<IUser | undefined> {
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
-
   session: { strategy: "jwt" },
   providers: [
     Credentials({

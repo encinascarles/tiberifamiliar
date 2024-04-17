@@ -6,7 +6,7 @@ import { Inputs } from "@/app/(auth)/login/page";
 
 export async function authenticate(formData: Inputs) {
   try {
-    await signIn("credentials", formData, { callbackUrl: "/" });
+    await signIn("credentials", formData);
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
