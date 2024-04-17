@@ -1,7 +1,3 @@
-import { auth } from "@/lib/auth";
-
-export default async function PersonalProfilePage() {
-  const session = await auth();
-  console.log(session);
+export default function PersonalProfilePage() {
   return <h1>Perfil</h1>;
 }
