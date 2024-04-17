@@ -56,7 +56,7 @@ export function UserDropdownMenu() {
               await signOut();
             }}
           >
-            <button type="submit">
+            <button type="submit" className="flex items-center">
               <LogOut className="mr-2 h-4 w-4" />
               <span>Tancar sessió</span>
             </button>

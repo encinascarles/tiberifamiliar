@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 
 interface GoogleAuthButtonProps {
@@ -7,7 +8,7 @@ interface GoogleAuthButtonProps {
 
 export const GoogleAuthButton = ({ className }: GoogleAuthButtonProps) => {
   return (
-    <Button variant="outline" className={className}>
+    <Button variant="outline" className={cn("gap-4", className)}>
       <Image
         className="w-6 h-6"
         width="24"
