@@ -17,8 +17,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { useSearchParams } from "next/navigation";
 
 export const LoginForm = () => {
+  const searchParams = useSearchParams();
+  const urlError =
+    searchParams.get("error") === "OAuthAccountNotLinked"
+      ? "El correu ja està associat a un compte, prova d'iniciar sessió sense Google"
+      : "";
   const [error, setError] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
@@ -75,7 +81,7 @@ export const LoginForm = () => {
             </FormItem>
           )}
         />
-        <FormError message={error} />
+        <FormError message={error || urlError} />
         <Button type="submit" className="w-full" disabled={isPending}>
           Inicia Sessió amb correu electrònic
         </Button>
