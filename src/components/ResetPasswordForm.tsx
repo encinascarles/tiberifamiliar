@@ -11,40 +11,32 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { LoginSchema } from "@/schemas";
-import { login } from "@/server-actions/login";
+import { PasswordResetSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
+import { resetPassword } from "@/server-actions/resetPassword";
 
-export const LoginForm = () => {
-  const searchParams = useSearchParams();
-  const urlError =
-    searchParams.get("error") === "OAuthAccountNotLinked"
-      ? "El correu ja està associat a un compte, prova d'iniciar sessió sense Google"
-      : "";
+export const ResetPasswordForm = () => {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
 
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof LoginSchema>>({
-    resolver: zodResolver(LoginSchema),
+  const form = useForm<z.infer<typeof PasswordResetSchema>>({
+    resolver: zodResolver(PasswordResetSchema),
     defaultValues: {
       email: "",
-      password: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+  const onSubmit = (values: z.infer<typeof PasswordResetSchema>) => {
     setError("");
     setSuccess("");
 
     startTransition(() => {
-      login(values).then((data) => {
+      resetPassword(values).then((data) => {
         setError(data?.error);
         setSuccess(data?.success);
       });
@@ -69,37 +61,10 @@ export const LoginForm = () => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem className="w-full flex flex-col items-center">
-              <FormControl>
-                <Input
-                  disabled={isPending}
-                  {...field}
-                  type="password"
-                  placeholder="Contrassenya"
-                />
-              </FormControl>
-              <Button
-                size="sm"
-                variant="link"
-                asChild
-                className="px-0 font-normal"
-                type="button"
-              >
-                <Link href="/reset-password">Has oblidat la contrassenya?</Link>
-              </Button>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormError message={error || urlError} />
+        <FormError message={error} />
         <FormSuccess message={success} />
         <Button type="submit" className="w-full" disabled={isPending}>
-          Inicia Sessió amb correu electrònic
+          Envia correu de restabliment de contrasenya
         </Button>
       </form>
     </Form>

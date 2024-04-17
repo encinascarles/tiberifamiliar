@@ -25,3 +25,7 @@ export const RegisterSchema = z
     message: "Las contraseñas deben coincidir.",
     path: ["confirmPassword"], // this will point the error to 'confirmPassword' field
   });
+
+export const PasswordResetSchema = z.object({
+  email: z.string().email({ message: "El correu electrònic no és vàlid." }),
+});

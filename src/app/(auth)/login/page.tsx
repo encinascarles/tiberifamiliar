@@ -15,7 +15,7 @@ export default function LoginPage() {
       <div className=" flex flex-col items-center gap-2 w-full mx-auto sm:w-[350px]">
         <h1 className="text-2xl font-semibold tracking-tight">Inicia sessió</h1>
         <p className="text-sm text-muted-foreground">
-          Entra eles teves credencials per continuar
+          Entra les teves credencials per continuar
         </p>
         <LoginForm />
         <TextDivider>o continua amb</TextDivider>
