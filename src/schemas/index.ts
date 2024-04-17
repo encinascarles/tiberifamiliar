@@ -12,7 +12,7 @@ export const RegisterSchema = z
     email: z.string().email({ message: "El correu electrònic no és vàlid." }),
     password: z
       .string()
-      .min(6, { message: "La contrassenya ha de tenir 6 o més caràcters" }),
+      .min(5, { message: "La contrassenya ha de tenir 5 o més caràcters" }),
     name: z
       .string()
       .min(2, { message: "El nom ha de tenir 2 o més caràcters" }),
