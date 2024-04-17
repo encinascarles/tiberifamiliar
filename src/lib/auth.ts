@@ -26,13 +26,17 @@ export const {
     },
   },
   callbacks: {
-    // async signIn({ user }) {
-    //   const existingUser = await getUserById(user.id as string);
-    //   if (!existingUser || !existingUser.emailVerified) {
-    //     return false;
-    //   }
-    //   return true;
-    // },
+    async signIn({ user, account }) {
+      if (account?.provider !== "credentials") return true;
+      const existingUser = await getUserById(user.id as string);
+
+      //prevent login if email is not verified
+      if (!existingUser?.emailVerified) return false;
+
+      //TODO Add 2fA check
+
+      return true;
+    },
     session({ token, session }) {
       if (token.sub && session.user) {
         session.user.id = token.sub;
