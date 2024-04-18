@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { signOut } from "@/lib/auth";
+import { signOut } from "../../auth";
 
 export function UserDropdownMenu() {
   return (
