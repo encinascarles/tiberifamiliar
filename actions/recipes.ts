@@ -87,10 +87,29 @@ export const getPublicRecipes = async () => {
   });
 };
 
+// View recipe
+export const getRecipe = async (id: string) => {
+  //Todo check if user has access to recipe
+  const recipe = await db.recipe.findUnique({
+    where: {
+      id: id,
+    },
+    include: {
+      author: {
+        select: {
+          name: true,
+          username: true,
+          image: true,
+        },
+      },
+    },
+  });
+  console.log(recipe);
+  return recipe;
+};
+
 // Edit recipe
 
 // Delete recipe
-
-// View recipe
 
 // View all families recipes
