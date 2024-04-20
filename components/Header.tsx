@@ -10,7 +10,7 @@ const Header = () => (
       <div className="mr-4 hidden headerbp:flex">
         <Link
           href="/"
-          className="mr-6 flex items-center space-x-2 font-bold text-orange-600"
+          className="mr-6 flex items-center space-x-2 font-bold text-orange-600 tracking-wide"
         >
           <span>Tiberi Familiar</span>
         </Link>
