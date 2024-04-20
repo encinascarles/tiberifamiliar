@@ -3,6 +3,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import authConfig from "./auth.config";
 import { db } from "./lib/db";
 import { getUserById } from "./data/user";
+import { nanoid } from "nanoid";
 
 export const {
   handlers: { GET, POST },
@@ -21,6 +22,7 @@ export const {
         where: { id: user.id },
         data: {
           emailVerified: new Date(),
+          username: `user-${nanoid(4)}`,
         },
       });
     },
