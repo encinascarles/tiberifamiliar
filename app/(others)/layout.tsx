@@ -8,9 +8,13 @@ export default function MainLayout({
 }) {
   return (
     <>
-      <Header />
-      {children}
-      <Footer />
+      <div className="flex flex-col justify-between h-full">
+        <div>
+          <Header />
+          <main>{children}</main>
+        </div>
+        <Footer />
+      </div>
     </>
   );
 }
