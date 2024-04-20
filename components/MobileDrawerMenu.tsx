@@ -10,12 +10,14 @@ import { Bell, LogOut, Menu, Plus, Settings, User, Users } from "lucide-react";
 import Link from "next/link";
 import { ScrollArea } from "./ui/scroll-area";
 import { Separator } from "./ui/separator";
+import { currentUser } from "@/lib/auth";
 
-export default function MobileDrawerMenu({
+export default async function MobileDrawerMenu({
   Personal = false,
 }: {
   Personal?: boolean;
 }) {
+  const user = await currentUser();
   return (
     <Sheet>
       <SheetTrigger>
@@ -57,7 +59,7 @@ export default function MobileDrawerMenu({
                 <span>Configuració</span>
               </div>
               <Separator />
-              <h3 className="text-md font-medium">Carles Encinas</h3>
+              <h3 className="text-md font-medium">{user?.name}</h3>
               <div className="flex items-center">
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Tancar sessió</span>

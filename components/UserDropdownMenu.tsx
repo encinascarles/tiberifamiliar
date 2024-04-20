@@ -11,18 +11,23 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import Link from "next/link";
 import { signOut } from "../auth";
+import { currentUser } from "@/lib/auth";
 
-export function UserDropdownMenu() {
+export const UserDropdownMenu = async () => {
+  const user = await currentUser();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer h-9 w-9">
-          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarImage
+            src={user?.image ? user?.image : "https://github.com/shadcn.png"}
+          />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>Carles Encinas</DropdownMenuLabel>
+        <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <User className="mr-2 h-4 w-4" />
@@ -65,4 +70,4 @@ export function UserDropdownMenu() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};

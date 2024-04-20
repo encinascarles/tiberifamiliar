@@ -1,10 +1,9 @@
+import { Plus } from "lucide-react";
 import Link from "next/link";
-import { Input } from "./ui/input";
-import { UserDropdownMenu } from "./UserDropdownMenu";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Button } from "./ui/button";
-import { Menu, Plus } from "lucide-react";
 import MobileDrawerMenu from "./MobileDrawerMenu";
+import { UserDropdownMenu } from "./UserDropdownMenu";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 const Header = () => (
   <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
     <div className="px-4 headerbp:px-8 container flex h-14 max-w-screen-2xl items-center">
