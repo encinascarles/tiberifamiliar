@@ -11,7 +11,7 @@ import { Input } from "../../../../components/ui/input";
 import { Textarea } from "../../../../components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Minus, Plus, Trash } from "lucide-react";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { RecipeSchema } from "../../../../schemas";

@@ -70,12 +70,33 @@ export const createRecipe = async (values: z.infer<typeof RecipeSchema>) => {
   }
 };
 
-//Edit recipe
+// View all public recipes
+export const getPublicRecipes = async () => {
+  return await db.recipe.findMany({
+    where: {
+      visibility: "PUBLIC",
+    },
+    include: {
+      author: {
+        select: {
+          username: true,
+          image: true,
+        },
+      },
+    },
+  });
+};
 
-//Delete recipe
+export const provapene = async () => {
+  console.log("prova");
+  const user = await currentUser();
+  console.log(user);
+};
 
-//View recipe
+// Edit recipe
 
-//View all public recipes
+// Delete recipe
 
-//View all families recipes
+// View recipe
+
+// View all families recipes

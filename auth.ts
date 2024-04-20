@@ -33,33 +33,14 @@ export const {
       //prevent login if email is not verified
       if (!existingUser?.emailVerified) return false;
 
-      //TODO Add 2fA check
-
       return true;
     },
     session({ token, session }) {
       if (token.sub && session.user) {
         session.user.id = token.sub;
       }
-
-      // if (token.username && session.user)
-      //   session.user.username = token.username;
-      // }
-
       return session;
     },
-    // async jwt({ token }) {
-    //   if (!token.sub) return token;
-
-    //   console.log("buscant usuari...");
-    //   const existingUser = await getUserById(token.sub);
-
-    //   if (!existingUser) return token;
-
-    //   token.username = existingUser.username;
-
-    //   return token;
-    // },
   },
   adapter: PrismaAdapter(db),
   session: { strategy: "jwt" },
