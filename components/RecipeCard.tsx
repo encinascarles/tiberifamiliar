@@ -8,6 +8,7 @@ import Link from "next/link";
 
 const RecipeCard = async ({
   title,
+  id,
   username,
   user_image,
   prep_time,
@@ -16,6 +17,7 @@ const RecipeCard = async ({
   personal = false,
 }: {
   title: string;
+  id: string;
   username?: string;
   user_image?: string;
   prep_time: number;
@@ -27,7 +29,7 @@ const RecipeCard = async ({
   console.log(image);
   return (
     <Card className="w-[400] h-[400]">
-      <Link href="/receptes/_recipeid_n" className="cursor-pointer">
+      <Link href={`/receptes/${id}`} className="cursor-pointer">
         <div className="relative aspect-square">
           <Image
             src={image ? image : "/demo_images/recipe_image.jpg"}

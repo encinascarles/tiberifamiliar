@@ -15,6 +15,7 @@ export default async function PersonalRecipesPage() {
             <RecipeCard
               key={i}
               title={recipe.title}
+              id={recipe.id}
               prep_time={recipe.prep_time}
               total_time={recipe.total_time}
               image={recipe.image}
