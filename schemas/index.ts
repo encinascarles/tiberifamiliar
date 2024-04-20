@@ -41,3 +41,27 @@ export const NewPasswordSchema = z
     message: "Les dontrassenyes han de coincidir.",
     path: ["confirmPassword"], // this will point the error to 'confirmPassword' field
   });
+
+export const RecipeSchema = z.object({
+  title: z.string(),
+  prep_time: z.number(),
+  total_time: z.number(),
+  ingredients: z
+    .array(
+      z.object({
+        value: z.string().min(1, "No pot haver-hi un ingredient buit"),
+      })
+    )
+    .nonempty({ message: "Ha d'haver-hi com a mínim un ingredient" }),
+  steps: z
+    .array(
+      z.object({
+        value: z.string().min(1, "No pot haver-hi un pas buit"),
+      })
+    )
+    .nonempty({ message: "Debe agregar al menos un paso de preparación." }),
+  recommendations: z.string().optional(),
+  origin: z.string().optional(),
+  image: z.string().optional(),
+  visibility: z.enum(["PUBLIC", "PRIVATE", "FAMILY"]),
+});

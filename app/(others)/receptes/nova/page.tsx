@@ -11,56 +11,37 @@ import { Input } from "../../../../components/ui/input";
 import { Textarea } from "../../../../components/ui/textarea";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Minus, Plus, Trash } from "lucide-react";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
+import { RecipeSchema } from "../../../../schemas";
+import { createRecipe } from "../../../../actions/recipes";
+import { FormError } from "../../../../components/FormError";
+import { FormSuccess } from "../../../../components/FormSuccess";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
-const formSchema = z.object({
-  name: z
-    .string()
-    .min(2, { message: "El nombre debe tener al menos 2 caracteres." }),
-  preparationTime: z.number().min(1, {
-    message: "El tiempo de preparación tiene que ser mayor a 0.",
-  }),
-  totalTime: z
-    .number()
-    .min(1, { message: "El tiempo total tiene que ser mayor a 0." }),
-  ingredients: z
-    .array(
-      z.object({
-        value: z.string().min(1, "No pot haver-hi un ingredient buit"),
-      })
-    )
-    .nonempty({ message: "Ha d'haver-hi com a mínim un ingredient" }),
-  steps: z
-    .array(
-      z.object({
-        value: z.string().min(1, "No pot haver-hi un pas buit"),
-      })
-    )
-    .nonempty({ message: "Debe agregar al menos un paso de preparación." }),
-  origin: z.string().optional(),
-  recommendations: z.string().optional(),
-  image: z.string().optional(),
-});
-
-type FormData = z.infer<typeof formSchema>;
+type FormData = z.infer<typeof RecipeSchema>;
 
 export default function NewRecipePage() {
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [showOrigin, setShowOrigin] = useState(false);
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
+  const router = useRouter();
 
   const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(RecipeSchema),
     defaultValues: {
-      name: "",
-      preparationTime: 0,
-      totalTime: 0,
+      title: "",
       ingredients: [],
       steps: [],
-      origin: "",
       recommendations: "",
+      origin: "",
       image: "",
+      visibility: "PUBLIC",
     },
   });
 
@@ -82,9 +63,22 @@ export default function NewRecipePage() {
     name: "steps",
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-  }
+  const onSubmit = (values: z.infer<typeof RecipeSchema>) => {
+    setError("");
+    setSuccess("");
+    startTransition(() => {
+      createRecipe(values).then((data) => {
+        setError(data?.error);
+        if (data?.success) {
+          toast({
+            variant: "success",
+            description: "Recepta creada correctament!",
+          });
+          router.push(`/receptes/${data.id}`);
+        }
+      });
+    });
+  };
 
   return (
     <div className="container">
@@ -94,7 +88,7 @@ export default function NewRecipePage() {
           {/* Nom de la receta */}
           <FormField
             control={form.control}
-            name="name"
+            name="title"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Nom de la receta</FormLabel>
@@ -108,7 +102,7 @@ export default function NewRecipePage() {
           <div className="flex justify-between w-full gap-8">
             <FormField
               control={form.control}
-              name="preparationTime"
+              name="prep_time"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Temps de Preparació</FormLabel>
@@ -118,10 +112,7 @@ export default function NewRecipePage() {
                         type="number"
                         {...field}
                         onChange={(e) => {
-                          form.setValue(
-                            "preparationTime",
-                            parseInt(e.target.value)
-                          );
+                          form.setValue("prep_time", parseInt(e.target.value));
                         }}
                       />
                       <span className="absolute inset-y-0 left-12 text-gray-400 flex items-center text-base md:text-sm pointer-events-none">
@@ -134,7 +125,7 @@ export default function NewRecipePage() {
             />
             <FormField
               control={form.control}
-              name="totalTime"
+              name="total_time"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Temps Total</FormLabel>
@@ -144,7 +135,7 @@ export default function NewRecipePage() {
                         type="number"
                         {...field}
                         onChange={(e) => {
-                          form.setValue("totalTime", parseInt(e.target.value));
+                          form.setValue("total_time", parseInt(e.target.value));
                         }}
                       />
                       <span className="absolute inset-y-0 left-12 text-gray-400 flex items-center text-base md:text-sm pointer-events-none">
@@ -299,6 +290,8 @@ export default function NewRecipePage() {
               </div>
             )}
           </div>
+          <FormError message={error} />
+          <FormSuccess message={success} />
           {/* Botó de guardar */}
           <Button type="submit">Guardar la Recepta</Button>
         </form>

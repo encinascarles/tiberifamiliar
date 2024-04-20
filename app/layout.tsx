@@ -2,8 +2,8 @@ import { auth } from "../auth";
 import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
 import { Inter as FontSans } from "next/font/google";
+import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
-
 import { cn } from "../lib/utils";
 
 const fontSans = FontSans({
@@ -37,6 +37,7 @@ export default async function RootLayout({
         )}
       >
         <SessionProvider session={session}>{children}</SessionProvider>
+        <Toaster />
       </body>
     </html>
   );

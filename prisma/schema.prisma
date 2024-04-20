@@ -9,20 +9,22 @@ generator client {
   output   = "../node_modules/.prisma/client"
 }
 
-model User {
-  id String @id @default(cuid())
+model VerificationToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
 
-  name     String?
-  email    String  @unique
-  password String?
-  username String? @unique
+  @@unique([email, token])
+}
 
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
+model PasswordResetToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  @@unique([email, token])
 }
 
 model Account {
@@ -46,20 +48,94 @@ model Account {
   @@id([provider, providerAccountId])
 }
 
-model VerificationToken {
-  id      String   @id @default(cuid())
-  email   String
-  token   String   @unique
-  expires DateTime
+model User {
+  id String @id @default(cuid())
 
-  @@unique([email, token])
+  name     String?
+  username String? @unique
+  email    String  @unique
+  password String?
+  image    String?
+
+  recipes             Recipe[]
+  families            FamilyMembership[]
+  favoriteRecipes     Recipe[]           @relation("favorites")
+  sentInvitations     Invitation[]       @relation("inviter")
+  receivedInvitations Invitation[]       @relation("invitee")
+
+  emailVerified DateTime?
+  accounts      Account[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model PasswordResetToken {
-  id      String   @id @default(cuid())
-  email   String
-  token   String   @unique
-  expires DateTime
+model Recipe {
+  id String @id @default(cuid())
 
-  @@unique([email, token])
+  title           String
+  prep_time       Int
+  total_time      Int
+  ingredients     String[]
+  steps           String[]
+  recommendations String?
+  origin          String?
+  image           String?
+
+  visibility Visibility
+
+  authorId    String
+  author      User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  favoritedBy User[] @relation("favorites")
+
+  @@unique([authorId, title])
+}
+
+model Family {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  image       String?
+
+  members FamilyMembership[]
+
+  invitations Invitation[]
+}
+
+model FamilyMembership {
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  familyId String
+  family   Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
+  role     Role
+
+  @@id([userId, familyId])
+}
+
+model Invitation {
+  id        String           @id @default(cuid())
+  inviterId String
+  inviter   User             @relation("inviter", fields: [inviterId], references: [id], onDelete: Cascade)
+  inviteeId String
+  invitee   User             @relation("invitee", fields: [inviteeId], references: [id], onDelete: Cascade)
+  familyId  String
+  family    Family           @relation(fields: [familyId], references: [id])
+  status    InvitationStatus
+}
+
+enum Visibility {
+  PUBLIC
+  FAMILY
+  PRIVATE
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
 }
