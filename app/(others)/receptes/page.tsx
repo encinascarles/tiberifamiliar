@@ -1,6 +1,6 @@
 import { getPublicRecipes } from "@/actions/recipes";
 import { currentFullUser } from "@/lib/auth";
-import RecipeCard from "../../../components/RecipeCard";
+import RecipeCard from "@/components/RecipeCard";
 
 export default async function PublicRecipesPage() {
   const user = await currentFullUser();

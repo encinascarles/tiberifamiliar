@@ -1,8 +1,8 @@
 "use server";
-import { currentUser } from "../lib/auth";
-import { db } from "../lib/db";
+import { currentUser } from "@/lib/auth";
+import { db } from "@/lib/db";
 import * as z from "zod";
-import { RecipeSchema } from "../schemas";
+import { RecipeSchema } from "@/schemas";
 
 // Create new recipe
 export const createRecipe = async (values: z.infer<typeof RecipeSchema>) => {
@@ -85,12 +85,6 @@ export const getPublicRecipes = async () => {
       },
     },
   });
-};
-
-export const provapene = async () => {
-  console.log("prova");
-  const user = await currentUser();
-  console.log(user);
 };
 
 // Edit recipe

@@ -1,10 +1,10 @@
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { currentUser } from "@/lib/auth";
+import { cn } from "@/lib/utils";
 import { ChefHat, CookingPot } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { cn } from "../lib/utils";
-import { Avatar, AvatarImage } from "./ui/avatar";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 const RecipeCard = async ({
   title,
@@ -16,8 +16,8 @@ const RecipeCard = async ({
   personal = false,
 }: {
   title: string;
-  username: string;
-  user_image: string;
+  username?: string;
+  user_image?: string;
   prep_time: number;
   total_time: number;
   image: string | null;
@@ -60,7 +60,9 @@ const RecipeCard = async ({
         >
           {!personal && (
             <Link href="perfil/_userid_n" passHref>
-              <span className="hover:text-orange-500">@{username}</span>
+              <span className="hover:text-orange-500">
+                {username && `@${username}`}
+              </span>
             </Link>
           )}
           <div className="flex gap-2">
