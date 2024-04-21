@@ -1,5 +1,9 @@
-import { LogOut, Plus, Settings, User, Users, Bell } from "lucide-react";
+import { Bell, LogOut, Plus, Settings, User, Users } from "lucide-react";
 
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { signOut } from "next-auth/react";
+import Link from "next/link";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,13 +12,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import Link from "next/link";
-import { signOut } from "../auth";
-import { currentUser } from "@/lib/auth";
 
-export const UserDropdownMenu = async () => {
-  const user = await currentUser();
+export const UserDropdownMenu = () => {
+  const user = useCurrentUser();
 
   return (
     <DropdownMenu>
@@ -39,33 +39,18 @@ export const UserDropdownMenu = async () => {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Users className="mr-2 h-4 w-4" />
-          <Link href="/families">
-            <span>Les meves Families</span>
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Plus className="mr-2 h-4 w-4" />
-          <span>Crear una Familia</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
           <Settings className="mr-2 h-4 w-4" />
           <span>Configuració</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <form
-            action={async () => {
-              "use server";
-              await signOut();
-            }}
+          <button
+            onClick={() => signOut({ callbackUrl: "/" })}
+            className="flex items-center"
           >
-            <button type="submit" className="flex items-center">
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Tancar sessió</span>
-            </button>
-          </form>
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Tancar sessió</span>
+          </button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
