@@ -1,3 +1,8 @@
+import {
+  getFamiliesRecipes,
+  getPersonalRecipes,
+  getPublicRecipes,
+} from "@/actions/recipes";
 import RecipeCard from "./RecipeCard";
 import {
   Carousel,
@@ -7,11 +12,19 @@ import {
   CarouselPrevious,
 } from "./ui/carousel";
 
-export default function RecipesCarousel({
-  personal = false,
+export default async function RecipesCarousel({
+  type,
 }: {
-  personal?: boolean;
+  type: "personal" | "families" | "public";
 }) {
+  let recipes;
+  if (type === "personal") {
+    recipes = await getPersonalRecipes();
+  } else if (type === "families") {
+    recipes = await getFamiliesRecipes();
+  } else {
+    recipes = await getPublicRecipes();
+  }
   return (
     <Carousel
       className="md:mx-8 2xl:mx-0"
@@ -21,11 +34,20 @@ export default function RecipesCarousel({
       }}
     >
       <CarouselContent className="mr-10 ml-6 md:-ml-4 md:mr-0">
-        {Array.from({ length: 10 }).map((_, i) => (
-          <CarouselItem key={i} className="md:basis-1/2 lg:basis-1/3">
-            <RecipeCard personal={personal} />
-          </CarouselItem>
-        ))}
+        {recipes &&
+          recipes.map((recipe, i) => (
+            <CarouselItem key={i} className="md:basis-1/2 lg:basis-1/3">
+              <RecipeCard
+                key={i}
+                title={recipe.title}
+                id={recipe.id}
+                prep_time={recipe.prep_time}
+                total_time={recipe.total_time}
+                image={recipe.image}
+                personal={type === "personal"}
+              />
+            </CarouselItem>
+          ))}
       </CarouselContent>
       <CarouselPrevious className="hidden sm:flex" />
       <CarouselNext className="hidden sm:flex" />

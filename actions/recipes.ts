@@ -113,7 +113,7 @@ export const getPublicRecipes = async () => {
   });
 };
 
-// View all public recipes
+// View all personal recipes
 export const getPersonalRecipes = async () => {
   const user = await currentUser();
   const good_user = await db.user.findUnique({
@@ -124,7 +124,6 @@ export const getPersonalRecipes = async () => {
       recipes: true,
     },
   });
-  console.log(good_user);
   return good_user?.recipes;
 };
 
