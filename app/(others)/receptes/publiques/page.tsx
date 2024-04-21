@@ -5,6 +5,7 @@ import RecipeCard from "@/components/RecipeCard";
 export default async function PublicRecipesPage() {
   const user = await currentFullUser();
   const recipes = await getPublicRecipes();
+
   return (
     <div className="container">
       <div className="flex justify-start items-center gap-6">

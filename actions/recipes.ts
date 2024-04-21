@@ -157,6 +157,53 @@ export const getFamiliesRecipes = async () => {
   return recipes;
 };
 
+//View all family recipes
+export const getFamilyRecipes = async (familyId: string) => {
+  // Check if the family exists
+  const family = await db.family.findUnique({
+    where: {
+      id: familyId,
+    },
+    include: {
+      members: {
+        select: {
+          userId: true,
+        },
+      },
+    },
+  });
+  if (!family) return { error: "Familia no trobada!" };
+
+  // Check if the user is a member of the family
+  const user = await currentUser();
+  const member = await db.familyMembership.findFirst({
+    where: {
+      userId: user?.id,
+      familyId: familyId,
+    },
+  });
+  if (!member) return { error: "No ets membre d'aquesta familia!" };
+
+  // Get all recipes from the family
+  const familyMembers = family.members.map((member) => member.userId);
+  const recipes = await db.recipe.findMany({
+    where: {
+      authorId: {
+        in: familyMembers,
+      },
+    },
+    include: {
+      author: {
+        select: {
+          username: true,
+          image: true,
+        },
+      },
+    },
+  });
+  return { recipes: recipes };
+};
+
 // View recipe
 export const getRecipe = async (id: string) => {
   const user = await currentUser();

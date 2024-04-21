@@ -1,79 +1,90 @@
+import { getFamiliesRecipes, getFamilyRecipes } from "@/actions/recipes";
+import RecipeCard from "@/components/RecipeCard";
+import UserCarousel from "@/components/UserCarousel";
+import { Button } from "@/components/ui/button";
+import { Pencil, UserPlus } from "lucide-react";
 import Image from "next/image";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "../../../../components/ui/card";
-import {
-  Avatar,
-  AvatarImage,
-  AvatarFallback,
-} from "../../../../components/ui/avatar";
+import { getFamily } from "@/actions/families";
 
-export default function FamilyPage() {
+export default async function FamilyPage({
+  params,
+}: {
+  params: { family_id: string };
+}) {
+  const recipesResponse = await getFamilyRecipes(params.family_id);
+  const recipes = recipesResponse?.recipes;
+  const familyResponse = await getFamily(params.family_id);
+  const family = familyResponse?.family;
+  console.log(recipes);
   return (
     <div className="container">
-      <h1 className="text-4xl font-bold my-10 mr-10">Familia Encinas</h1>
-      <div className="flex justify-between gap-4">
-        <Card className="w-8/12">
-          <div className="aspect-square relative">
-            <Image
-              src="/demo_images/family.png"
-              fill
-              alt="family image"
-              objectFit="cover"
-              className="rounded-t-lg"
-            />
-          </div>
-          <CardFooter className="pt-4">
-            <p>
-              Amet pariatur consequat magna eu tempor incididunt velit irure
-              veniam elit anim fugiat in nostrud. Lorem officia commodo proident
-              cillum eu. Veniam incididunt aliquip nostrud minim nisi mollit
-              commodo quis. Cillum velit nisi tempor ullamco est cupidatat
-              laborum magna culpa velit.
-            </p>
-          </CardFooter>
-        </Card>
-        <Card className="w-4/12 h-full">
-          <div className="flex flex-col">
-            <h1 className="text-lg font-semibold p-4">Membres:</h1>
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div
-                key={i}
-                className="flex gap-4 hover:bg-orange-200 px-4 py-2 rounded-md cursor-pointer"
-              >
-                <Avatar className="cursor-pointer h-14 w-14">
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                </Avatar>
-                <div className="flex flex-col">
-                  <p> CarlesEncinas</p>
-                  <p> @carlesencinas</p>
-                </div>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col lg:flex-row justify-between gap-4 mt-4 items-start">
+          <Card className="w-full lg:w-8/12">
+            <div className="aspect-[4/3] relative">
+              <Image
+                src="/demo_images/family.png"
+                fill
+                alt="family image"
+                objectFit="cover"
+                className="rounded-t-lg"
+              />
+            </div>
+            <CardFooter className="pt-4 flex justify-between">
+              <h1 className="text-3xl font-semibold">{family?.name}</h1>{" "}
+              <Button className="gap-2">
+                <Pencil className="w-5 h-5" />
+                Edita la familia
+              </Button>
+            </CardFooter>
+          </Card>
+          <Card className="w-full lg:w-4/12">
+            <CardHeader>
+              <CardTitle>Membres</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col">
+                <UserCarousel members={family?.members} />
+                <Button className="mt-4 mx-4 gap-2">
+                  <UserPlus className="w-5 h-5" /> Convida un nou membre
+                </Button>
               </div>
-            ))}
-          </div>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Información</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <CardDescription>
-            <p>Nombre: Familia Encinas</p>
-            <p>Integrantes: 4</p>
-            <p>Edad promedio: 30</p>
-          </CardDescription>
-        </CardContent>
-        <CardFooter>
-          <button className="btn">Editar</button>
-        </CardFooter>
-      </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Descripció</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>{family?.description}</p>
+          </CardContent>
+        </Card>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-4">
+          {recipes &&
+            recipes.map((recipe, i) => (
+              <RecipeCard
+                key={i}
+                title={recipe.title}
+                id={recipe.id}
+                username={recipe.author.username as string}
+                user_image={recipe.author.image as string}
+                prep_time={recipe.prep_time}
+                total_time={recipe.total_time}
+                image={recipe.image}
+                personal={false}
+              />
+            ))}
+        </div>
+      </div>
     </div>
   );
 }

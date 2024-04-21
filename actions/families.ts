@@ -51,3 +51,44 @@ export const createFamily = async (values: z.infer<typeof FamilySchema>) => {
     return { error: "Error al crear la familia!" };
   }
 };
+
+// Get family
+export const getFamily = async (familyId: string) => {
+  // Get family
+  let family = await db.family.findFirst({
+    where: {
+      id: familyId,
+    },
+    include: {
+      members: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              username: true,
+              image: true,
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!family) return { error: "Familia no trobada!" };
+
+  //flaten to get an array of users inside members
+  const familyToSend = {
+    ...family,
+    members: family.members.map((member) => member.user),
+  };
+
+  //Check if the user is a member of the family
+  const user = await currentUser();
+  if (!user) return { error: "Usuari no trobat!" };
+  if (!familyToSend.members.find((member) => member.id === user.id)) {
+    return { error: "No ets membre d'aquesta familia!" };
+  }
+
+  return { family: familyToSend };
+};
