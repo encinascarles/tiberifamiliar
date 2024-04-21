@@ -43,9 +43,13 @@ export const NewPasswordSchema = z
   });
 
 export const RecipeSchema = z.object({
-  title: z.string(),
-  prep_time: z.number(),
-  total_time: z.number(),
+  title: z.string().min(1, "El títol no pot estar buit"),
+  prep_time: z.number().refine((value) => value > 0, {
+    message: "Temps no vàlid",
+  }),
+  total_time: z.number().refine((value) => value > 0, {
+    message: "Temps no vàlid",
+  }),
   ingredients: z
     .array(
       z.object({
@@ -64,4 +68,9 @@ export const RecipeSchema = z.object({
   origin: z.string().optional(),
   image: z.string().optional(),
   visibility: z.enum(["PUBLIC", "PRIVATE", "FAMILY"]),
+});
+
+export const FamilySchema = z.object({
+  name: z.string().min(1, "El nom no pot estar buit"),
+  description: z.string().min(1, "La descripció no pot estar buida"),
 });

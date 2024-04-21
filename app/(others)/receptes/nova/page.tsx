@@ -6,6 +6,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "../../../../components/ui/form";
 import { Input } from "../../../../components/ui/input";
 import { Textarea } from "../../../../components/ui/textarea";
@@ -85,15 +86,15 @@ export default function NewRecipePage() {
       <h1 className="text-4xl font-bold my-10">Nova Receta</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          {/* Nom de la receta */}
+          {/* Nom de la recepta */}
           <FormField
             control={form.control}
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nom de la receta</FormLabel>
+                <FormLabel>Nom de la recepta</FormLabel>
                 <FormControl>
-                  <Input {...field} />
+                  <Input disabled={isPending} {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -109,6 +110,7 @@ export default function NewRecipePage() {
                   <FormControl>
                     <div className="relative">
                       <Input
+                        disabled={isPending}
                         type="number"
                         {...field}
                         onChange={(e) => {
@@ -132,6 +134,7 @@ export default function NewRecipePage() {
                   <FormControl>
                     <div className="relative">
                       <Input
+                        disabled={isPending}
                         type="number"
                         {...field}
                         onChange={(e) => {
@@ -158,8 +161,12 @@ export default function NewRecipePage() {
               <FormItem key={field.id} className="mt-2">
                 <FormControl>
                   <div className="flex">
-                    <Input {...form.register(`ingredients.${index}.value`)} />
+                    <Input
+                      disabled={isPending}
+                      {...form.register(`ingredients.${index}.value`)}
+                    />
                     <Button
+                      disabled={isPending}
                       type="button"
                       onClick={() => removeIngredient(index)}
                       className="ml-2"
@@ -171,6 +178,7 @@ export default function NewRecipePage() {
               </FormItem>
             ))}
             <Button
+              disabled={isPending}
               variant="outline"
               type="button"
               className="mt-2 w-full"
@@ -194,10 +202,12 @@ export default function NewRecipePage() {
                       {index + 1}
                     </span>
                     <Textarea
+                      disabled={isPending}
                       autoResize={true}
                       {...form.register(`steps.${index}.value`)}
                     />
                     <Button
+                      disabled={isPending}
                       type="button"
                       onClick={() => removeStep(index)}
                       className="ml-2"
@@ -209,6 +219,7 @@ export default function NewRecipePage() {
               </FormItem>
             ))}
             <Button
+              disabled={isPending}
               variant="outline"
               type="button"
               className="mt-2 w-full"
@@ -224,6 +235,7 @@ export default function NewRecipePage() {
             </FormLabel>
             {!showRecommendations ? (
               <Button
+                disabled={isPending}
                 variant="outline"
                 type="button"
                 className="mt-2 w-full"
@@ -237,10 +249,12 @@ export default function NewRecipePage() {
                   <FormControl>
                     <div className="flex items-center">
                       <Textarea
+                        disabled={isPending}
                         autoResize={true}
                         {...form.register("recommendations")}
                       />
                       <Button
+                        disabled={isPending}
                         type="button"
                         onClick={() => setShowRecommendations(false)}
                         className="ml-2"
@@ -261,6 +275,7 @@ export default function NewRecipePage() {
             </FormLabel>
             {!showOrigin ? (
               <Button
+                disabled={isPending}
                 variant="outline"
                 type="button"
                 className="mt-2 w-full"
@@ -274,10 +289,12 @@ export default function NewRecipePage() {
                   <FormControl>
                     <div className="flex items-center">
                       <Textarea
+                        disabled={isPending}
                         autoResize={true}
                         {...form.register("origin")}
                       />
                       <Button
+                        disabled={isPending}
                         type="button"
                         onClick={() => setShowOrigin(false)}
                         className="ml-2"
@@ -293,7 +310,9 @@ export default function NewRecipePage() {
           <FormError message={error} />
           <FormSuccess message={success} />
           {/* Botó de guardar */}
-          <Button type="submit">Guardar la Recepta</Button>
+          <Button disabled={isPending} type="submit">
+            Guardar la Recepta
+          </Button>
         </form>
       </Form>
     </div>
