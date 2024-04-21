@@ -1,14 +1,15 @@
-import AddRecipeCard from "../../../../components/AddRecipeCard";
+import { getFamiliesRecipes } from "@/actions/recipes";
+import { Ellipsis } from "lucide-react";
+import Link from "next/link";
 import RecipeCard from "../../../../components/RecipeCard";
 import {
   Avatar,
-  AvatarImage,
   AvatarFallback,
+  AvatarImage,
 } from "../../../../components/ui/avatar";
-import { Ellipsis } from "lucide-react";
-import Link from "next/link";
 
-export default function FamiliesRecipesPage() {
+export default async function FamiliesRecipesPage() {
+  const recipes = await getFamiliesRecipes();
   return (
     <div className="container">
       <div className="flex justify-start items-center gap-6">
@@ -29,9 +30,20 @@ export default function FamiliesRecipesPage() {
         </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-        {Array.from({ length: 10 }).map((_, i) => (
-          <RecipeCard key={i} />
-        ))}
+        {recipes &&
+          recipes.map((recipe, i) => (
+            <RecipeCard
+              key={i}
+              title={recipe.title}
+              id={recipe.id}
+              username={recipe.author.username as string}
+              user_image={recipe.author.image as string}
+              prep_time={recipe.prep_time}
+              total_time={recipe.total_time}
+              image={recipe.image}
+              personal={false}
+            />
+          ))}
       </div>
     </div>
   );

@@ -4,6 +4,32 @@ import { db } from "@/lib/db";
 import * as z from "zod";
 import { RecipeSchema } from "@/schemas";
 
+// Get members from all families the user is from
+const getUserFamiliesMembers = async () => {
+  const user = await currentUser();
+  const families = await db.family.findMany({
+    where: {
+      members: {
+        some: {
+          userId: user?.id,
+        },
+      },
+    },
+    include: {
+      members: {
+        select: {
+          userId: true,
+        },
+      },
+    },
+  });
+  const contacts = families.flatMap((family) =>
+    family.members.map((member) => member.userId)
+  );
+  const uniqueContacts = Array.from(new Set(contacts));
+  return uniqueContacts;
+};
+
 // Create new recipe
 export const createRecipe = async (values: z.infer<typeof RecipeSchema>) => {
   // Validate fields
@@ -87,9 +113,45 @@ export const getPublicRecipes = async () => {
   });
 };
 
+// View all public recipes
+export const getPersonalRecipes = async () => {
+  const user = await currentUser();
+  const good_user = await db.user.findUnique({
+    where: {
+      id: user?.id,
+    },
+    select: {
+      recipes: true,
+    },
+  });
+  console.log(good_user);
+  return good_user?.recipes;
+};
+
+// View all families recipes
+export const getFamiliesRecipes = async () => {
+  const users = await getUserFamiliesMembers();
+  const recipes = await db.recipe.findMany({
+    where: {
+      authorId: {
+        in: users,
+      },
+    },
+    include: {
+      author: {
+        select: {
+          username: true,
+          image: true,
+        },
+      },
+    },
+  });
+  return recipes;
+};
+
 // View recipe
 export const getRecipe = async (id: string) => {
-  //Todo check if user has access to recipe
+  const user = await currentUser();
   const recipe = await db.recipe.findUnique({
     where: {
       id: id,
@@ -97,6 +159,7 @@ export const getRecipe = async (id: string) => {
     include: {
       author: {
         select: {
+          id: true,
           name: true,
           username: true,
           image: true,
@@ -104,8 +167,17 @@ export const getRecipe = async (id: string) => {
       },
     },
   });
-  console.log(recipe);
-  return recipe;
+
+  if (!recipe) return { error: "Recepta no trobada!" };
+  if (recipe.author.id === user?.id) return recipe;
+  if (recipe.visibility === "PUBLIC") return recipe;
+  if (recipe.visibility === "PRIVATE") return { error: "Recepta privada!" };
+  if (recipe.visibility === "FAMILY") {
+    const contacts = await getUserFamiliesMembers();
+    if (contacts.includes(recipe.author.id)) return recipe;
+    return { error: "Recepta privada!" };
+  }
+  return { error: "Error al carregar la recepta!" };
 };
 
 // Edit recipe

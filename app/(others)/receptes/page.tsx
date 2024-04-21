@@ -21,7 +21,7 @@ export default async function PublicRecipesPage() {
             prep_time={recipe.prep_time}
             total_time={recipe.total_time}
             image={recipe.image}
-            // personal={user?.username === recipe.author.username}
+            personal={false}
           />
         ))}
       </div>

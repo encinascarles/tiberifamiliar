@@ -1,4 +1,4 @@
-import { getPersonalRecipes } from "@/actions/user";
+import { getPersonalRecipes } from "@/actions/recipes";
 import AddRecipeCard from "@/components/AddRecipeCard";
 import RecipeCard from "@/components/RecipeCard";
 
