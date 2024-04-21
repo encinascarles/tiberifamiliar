@@ -20,7 +20,13 @@ export default async function ShowRecipePage({
 }: {
   params: { recipe_id: string };
 }) {
-  const recipe = await getRecipe(params.recipe_id);
+  const response = await getRecipe(params.recipe_id);
+  let recipe;
+  if (response.error) {
+    return <div>{response.error}</div>;
+  } else {
+    recipe = response.recipe;
+  }
   return (
     <div className="container">
       <h1 className="text-4xl font-bold my-10">{recipe?.title}</h1>

@@ -168,12 +168,12 @@ export const getRecipe = async (id: string) => {
   });
 
   if (!recipe) return { error: "Recepta no trobada!" };
-  if (recipe.author.id === user?.id) return recipe;
-  if (recipe.visibility === "PUBLIC") return recipe;
+  if (recipe.author.id === user?.id) return { recipe };
+  if (recipe.visibility === "PUBLIC") return { recipe };
   if (recipe.visibility === "PRIVATE") return { error: "Recepta privada!" };
   if (recipe.visibility === "FAMILY") {
     const contacts = await getUserFamiliesMembers();
-    if (contacts.includes(recipe.author.id)) return recipe;
+    if (contacts.includes(recipe.author.id)) return { recipe };
     return { error: "Recepta privada!" };
   }
   return { error: "Error al carregar la recepta!" };
