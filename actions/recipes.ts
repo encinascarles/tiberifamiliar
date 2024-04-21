@@ -121,7 +121,16 @@ export const getPersonalRecipes = async () => {
       id: user?.id,
     },
     select: {
-      recipes: true,
+      recipes: {
+        include: {
+          author: {
+            select: {
+              username: true,
+              image: true,
+            },
+          },
+        },
+      },
     },
   });
   return good_user?.recipes;

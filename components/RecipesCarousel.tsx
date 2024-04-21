@@ -41,6 +41,8 @@ export default async function RecipesCarousel({
                 key={i}
                 title={recipe.title}
                 id={recipe.id}
+                username={recipe.author.username as string}
+                user_image={recipe.author.image as string}
                 prep_time={recipe.prep_time}
                 total_time={recipe.total_time}
                 image={recipe.image}
