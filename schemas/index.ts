@@ -74,3 +74,9 @@ export const FamilySchema = z.object({
   name: z.string().min(1, "El nom no pot estar buit"),
   description: z.string().min(1, "La descripció no pot estar buida"),
 });
+
+export const InviteUserSchema = z.object({
+  email_username: z
+    .string()
+    .min(1, "El nom d'usuari o correu electrònic no pot estar buit"),
+});

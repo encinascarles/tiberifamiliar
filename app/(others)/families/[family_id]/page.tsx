@@ -13,6 +13,7 @@ import {
 } from "../../../../components/ui/card";
 import { getFamily } from "@/actions/families";
 import { EditFamilyButton } from "@/components/EditFamilyButton";
+import { InviteUserButton } from "@/components/InviteUserButton";
 
 export default async function FamilyPage({
   params,
@@ -57,11 +58,7 @@ export default async function FamilyPage({
             <CardContent>
               <div className="flex flex-col">
                 <UserScroll familyId={params.family_id} />
-                {admin && (
-                  <Button className="mt-4 mx-4 gap-2">
-                    <UserPlus className="w-5 h-5" /> Convida un nou membre
-                  </Button>
-                )}
+                {admin && <InviteUserButton familyId={params.family_id} />}
               </div>
             </CardContent>
           </Card>

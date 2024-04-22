@@ -2,7 +2,7 @@
 import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import * as z from "zod";
-import { FamilySchema } from "@/schemas";
+import { FamilySchema, InviteUserSchema } from "@/schemas";
 
 // Create new family
 export const createFamily = async (values: z.infer<typeof FamilySchema>) => {
@@ -252,15 +252,10 @@ export const kickUser = async (userId: string, familyId: string) => {
 };
 
 // Invite user to family
-export const inviteUser = async ({
-  email,
-  familyId,
-  username,
-}: {
-  email?: string;
-  familyId: string;
-  username?: string;
-}) => {
+export const inviteUser = async (
+  values: z.infer<typeof InviteUserSchema>,
+  familyId: string
+) => {
   // Get current user
   const user = await currentUser();
 
@@ -278,20 +273,22 @@ export const inviteUser = async ({
   if (!isUserAdmin) return { error: "No tens permís per fer això!" };
 
   // Get invited user
+  let invitedUser;
 
-  const invitedUser = email
-    ? await db.user.findFirst({
-        where: {
-          email: email,
-        },
-      })
-    : username
-    ? await db.user.findFirst({
-        where: {
-          username: username,
-        },
-      })
-    : null;
+  try {
+    z.string().email().parse(values.email_username);
+    invitedUser = await db.user.findFirst({
+      where: {
+        email: values.email_username,
+      },
+    });
+  } catch {
+    invitedUser = await db.user.findFirst({
+      where: {
+        username: values.email_username,
+      },
+    });
+  }
 
   if (!invitedUser) return { error: "Usuari no trobat!" };
 
