@@ -50,7 +50,7 @@ export default function UserScroll({ familyId }: { familyId: string }) {
 
   useEffect(() => {
     getMembers();
-  });
+  }, []);
 
   const handlePromoteUser = async (userId: string) => {
     const response = await promoteUser(userId, familyId);

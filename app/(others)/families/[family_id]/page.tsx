@@ -12,6 +12,7 @@ import {
   CardTitle,
 } from "../../../../components/ui/card";
 import { getFamily } from "@/actions/families";
+import { EditFamilyButton } from "@/components/EditFamilyButton";
 
 export default async function FamilyPage({
   params,
@@ -23,6 +24,7 @@ export default async function FamilyPage({
   const familyResponse = await getFamily(params.family_id);
   const family = familyResponse?.family;
   const admin = familyResponse?.admin;
+
   return (
     <div className="container">
       <div className="flex flex-col gap-4">
@@ -44,12 +46,7 @@ export default async function FamilyPage({
                   <LogOut className="w-5 h-5" />
                   Surt
                 </Button>
-                {admin && (
-                  <Button className="gap-2">
-                    <Pencil className="w-5 h-5" />
-                    Edita la familia
-                  </Button>
-                )}
+                {admin && <EditFamilyButton familyId={params.family_id} />}
               </div>
             </CardFooter>
           </Card>

@@ -250,3 +250,131 @@ export const kickUser = async (userId: string, familyId: string) => {
     return { error: "Error al expulsar l'usuari!" };
   }
 };
+
+// Invite user to family
+export const inviteUser = async ({
+  email,
+  familyId,
+  username,
+}: {
+  email?: string;
+  familyId: string;
+  username?: string;
+}) => {
+  // Get current user
+  const user = await currentUser();
+
+  if (!user) return { error: "Usuari no trobat!" };
+
+  // Check if the user is an admin of the family
+  const isUserAdmin = await db.familyMembership.findFirst({
+    where: {
+      userId: user.id,
+      familyId: familyId,
+      role: "ADMIN",
+    },
+  });
+
+  if (!isUserAdmin) return { error: "No tens permís per fer això!" };
+
+  // Get invited user
+
+  const invitedUser = email
+    ? await db.user.findFirst({
+        where: {
+          email: email,
+        },
+      })
+    : username
+    ? await db.user.findFirst({
+        where: {
+          username: username,
+        },
+      })
+    : null;
+
+  if (!invitedUser) return { error: "Usuari no trobat!" };
+
+  // Check if the user to invite already exists
+  const existingInvite = await db.invitation.findFirst({
+    where: {
+      inviteeId: invitedUser.id,
+      status: "PENDING",
+    },
+  });
+
+  if (existingInvite) return { error: "Aquest usuari ja ha estat convidat!" };
+
+  // Invite user
+  try {
+    await db.invitation.create({
+      data: {
+        inviterId: user.id as string,
+        inviteeId: invitedUser.id,
+        familyId: familyId,
+        status: "PENDING",
+      },
+    });
+    return { success: "Usuari convidat a la familia!" };
+  } catch {
+    return { error: "Error al convidar l'usuari!" };
+  }
+};
+
+// Edit family
+export const editFamily = async (
+  values: z.infer<typeof FamilySchema>,
+  familyId: string
+) => {
+  // Validate fields
+  const validatedFields = FamilySchema.safeParse(values);
+
+  if (!validatedFields.success) return { error: "Camps invàlids!" };
+
+  //Check if the user is an admin of the family
+  const user = await currentUser();
+  if (!user) return { error: "Usuari no trobat!" };
+  const isAdmin = await db.familyMembership.findFirst({
+    where: {
+      userId: user.id,
+      familyId: familyId,
+      role: "ADMIN",
+    },
+  });
+  if (!isAdmin) return { error: "No tens permís per fer això!" };
+
+  // Get fields
+  const { name, description } = validatedFields.data;
+
+  // Check if there's a family with the same name
+  const existingFamily = await db.family.findFirst({
+    where: {
+      name: name,
+      NOT: {
+        id: familyId,
+      },
+    },
+  });
+  if (existingFamily) {
+    return { error: "Ja existeix una familia amb aquest nom!" };
+  }
+
+  // Update family
+  console.log(familyId);
+  console.log(name);
+  console.log(description);
+  try {
+    const updatedFamily = await db.family.update({
+      where: {
+        id: familyId,
+      },
+      data: {
+        name,
+        description,
+      },
+    });
+    return { success: "Familia actualitzada amb èxit!" };
+  } catch {
+    return { error: "Error al actualitzar la familia!" };
+  }
+};
