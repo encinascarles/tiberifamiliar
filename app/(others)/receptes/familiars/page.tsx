@@ -17,7 +17,7 @@ export default async function FamiliesRecipesPage() {
         {Array.from({ length: 6 }).map((_, i) => (
           <Link key={i} href="/families/_family_id_">
             <Avatar className="cursor-pointer h-14 w-14">
-              <AvatarImage src="https://github.com/shadcn.png" />
+              <AvatarImage src="/default_user.jpg" />
             </Avatar>
           </Link>
         ))}

@@ -20,9 +20,7 @@ export const UserDropdownMenu = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer h-9 w-9">
-          <AvatarImage
-            src={user?.image ? user?.image : "https://github.com/shadcn.png"}
-          />
+          <AvatarImage src={user?.image ? user?.image : "/default_user.jpg"} />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>

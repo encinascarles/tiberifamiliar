@@ -1,8 +1,8 @@
 import { getFamiliesRecipes, getFamilyRecipes } from "@/actions/recipes";
 import RecipeCard from "@/components/RecipeCard";
-import UserCarousel from "@/components/UserCarousel";
+import UserScroll from "@/components/UserScroll";
 import { Button } from "@/components/ui/button";
-import { Pencil, UserPlus } from "lucide-react";
+import { LogOut, Pencil, UserPlus } from "lucide-react";
 import Image from "next/image";
 import {
   Card,
@@ -22,7 +22,7 @@ export default async function FamilyPage({
   const recipes = recipesResponse?.recipes;
   const familyResponse = await getFamily(params.family_id);
   const family = familyResponse?.family;
-  console.log(recipes);
+  const admin = familyResponse?.admin;
   return (
     <div className="container">
       <div className="flex flex-col gap-4">
@@ -38,11 +38,19 @@ export default async function FamilyPage({
               />
             </div>
             <CardFooter className="pt-4 flex justify-between">
-              <h1 className="text-3xl font-semibold">{family?.name}</h1>{" "}
-              <Button className="gap-2">
-                <Pencil className="w-5 h-5" />
-                Edita la familia
-              </Button>
+              <h1 className="text-3xl font-semibold">{family?.name}</h1>
+              <div className="space-x-2">
+                <Button className="gap-2">
+                  <LogOut className="w-5 h-5" />
+                  Surt
+                </Button>
+                {admin && (
+                  <Button className="gap-2">
+                    <Pencil className="w-5 h-5" />
+                    Edita la familia
+                  </Button>
+                )}
+              </div>
             </CardFooter>
           </Card>
           <Card className="w-full lg:w-4/12">
@@ -51,10 +59,12 @@ export default async function FamilyPage({
             </CardHeader>
             <CardContent>
               <div className="flex flex-col">
-                <UserCarousel members={family?.members} />
-                <Button className="mt-4 mx-4 gap-2">
-                  <UserPlus className="w-5 h-5" /> Convida un nou membre
-                </Button>
+                <UserScroll familyId={params.family_id} />
+                {admin && (
+                  <Button className="mt-4 mx-4 gap-2">
+                    <UserPlus className="w-5 h-5" /> Convida un nou membre
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>

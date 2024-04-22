@@ -56,7 +56,7 @@ export default async function ShowRecipePage({
 
             <div className="flex gap-4 items-center w-full justify-center border-t-2 pt-4">
               <Avatar className="cursor-pointer h-12 w-12">
-                <AvatarImage src="https://github.com/shadcn.png" />
+                <AvatarImage src="/default_user.jpg" />
               </Avatar>
               <h1 className="font-bold">Feta per {recipe?.author.name}</h1>
             </div>

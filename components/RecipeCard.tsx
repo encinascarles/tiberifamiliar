@@ -44,9 +44,7 @@ const RecipeCard = async ({
             {!personal && (
               <Avatar className="cursor-pointer h-12 w-12">
                 <AvatarImage
-                  src={
-                    user_image ? user_image : "https://github.com/shadcn.png"
-                  }
+                  src={user_image ? user_image : "/default_user.jpg"}
                 />
               </Avatar>
             )}
