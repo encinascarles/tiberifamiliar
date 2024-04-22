@@ -375,3 +375,75 @@ export const editFamily = async (
     return { error: "Error al actualitzar la familia!" };
   }
 };
+
+// Leave family
+export const leaveFamily = async (familyId: string) => {
+  // Get current user
+  const user = await currentUser();
+
+  if (!user) return { error: "Usuari no trobat!" };
+
+  // Check if the user is a member of the family
+  const isUserMember = await db.familyMembership.findFirst({
+    where: {
+      userId: user.id,
+      familyId: familyId,
+    },
+  });
+
+  if (!isUserMember) return { error: "No ets membre d'aquesta familia!" };
+
+  // Check if the user is the only admin of the family
+  const isAdmin = await db.familyMembership.findFirst({
+    where: {
+      userId: user.id,
+      familyId: familyId,
+      role: "ADMIN",
+    },
+  });
+
+  if (isAdmin) {
+    const otherAdmins = await db.familyMembership.findFirst({
+      where: {
+        familyId: familyId,
+        role: "ADMIN",
+        NOT: {
+          userId: user.id,
+        },
+      },
+    });
+
+    const members = await db.familyMembership.findMany({
+      where: {
+        familyId: familyId,
+      },
+    });
+
+    if (!otherAdmins && members.length > 1) {
+      return { error: "No pots deixar la familia si ets l'únic admin!" };
+    }
+  }
+  if (getFamilyMembers.length === 1) {
+    await db.family.delete({
+      where: {
+        id: familyId,
+      },
+    });
+    return { success: "Has deixat la familia i s'ha eliminat!" };
+  }
+
+  // Leave family
+  try {
+    await db.familyMembership.delete({
+      where: {
+        userId_familyId: {
+          userId: user.id as string,
+          familyId: familyId,
+        },
+      },
+    });
+    return { success: "Has deixat la familia!" };
+  } catch {
+    return { error: "Error al deixar la familia!" };
+  }
+};

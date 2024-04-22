@@ -33,7 +33,15 @@ import { Textarea } from "./ui/textarea";
 
 type FormData = z.infer<typeof FamilySchema>;
 
-export function EditFamilyButton({ familyId }: { familyId: string }) {
+export function EditFamilyButton({
+  familyId,
+  name,
+  description,
+}: {
+  familyId: string;
+  name: string;
+  description: string;
+}) {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
@@ -43,8 +51,8 @@ export function EditFamilyButton({ familyId }: { familyId: string }) {
   const form = useForm<FormData>({
     resolver: zodResolver(FamilySchema),
     defaultValues: {
-      name: "",
-      description: "",
+      name: name,
+      description: description,
     },
   });
 

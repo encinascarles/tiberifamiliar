@@ -11,9 +11,10 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../../components/ui/card";
-import { getFamily } from "@/actions/families";
+import { getFamily, leaveFamily } from "@/actions/families";
 import { EditFamilyButton } from "@/components/EditFamilyButton";
 import { InviteUserButton } from "@/components/InviteUserButton";
+import { LeaveFamilyButton } from "@/components/LeaveFamilyButton";
 
 export default async function FamilyPage({
   params,
@@ -25,7 +26,6 @@ export default async function FamilyPage({
   const familyResponse = await getFamily(params.family_id);
   const family = familyResponse?.family;
   const admin = familyResponse?.admin;
-
   return (
     <div className="container">
       <div className="flex flex-col gap-4">
@@ -43,11 +43,14 @@ export default async function FamilyPage({
             <CardFooter className="pt-4 flex justify-between">
               <h1 className="text-3xl font-semibold">{family?.name}</h1>
               <div className="space-x-2">
-                <Button className="gap-2">
-                  <LogOut className="w-5 h-5" />
-                  Surt
-                </Button>
-                {admin && <EditFamilyButton familyId={params.family_id} />}
+                <LeaveFamilyButton familyId={params.family_id} />
+                {admin && (
+                  <EditFamilyButton
+                    familyId={params.family_id}
+                    name={family?.name as string}
+                    description={family?.description as string}
+                  />
+                )}
               </div>
             </CardFooter>
           </Card>

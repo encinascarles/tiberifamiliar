@@ -119,7 +119,7 @@ model Invitation {
   inviteeId String
   invitee   User             @relation("invitee", fields: [inviteeId], references: [id], onDelete: Cascade)
   familyId  String
-  family    Family           @relation(fields: [familyId], references: [id])
+  family    Family           @relation(fields: [familyId], references: [id], onDelete: Cascade)
   status    InvitationStatus
 }
 
