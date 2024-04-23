@@ -18,8 +18,8 @@ const RecipeCard = async ({
 }: {
   title: string;
   id: string;
-  username?: string;
-  user_image?: string;
+  username?: string | null;
+  user_image?: string | null;
   prep_time: number;
   total_time: number;
   image: string | null;

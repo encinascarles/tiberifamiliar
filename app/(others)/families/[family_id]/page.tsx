@@ -1,8 +1,10 @@
-import { getFamiliesRecipes, getFamilyRecipes } from "@/actions/recipes";
-import RecipeCard from "@/components/RecipeCard";
+import { getFamily } from "@/actions/families";
+import { getFamilyRecipes } from "@/actions/recipes";
+import { EditFamilyButton } from "@/components/EditFamilyButton";
+import { InviteUserButton } from "@/components/InviteUserButton";
+import { LeaveFamilyButton } from "@/components/LeaveFamilyButton";
+import RecipesGrid from "@/components/RecipesGrid";
 import UserScroll from "@/components/UserScroll";
-import { Button } from "@/components/ui/button";
-import { LogOut, Pencil, UserPlus } from "lucide-react";
 import Image from "next/image";
 import {
   Card,
@@ -11,10 +13,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../../components/ui/card";
-import { getFamily, leaveFamily } from "@/actions/families";
-import { EditFamilyButton } from "@/components/EditFamilyButton";
-import { InviteUserButton } from "@/components/InviteUserButton";
-import { LeaveFamilyButton } from "@/components/LeaveFamilyButton";
 
 export default async function FamilyPage({
   params,
@@ -75,22 +73,7 @@ export default async function FamilyPage({
             <p>{family?.description}</p>
           </CardContent>
         </Card>
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-4">
-          {recipes &&
-            recipes.map((recipe, i) => (
-              <RecipeCard
-                key={i}
-                title={recipe.title}
-                id={recipe.id}
-                username={recipe.author.username as string}
-                user_image={recipe.author.image as string}
-                prep_time={recipe.prep_time}
-                total_time={recipe.total_time}
-                image={recipe.image}
-                personal={false}
-              />
-            ))}
-        </div>
+        {recipes && recipes.length > 0 && <RecipesGrid recipes={recipes} />}
       </div>
     </div>
   );
