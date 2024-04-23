@@ -1,3 +1,10 @@
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import {
   Bell,
@@ -10,15 +17,10 @@ import {
   User,
   Users,
 } from "lucide-react";
-import Link from "next/link";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
+import MobileMenuItem from "./MobileMenuItem";
+import NavSection from "./NavSection";
 
 export default function MobileDrawerMenu() {
   const user = useCurrentUser();
@@ -36,54 +38,51 @@ export default function MobileDrawerMenu() {
         </Link>
         <ScrollArea className="my-4 h-[calc(100%-2rem)] mb-10 pl-6 pr-6">
           <div className="flex flex-col gap-6 min-w-full text-lg">
-            <div className="flex flex-col">
-              <h2 className="text-md font-semibold">Receptes</h2>
-              <MenuItem href="/receptes/personals">
+            <NavSection title="Receptes">
+              <MobileMenuItem href="/receptes/personals">
                 <User className="mr-2 h-4 w-4" />
                 Receptes personals
-              </MenuItem>
-              <MenuItem href="/receptes/preferides">
+              </MobileMenuItem>
+              <MobileMenuItem href="/receptes/preferides">
                 <Heart className="mr-2 h-4 w-4" />
                 Receptes preferides
-              </MenuItem>
-              <MenuItem href="/receptes/familiars">
+              </MobileMenuItem>
+              <MobileMenuItem href="/receptes/familiars">
                 <Users className="mr-2 h-4 w-4" />
                 Receptes familiars
-              </MenuItem>
-              <MenuItem href="/receptes/publiques">
+              </MobileMenuItem>
+              <MobileMenuItem href="/receptes/publiques">
                 <Earth className="mr-2 h-4 w-4" />
                 Receptes publiques
-              </MenuItem>
-              <MenuItem href="/receptes/nova">
+              </MobileMenuItem>
+              <MobileMenuItem href="/receptes/nova">
                 <Plus className="mr-2 h-4 w-4" />
                 Crear recepta
-              </MenuItem>
-            </div>
-            <div className="flex flex-col min-w-full">
-              <h2 className="text-md font-semibold">Families</h2>
-              <MenuItem href="/families">
+              </MobileMenuItem>
+            </NavSection>
+            <NavSection title="Families">
+              <MobileMenuItem href="/families">
                 <Users className="mr-2 h-4 w-4" />
                 Les meves families
-              </MenuItem>
-              <MenuItem href="/families/nova">
+              </MobileMenuItem>
+              <MobileMenuItem href="/families/nova">
                 <Plus className="mr-2 h-4 w-4" />
                 Crear familia
-              </MenuItem>
-            </div>
-            <div className="flex flex-col">
-              <h2 className="text-md font-semibold">{user?.name}</h2>
-              <MenuItem href="/perfil">
+              </MobileMenuItem>
+            </NavSection>
+            <NavSection title={user?.name as string}>
+              <MobileMenuItem href="/perfil">
                 <User className="mr-2 h-4 w-4" />
                 <Link href="/perfil">Perfil</Link>
-              </MenuItem>
-              <MenuItem href="/perfil/invitacions">
+              </MobileMenuItem>
+              <MobileMenuItem href="/perfil/invitacions">
                 <Bell className="mr-2 h-4 w-4" />
                 <span>Invitacions</span>
-              </MenuItem>
-              <MenuItem href="/perfil/configuracio">
+              </MobileMenuItem>
+              <MobileMenuItem href="/perfil/configuracio">
                 <Settings className="mr-2 h-4 w-4" />
                 <span>Configuració</span>
-              </MenuItem>
+              </MobileMenuItem>
               <SheetClose asChild>
                 <button onClick={() => signOut({ callbackUrl: "/" })}>
                   <div className="flex items-center h-12 hover:bg-accent rounded-md">
@@ -92,26 +91,10 @@ export default function MobileDrawerMenu() {
                   </div>
                 </button>
               </SheetClose>
-            </div>
+            </NavSection>
           </div>
         </ScrollArea>
       </SheetContent>
     </Sheet>
   );
 }
-
-const MenuItem = ({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) => (
-  <SheetClose asChild>
-    <Link href={href}>
-      <div className="flex items-center h-12 hover:bg-accent rounded-md">
-        {children}
-      </div>
-    </Link>
-  </SheetClose>
-);

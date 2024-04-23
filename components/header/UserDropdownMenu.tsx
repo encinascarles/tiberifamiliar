@@ -1,9 +1,7 @@
-import { Bell, LogOut, Plus, Settings, User, Users } from "lucide-react";
-
+import { Bell, LogOut, Settings, User } from "lucide-react";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { signOut } from "next-auth/react";
-import Link from "next/link";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +9,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from "../ui/dropdown-menu";
 
 export const UserDropdownMenu = () => {
   const user = useCurrentUser();
@@ -21,7 +19,7 @@ export const UserDropdownMenu = () => {
       <DropdownMenuTrigger asChild>
         <Avatar className="cursor-pointer h-9 w-9">
           <AvatarImage src={user?.image ? user?.image : "/default_user.jpg"} />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarFallback>TF</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
