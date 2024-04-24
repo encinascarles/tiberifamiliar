@@ -3,9 +3,9 @@
 import { BeatLoader } from "react-spinners";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { newVerification } from "../actions/new-verification";
-import { FormError } from "./FormError";
-import { FormSuccess } from "./FormSuccess";
+import { newVerification } from "../../../actions/new-verification";
+import { FormError } from "../../../components/formMessages/FormError";
+import { FormSuccess } from "../../../components/formMessages/FormSuccess";
 
 const NewVerificationForm = () => {
   const searchParams = useSearchParams();

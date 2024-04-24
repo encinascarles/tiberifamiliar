@@ -1,4 +1,4 @@
-import RecipesCarousel from "../../../components/RecipesCarousel";
+import RecipesCarousel from "./RecipesCarousel";
 
 export default function HomePage() {
   return (

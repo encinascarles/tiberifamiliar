@@ -1,8 +1,8 @@
 "use client";
 
 import { LogOut } from "lucide-react";
-import { Button } from "./ui/button";
-import { useToast } from "./ui/use-toast";
+import { Button } from "../../../../components/ui/button";
+import { useToast } from "../../../../components/ui/use-toast";
 import { useTransition } from "react";
 import { leaveFamily } from "@/actions/families";
 import { useRouter } from "next/navigation";

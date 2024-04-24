@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { FormError } from "../../../../components/FormError";
-import { FormSuccess } from "../../../../components/FormSuccess";
+import { FormError } from "../../../../components/formMessages/FormError";
+import { FormSuccess } from "../../../../components/formMessages/FormSuccess";
 import { Button } from "../../../../components/ui/button";
 import {
   Form,

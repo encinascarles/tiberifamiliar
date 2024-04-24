@@ -1,5 +1,5 @@
 import { getPersonalRecipes } from "@/actions/recipes";
-import AddRecipeCard from "@/components/AddRecipeCard";
+import AddRecipeCard from "@/app/(others)/receptes/personals/AddRecipeCard";
 import RecipeCard from "@/components/RecipeCard";
 
 export default async function PersonalRecipesPage() {

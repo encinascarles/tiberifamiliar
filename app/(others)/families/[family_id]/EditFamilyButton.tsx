@@ -27,9 +27,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { FormError } from "@/components/FormError";
-import { FormSuccess } from "@/components/FormSuccess";
-import { Textarea } from "./ui/textarea";
+import { FormError } from "@/components/formMessages/FormError";
+import { FormSuccess } from "@/components/formMessages/FormSuccess";
+import { Textarea } from "../../../../components/ui/textarea";
 
 type FormData = z.infer<typeof FamilySchema>;
 

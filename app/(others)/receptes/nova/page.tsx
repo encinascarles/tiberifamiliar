@@ -17,8 +17,8 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { RecipeSchema } from "../../../../schemas";
 import { createRecipe } from "../../../../actions/recipes";
-import { FormError } from "../../../../components/FormError";
-import { FormSuccess } from "../../../../components/FormSuccess";
+import { FormError } from "../../../../components/formMessages/FormError";
+import { FormSuccess } from "../../../../components/formMessages/FormSuccess";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/use-toast";
 

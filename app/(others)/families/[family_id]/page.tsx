@@ -1,10 +1,10 @@
 import { getFamily } from "@/actions/families";
 import { getFamilyRecipes } from "@/actions/recipes";
-import { EditFamilyButton } from "@/components/EditFamilyButton";
-import { InviteUserButton } from "@/components/InviteUserButton";
-import { LeaveFamilyButton } from "@/components/LeaveFamilyButton";
+import { EditFamilyButton } from "@/app/(others)/families/[family_id]/EditFamilyButton";
+import { InviteUserButton } from "@/app/(others)/families/[family_id]/InviteUserButton";
+import { LeaveFamilyButton } from "@/app/(others)/families/[family_id]/LeaveFamilyButton";
 import RecipesGrid from "@/components/RecipesGrid";
-import UserScroll from "@/components/UserScroll";
+import UserScroll from "@/app/(others)/families/[family_id]/UserScroll";
 import Image from "next/image";
 import {
   Card,

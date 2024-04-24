@@ -1,5 +1,5 @@
-import { GoogleAuthButton } from "../../../components/GoogleAuthButton";
-import { RegisterForm } from "../../../components/RegisterForm";
+import { GoogleAuthButton } from "../GoogleAuthButton";
+import { RegisterForm } from "./RegisterForm";
 import { TextDivider } from "../../../components/TextDivider";
 import { Button } from "../../../components/ui/button";
 import Link from "next/link";

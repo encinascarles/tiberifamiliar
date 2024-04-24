@@ -1,4 +1,4 @@
-import { Card } from "./ui/card";
+import { Card } from "../../../../components/ui/card";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

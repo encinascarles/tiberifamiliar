@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from "./ui/button";
+import { Button } from "../../components/ui/button";
 import { signIn } from "next-auth/react";
-import { cn } from "../lib/utils";
-import { DEFAULT_LOGIN_REDIRECT } from "../routes";
+import { cn } from "../../lib/utils";
+import { DEFAULT_LOGIN_REDIRECT } from "../../routes";
 
 import Image from "next/image";
 

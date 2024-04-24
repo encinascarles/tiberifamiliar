@@ -1,16 +1,22 @@
 "use client";
 
-import { FormError } from "./FormError";
-import { FormSuccess } from "./FormSuccess";
-import { Button } from "./ui/button";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "./ui/form";
-import { Input } from "./ui/input";
-import { PasswordResetSchema } from "../schemas";
+import { FormError } from "../../../components/formMessages/FormError";
+import { FormSuccess } from "../../../components/formMessages/FormSuccess";
+import { Button } from "../../../components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "../../../components/ui/form";
+import { Input } from "../../../components/ui/input";
+import { PasswordResetSchema } from "../../../schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { resetPassword } from "../actions/resetPassword";
+import { resetPassword } from "../../../actions/resetPassword";
 
 export const ResetPasswordForm = () => {
   const [error, setError] = useState<string | undefined>("");
