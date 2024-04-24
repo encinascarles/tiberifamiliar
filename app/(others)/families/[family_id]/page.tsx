@@ -1,10 +1,7 @@
+"use server";
 import { getFamily } from "@/actions/families";
-import { getFamilyRecipes } from "@/actions/recipes";
 import { EditFamilyButton } from "@/app/(others)/families/[family_id]/EditFamilyButton";
-import { InviteUserButton } from "@/app/(others)/families/[family_id]/InviteUserButton";
 import { LeaveFamilyButton } from "@/app/(others)/families/[family_id]/LeaveFamilyButton";
-import RecipesGrid from "@/components/RecipesGrid";
-import UserScroll from "@/app/(others)/families/[family_id]/UserScroll";
 import Image from "next/image";
 import {
   Card,
@@ -13,17 +10,20 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../../components/ui/card";
+import FamilyRecipesGrid from "./FamilyRecipesGrid";
+import MembersCard from "./(MembersCard)/MembersCard";
 
-export default async function FamilyPage({
-  params,
-}: {
+interface FamilyPageProps {
   params: { family_id: string };
-}) {
-  const recipesResponse = await getFamilyRecipes(params.family_id);
-  const recipes = recipesResponse?.recipes;
-  const familyResponse = await getFamily(params.family_id);
+}
+
+const FamilyPage: React.FC<FamilyPageProps> = async ({ params }) => {
+  const familyId = params.family_id;
+
+  const familyResponse = await getFamily(familyId);
   const family = familyResponse?.family;
-  const admin = familyResponse?.admin;
+  const admin = familyResponse?.admin ? true : false;
+
   return (
     <div className="container">
       <div className="flex flex-col gap-4">
@@ -52,17 +52,7 @@ export default async function FamilyPage({
               </div>
             </CardFooter>
           </Card>
-          <Card className="w-full lg:w-4/12">
-            <CardHeader>
-              <CardTitle>Membres</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col">
-                <UserScroll familyId={params.family_id} />
-                {admin && <InviteUserButton familyId={params.family_id} />}
-              </div>
-            </CardContent>
-          </Card>
+          <MembersCard familyId={params.family_id} admin={admin} />
         </div>
 
         <Card>
@@ -73,8 +63,11 @@ export default async function FamilyPage({
             <p>{family?.description}</p>
           </CardContent>
         </Card>
-        {recipes && recipes.length > 0 && <RecipesGrid recipes={recipes} />}
+
+        <FamilyRecipesGrid familyId={familyId} />
       </div>
     </div>
   );
-}
+};
+
+export default FamilyPage;

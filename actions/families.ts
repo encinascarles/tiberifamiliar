@@ -447,3 +447,36 @@ export const leaveFamily = async (familyId: string) => {
     return { error: "Error al deixar la familia!" };
   }
 };
+
+// Get user families
+export const getUserFamilies = async () => {
+  // Get current user
+  const user = await currentUser();
+
+  if (!user) return { error: "Usuari no trobat!" };
+  // Get user families
+  const families = await db.familyMembership.findMany({
+    where: {
+      userId: user.id,
+    },
+    include: {
+      family: {
+        include: {
+          members: true,
+        },
+      },
+    },
+  });
+
+  const returnedData = families.map((family) => {
+    return {
+      id: family.family.id,
+      name: family.family.name,
+      description: family.family.description,
+      members: family.family.members.length,
+      image: family.family.image,
+    };
+  });
+
+  return returnedData;
+};
