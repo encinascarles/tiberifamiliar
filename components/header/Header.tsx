@@ -8,6 +8,7 @@ import RegisterButton from "./RegisterButton";
 import SearchBox from "./SearchBox";
 import TopNavigation from "./TopNavigation/TopNavigation";
 import { UserDropdownMenu } from "./UserDropdownMenu";
+import InvitationsModal from "./InvitationsDialog/InvitationsModal";
 
 const LoggedInHeader = () => (
   <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -27,6 +28,7 @@ const LoggedInHeader = () => (
         </div>
       </div>
     </div>
+    <InvitationsModal />
   </header>
 );
 

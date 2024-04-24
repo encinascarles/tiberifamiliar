@@ -16,6 +16,7 @@ const UserFamiliesPage = async () => {
       <div className="flex flex-col gap-4">
         {families.map((family) => (
           <FamilyCard
+            key={family.id} // Add key prop
             id={family.id}
             name={family.name}
             description={family.description}

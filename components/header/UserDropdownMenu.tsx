@@ -1,5 +1,6 @@
-import { Bell, LogOut, Settings, User } from "lucide-react";
+"use client";
 import { useCurrentUser } from "@/hooks/use-current-user";
+import { LogOut, Settings, User } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
@@ -10,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import InvitationsButton from "./InvitationsDialog/InvitationsButton";
 
 export const UserDropdownMenu = () => {
   const user = useCurrentUser();
@@ -30,8 +32,7 @@ export const UserDropdownMenu = () => {
           <span>Perfil</span>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Bell className="mr-2 h-4 w-4" />
-          <span>Invitacions</span>
+          <InvitationsButton />
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
