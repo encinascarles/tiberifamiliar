@@ -1,34 +1,41 @@
 "use server";
 import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { invitation } from "@/types";
 
 // Get user invitations
-export const getUserInvitations = async () => {
-  const user = await currentUser();
+interface getUserInvitationsResponse {
+  error?: string;
+  data?: invitation[];
+}
+export const getUserInvitations =
+  async (): Promise<getUserInvitationsResponse> => {
+    const user = await currentUser();
+    if (!user?.id) return { error: "Usuari no trobat" };
 
-  const invitations = await db.invitation.findMany({
-    where: {
-      inviteeId: user?.id,
-      status: "PENDING",
-    },
-    include: {
-      inviter: true,
-      family: true,
-    },
-  });
+    const invitations = await db.invitation.findMany({
+      where: {
+        inviteeId: user?.id,
+        status: "PENDING",
+      },
+      include: {
+        inviter: true,
+        family: true,
+      },
+    });
 
-  const returnedData = invitations.map((invitation) => {
-    return {
-      id: invitation.id,
-      inviterId: invitation.inviterId,
-      inviterName: invitation.inviter.name,
-      familyName: invitation.family.name,
-      familyImage: invitation.family.image,
-    };
-  });
+    const invitationsToSend = invitations.map((invitation) => {
+      return {
+        id: invitation.id,
+        inviterId: invitation.inviterId,
+        inviterName: invitation.inviter.name,
+        familyName: invitation.family.name,
+        familyImage: invitation.family.image,
+      };
+    });
 
-  return returnedData;
-};
+    return { data: invitationsToSend };
+  };
 
 // Accept invitation
 export const acceptInvitation = async (invitationId: string) => {

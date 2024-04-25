@@ -7,13 +7,9 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { acceptInvitation, rejectInvitation } from "@/actions/invitations";
+import { invitation } from "@/types";
 
-interface InvitationCardProps {
-  id: string;
-  inviterId: string;
-  inviterName: string;
-  familyName: string;
-  familyImage: string | null;
+interface InvitationCardProps extends invitation {
   refresh: () => void;
 }
 

@@ -16,3 +16,11 @@ export interface familycard {
   image: string | null;
   members: number;
 }
+
+export interface invitation {
+  id: string;
+  inviterId: string;
+  inviterName: string;
+  familyName: string;
+  familyImage: string | null;
+}

@@ -11,18 +11,11 @@ import {
 import { useInvitationsModal } from "@/stores/useInvitationsModal";
 import { useEffect, useState } from "react";
 import InvitationCard from "./InvitationCard";
-
-interface Invitation {
-  id: string;
-  inviterId: string;
-  inviterName: string;
-  familyName: string;
-  familyImage: string | null;
-}
+import { invitation } from "@/types";
 
 const InvitationsModal = () => {
   const { isOpen, close } = useInvitationsModal();
-  const [invitations, setInvitations] = useState<Array<Invitation>>([]);
+  const [invitations, setInvitations] = useState<Array<invitation>>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const getInvitations = async () => {
