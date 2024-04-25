@@ -13,17 +13,6 @@ export const createFamily = async (values: z.infer<typeof FamilySchema>) => {
   // Get fields
   const { name, description } = validatedFields.data;
 
-  // Check if there's a family with the same name
-  const existingFamily = await db.family.findFirst({
-    where: {
-      name: name,
-    },
-  });
-
-  if (existingFamily) {
-    return { error: "Ja existeix una familia amb aquest nom!" };
-  }
-
   // Get current user
   const user = await currentUser();
 
