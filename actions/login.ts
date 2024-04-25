@@ -8,22 +8,29 @@ import { generateVerificationToken } from "../lib/tokens";
 import { getUserByEmail } from "../data/user";
 import { sendVerificationEmail } from "../lib/mail";
 
-export const login = async (values: z.infer<typeof LoginSchema>) => {
+interface loginResponse {
+  error?: string;
+  success?: string;
+}
+export const login = async (
+  values: z.infer<typeof LoginSchema>
+): Promise<loginResponse | undefined> => {
+  // Validate fields
   const validatedFields = LoginSchema.safeParse(values);
-
   if (!validatedFields.success) {
     return { error: "Camps invàlids!" };
   }
-
   const { email, password } = validatedFields.data;
 
+  // Get user by email
   const existingUser = await getUserByEmail(email);
+  // Check if user is registered with google
   if (!existingUser?.password)
     return {
       error:
         "Correu registra't per google, si us plau, inicia sessió amb Google",
     };
-
+  // Check if user is verified
   if (!existingUser.emailVerified) {
     const verificationToken = await generateVerificationToken(email);
     await sendVerificationEmail(email, verificationToken.token);
