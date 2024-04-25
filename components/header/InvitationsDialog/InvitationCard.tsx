@@ -82,7 +82,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({
           >
             {inviterName}{" "}
           </Link>
-          t'ha convidat a unir-te a la família{" "}
+          t&apos;ha convidat a unir-te a la família{" "}
           <b className="font-semibold">{familyName}</b>
         </p>
         <div className="flex justify-center gap-2">
