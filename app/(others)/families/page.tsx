@@ -4,9 +4,8 @@ import { getUserFamilies } from "@/actions/families";
 import FamilyCard from "./FamilyCard";
 
 const UserFamiliesPage = async () => {
-  const responseFamilies = await getUserFamilies();
-  if (responseFamilies.error || !responseFamilies.data) return;
-  const families = responseFamilies.data;
+  const families = await getUserFamilies();
+  if ("error" in families) return;
 
   return (
     <div className="container">
@@ -14,7 +13,7 @@ const UserFamiliesPage = async () => {
       <div className="flex flex-col gap-4">
         {families.map((family) => (
           <FamilyCard
-            key={family.id} // Add key prop
+            key={family.id}
             id={family.id}
             name={family.name}
             description={family.description}

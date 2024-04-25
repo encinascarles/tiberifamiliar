@@ -42,15 +42,16 @@ export default function NewFamilyPage() {
     setError("");
     setSuccess("");
     startTransition(() => {
-      createFamily(values).then((data) => {
-        setError(data?.error);
-        if (data?.success) {
-          toast({
-            variant: "success",
-            description: "Familia creada correctament!",
-          });
-          router.push(`/families/${data.id}`);
+      createFamily(values).then((response) => {
+        if ("error" in response) {
+          setError(response.error);
+          return;
         }
+        toast({
+          variant: "success",
+          description: response.success,
+        });
+        router.push(`/families/${response.id}`);
       });
     });
   };

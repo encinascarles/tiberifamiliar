@@ -14,19 +14,19 @@ export function LeaveFamilyButton({ familyId }: { familyId: string }) {
 
   const handleClick = () => {
     startTransition(() => {
-      leaveFamily(familyId).then((data) => {
-        if (data?.success) {
-          toast({
-            variant: "success",
-            description: data?.success,
-          });
-          router.push(`/families/`);
-        } else {
+      leaveFamily(familyId).then((response) => {
+        if ("error" in response) {
           toast({
             variant: "destructive",
-            description: data?.error,
+            description: response.error,
           });
+          return;
         }
+        toast({
+          variant: "success",
+          description: response.success,
+        });
+        router.push(`/families/`);
       });
     });
   };

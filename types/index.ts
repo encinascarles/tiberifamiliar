@@ -9,14 +9,12 @@ export interface member {
   familyId: string;
 }
 
-export interface familycard {
+export interface family {
   id: string;
   name: string;
   description: string | null;
   image: string | null;
-  members: number;
 }
-
 export interface invitation {
   id: string;
   inviterId: string;
@@ -28,6 +26,12 @@ export interface invitation {
 export interface error {
   error: string;
 }
+
+export interface success {
+  success: string;
+}
+
+export type actionResponse = error | success;
 
 export interface recipe {
   id: string;

@@ -1,18 +1,12 @@
 "use server";
 import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
-import * as z from "zod";
 import { FamilySchema, InviteUserSchema } from "@/schemas";
-import { Role } from "@prisma/client";
-import { familycard, member } from "@/types";
+import { actionResponse, error, family, member, success } from "@/types";
+import * as z from "zod";
 
 // Create new family
-interface createFamilyResponse {
-  error?: string;
-  success?: string;
-  data?: { id: string };
-}
-
+type createFamilyResponse = error | (success & { id: string });
 export const createFamily = async (
   values: z.infer<typeof FamilySchema>
 ): Promise<createFamilyResponse> => {
@@ -44,24 +38,14 @@ export const createFamily = async (
         role: "ADMIN", // Assuming 'ADMIN' is a valid role
       },
     });
-    return { success: "Familia creada amb èxit!", data: { id: family.id } };
+    return { success: "Familia creada amb èxit!", id: family.id };
   } catch {
     return { error: "Error al crear la familia!" };
   }
 };
 
 // Get family
-interface getFamilyResponse {
-  error?: string;
-  data?: {
-    id: string;
-    name: string;
-    description: string | null;
-    image: string | null;
-    admin: boolean;
-  };
-}
-
+type getFamilyResponse = error | (family & { admin: boolean });
 export const getFamily = async (
   familyId: string
 ): Promise<getFamilyResponse> => {
@@ -90,24 +74,16 @@ export const getFamily = async (
 
   // Return the family
   return {
-    data: {
-      id: family.id,
-      name: family.name,
-      description: family.description,
-      image: family.image,
-      admin: isAdmin,
-    },
+    id: family.id,
+    name: family.name,
+    description: family.description,
+    image: family.image,
+    admin: isAdmin,
   };
 };
 
 // Get family members
-interface getFamilyMembersResponse {
-  error?: string;
-  data?: {
-    members: member[];
-    admin: boolean;
-  };
-}
+type getFamilyMembersResponse = error | { members: member[]; admin: boolean };
 export const getFamilyMembers = async (
   familyId: string
 ): Promise<getFamilyMembersResponse> => {
@@ -146,19 +122,15 @@ export const getFamilyMembers = async (
     };
   });
 
-  return { data: { members: membersToSend, admin: !!isUserAdmin } };
+  return { members: membersToSend, admin: !!isUserAdmin };
 };
 
 // Promote user to admin
-interface promoteUserResponse {
-  error?: string;
-  success?: string;
-}
-
+// TYPE: actionResponse = error | success;
 export const promoteUser = async (
   userId: string,
   familyId: string
-): Promise<promoteUserResponse> => {
+): Promise<actionResponse> => {
   // Get current user
   const user = await currentUser();
   if (!user) return { error: "Usuari no trobat!" };
@@ -202,14 +174,11 @@ export const promoteUser = async (
 };
 
 // Demote user from admin
-interface demoteUserResponse {
-  error?: string;
-  success?: string;
-}
+// TYPE: actionResponse = error | success;
 export const demoteUser = async (
   userId: string,
   familyId: string
-): Promise<demoteUserResponse> => {
+): Promise<actionResponse> => {
   // Get current user
   const user = await currentUser();
   if (!user) return { error: "Usuari no trobat!" };
@@ -253,14 +222,11 @@ export const demoteUser = async (
 };
 
 // Kick user from family
-interface kickUserResponse {
-  error?: string;
-  success?: string;
-}
+// TYPE: actionResponse = error | success;
 export const kickUser = async (
   userId: string,
   familyId: string
-): Promise<kickUserResponse> => {
+): Promise<actionResponse> => {
   // Get current user
   const user = await currentUser();
   if (!user) return { error: "Usuari no trobat!" };
@@ -292,14 +258,11 @@ export const kickUser = async (
 };
 
 // Invite user to family
-interface inviteUserResponse {
-  error?: string;
-  success?: string;
-}
+// TYPE: actionResponse = error | success;
 export const inviteUser = async (
   values: z.infer<typeof InviteUserSchema>,
   familyId: string
-): Promise<inviteUserResponse> => {
+): Promise<actionResponse> => {
   // Parse the email
   const validatedFields = InviteUserSchema.safeParse(values);
   if (!validatedFields.success) return { error: "Camps invàlids!" };
@@ -352,14 +315,11 @@ export const inviteUser = async (
 };
 
 // Edit family
-interface editFamilyResponse {
-  error?: string;
-  success?: string;
-}
+// TYPE: actionResponse = error | success;
 export const editFamily = async (
   values: z.infer<typeof FamilySchema>,
   familyId: string
-): Promise<editFamilyResponse> => {
+): Promise<actionResponse> => {
   // Validate fields
   const validatedFields = FamilySchema.safeParse(values);
   if (!validatedFields.success) return { error: "Camps invàlids!" };
@@ -408,13 +368,10 @@ export const editFamily = async (
 };
 
 // Leave family
-interface leaveFamilyResponse {
-  error?: string;
-  success?: string;
-}
+// TYPE: actionResponse = error | success;
 export const leaveFamily = async (
   familyId: string
-): Promise<leaveFamilyResponse> => {
+): Promise<actionResponse> => {
   // Get current user
   const user = await currentUser();
   if (!user) return { error: "Usuari no trobat!" };
@@ -485,10 +442,7 @@ export const leaveFamily = async (
 };
 
 // Get user families
-interface getUserFamiliesResponse {
-  error?: string;
-  data?: familycard[];
-}
+type getUserFamiliesResponse = error | (family & { members: number })[];
 export const getUserFamilies = async (): Promise<getUserFamiliesResponse> => {
   // Get current user
   const user = await currentUser();
@@ -516,5 +470,5 @@ export const getUserFamilies = async (): Promise<getUserFamiliesResponse> => {
     members: family.family.members.length,
   }));
 
-  return { data: familiesResponse };
+  return familiesResponse;
 };

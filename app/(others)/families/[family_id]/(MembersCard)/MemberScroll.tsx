@@ -38,16 +38,16 @@ const MemberScroll: React.FC<MemberScrollProps> = ({ familyId }) => {
 
   const getMembers = async () => {
     const response = await getFamilyMembers(familyId);
-    if (response.error || !response.data) {
-      return toast({
+    if ("error" in response) {
+      toast({
         title: "Error",
         description: response.error,
         variant: "destructive",
       });
-    } else {
-      setMembers(response.data.members);
-      setAdmin(response.data.admin);
+      return;
     }
+    setMembers(response.members);
+    setAdmin(response.admin);
   };
 
   useEffect(() => {
@@ -56,56 +56,55 @@ const MemberScroll: React.FC<MemberScrollProps> = ({ familyId }) => {
 
   const handlePromoteUser = async (userId: string) => {
     const response = await promoteUser(userId, familyId);
-    if (response.error) {
-      return toast({
+    if ("error" in response) {
+      toast({
         title: "Error",
         description: response.error,
         variant: "destructive",
       });
-    } else {
-      getMembers();
-      toast({
-        title: "Usuari promocionat",
-        description: response.success,
-        variant: "success",
-      });
+      return;
     }
+    getMembers();
+    toast({
+      title: "Usuari promocionat",
+      description: response.success,
+      variant: "success",
+    });
   };
 
   const handleDemoteUser = async (userId: string) => {
     const response = await demoteUser(userId, familyId);
-    if (response.error) {
-      return toast({
+    if ("error" in response) {
+      toast({
         title: "Error",
         description: response.error,
         variant: "destructive",
       });
-    } else {
-      getMembers();
-      toast({
-        title: "Usuari descartat",
-        description: response.success,
-        variant: "success",
-      });
+      return;
     }
+    getMembers();
+    toast({
+      title: "Usuari descartat",
+      description: response.success,
+      variant: "success",
+    });
   };
 
   const handleKickUser = async (userId: string) => {
     const response = await kickUser(userId, familyId);
-    if (response.error) {
+    if ("error" in response) {
       return toast({
         title: "Error",
         description: response.error,
         variant: "destructive",
       });
-    } else {
-      getMembers();
-      toast({
-        title: "Usuari expulsat",
-        description: response.success,
-        variant: "success",
-      });
     }
+    getMembers();
+    toast({
+      title: "Usuari expulsat",
+      description: response.success,
+      variant: "success",
+    });
   };
 
   return (

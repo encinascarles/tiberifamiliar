@@ -1,24 +1,14 @@
 "use client";
-import { createFamily, editFamily } from "@/actions/families";
+import { editFamily } from "@/actions/families";
+import { FormError } from "@/components/formMessages/FormError";
+import { FormSuccess } from "@/components/formMessages/FormSuccess";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Pencil } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { set, z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { FamilySchema } from "@/schemas";
 import {
   Form,
   FormControl,
@@ -27,8 +17,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { FormError } from "@/components/formMessages/FormError";
-import { FormSuccess } from "@/components/formMessages/FormSuccess";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
+import { FamilySchema } from "@/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Pencil } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 import { Textarea } from "../../../../components/ui/textarea";
 
 type FormData = z.infer<typeof FamilySchema>;
@@ -60,9 +57,12 @@ export function EditFamilyButton({
     setError("");
     setSuccess("");
     startTransition(() => {
-      editFamily(values, familyId).then((data) => {
-        setError(data?.error);
-        setSuccess(data?.success);
+      editFamily(values, familyId).then((response) => {
+        if ("error" in response) {
+          setError(response.error);
+          return;
+        }
+        setSuccess(response.success);
       });
     });
   };

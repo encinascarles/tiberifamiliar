@@ -18,10 +18,8 @@ interface FamilyPageProps {
 }
 
 const FamilyPage: React.FC<FamilyPageProps> = async ({ params }) => {
-  const familyId = params.family_id;
-
-  const family = await getFamily(familyId);
-  if (family.error || !family.data) return null;
+  const family = await getFamily(params.family_id);
+  if ("error" in family) return null;
 
   return (
     <div className="container">
@@ -38,20 +36,20 @@ const FamilyPage: React.FC<FamilyPageProps> = async ({ params }) => {
               />
             </div>
             <CardFooter className="pt-4 flex justify-between">
-              <h1 className="text-3xl font-semibold">{family.data.name}</h1>
+              <h1 className="text-3xl font-semibold">{family.name}</h1>
               <div className="space-x-2">
-                <LeaveFamilyButton familyId={params.family_id} />
-                {family.data.admin && (
+                <LeaveFamilyButton familyId={family.id} />
+                {family.admin && (
                   <EditFamilyButton
                     familyId={params.family_id}
-                    name={family.data.name as string}
-                    description={family.data.description as string}
+                    name={family.name as string}
+                    description={family.description as string}
                   />
                 )}
               </div>
             </CardFooter>
           </Card>
-          <MembersCard familyId={family.data.id} admin={family.data.admin} />
+          <MembersCard familyId={family.id} admin={family.admin} />
         </div>
 
         <Card>
@@ -59,11 +57,11 @@ const FamilyPage: React.FC<FamilyPageProps> = async ({ params }) => {
             <CardTitle>Descripció</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>{family.data.description}</p>
+            <p>{family.description}</p>
           </CardContent>
         </Card>
 
-        <FamilyRecipesGrid familyId={familyId} />
+        <FamilyRecipesGrid familyId={family.id} />
       </div>
     </div>
   );

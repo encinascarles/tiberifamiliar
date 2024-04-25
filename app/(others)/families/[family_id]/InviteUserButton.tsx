@@ -47,9 +47,12 @@ export function InviteUserButton({ familyId }: { familyId: string }) {
     setError("");
     setSuccess("");
     startTransition(() => {
-      inviteUser(values, familyId).then((data) => {
-        setError(data?.error);
-        setSuccess(data?.success);
+      inviteUser(values, familyId).then((response) => {
+        if ("error" in response) {
+          setError(response.error);
+          return;
+        }
+        setSuccess(response.success);
       });
     });
   };
