@@ -150,10 +150,17 @@ export const getFamilyMembers = async (
 };
 
 // Promote user to admin
-export const promoteUser = async (userId: string, familyId: string) => {
+interface promoteUserResponse {
+  error?: string;
+  success?: string;
+}
+
+export const promoteUser = async (
+  userId: string,
+  familyId: string
+): Promise<promoteUserResponse> => {
   // Get current user
   const user = await currentUser();
-
   if (!user) return { error: "Usuari no trobat!" };
 
   // Check if the user is an admin of the family
@@ -164,7 +171,6 @@ export const promoteUser = async (userId: string, familyId: string) => {
       role: "ADMIN",
     },
   });
-
   if (!isUserAdmin) return { error: "No tens permís per fer això!" };
 
   // Check if the user to promote is a member of the family
@@ -174,7 +180,6 @@ export const promoteUser = async (userId: string, familyId: string) => {
       familyId: familyId,
     },
   });
-
   if (!isUserMember) return { error: "Usuari no trobat!" };
 
   // Promote user
@@ -197,10 +202,16 @@ export const promoteUser = async (userId: string, familyId: string) => {
 };
 
 // Demote user from admin
-export const demoteUser = async (userId: string, familyId: string) => {
+interface demoteUserResponse {
+  error?: string;
+  success?: string;
+}
+export const demoteUser = async (
+  userId: string,
+  familyId: string
+): Promise<demoteUserResponse> => {
   // Get current user
   const user = await currentUser();
-
   if (!user) return { error: "Usuari no trobat!" };
 
   // Check if the user is an admin of the family
@@ -211,7 +222,6 @@ export const demoteUser = async (userId: string, familyId: string) => {
       role: "ADMIN",
     },
   });
-
   if (!isUserAdmin) return { error: "No tens permís per fer això!" };
 
   // Check if the user to demote is a member of the family
@@ -221,7 +231,6 @@ export const demoteUser = async (userId: string, familyId: string) => {
       familyId: familyId,
     },
   });
-
   if (!isUserMember) return { error: "Usuari no trobat!" };
 
   // Demote user
@@ -247,7 +256,6 @@ export const demoteUser = async (userId: string, familyId: string) => {
 export const kickUser = async (userId: string, familyId: string) => {
   // Get current user
   const user = await currentUser();
-
   if (!user) return { error: "Usuari no trobat!" };
 
   // Check if the user is an admin of the family
@@ -258,7 +266,6 @@ export const kickUser = async (userId: string, familyId: string) => {
       role: "ADMIN",
     },
   });
-
   if (!isUserAdmin) return { error: "No tens permís per fer això!" };
 
   // Kick user

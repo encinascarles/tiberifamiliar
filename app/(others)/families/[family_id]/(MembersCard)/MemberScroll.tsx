@@ -62,13 +62,14 @@ const MemberScroll: React.FC<MemberScrollProps> = ({ familyId }) => {
         description: response.error,
         variant: "destructive",
       });
+    } else {
+      getMembers();
+      toast({
+        title: "Usuari promocionat",
+        description: response.success,
+        variant: "success",
+      });
     }
-    getMembers();
-    toast({
-      title: "Usuari promocionat",
-      description: "L'usuari ha estat promocionat a administrador",
-      variant: "success",
-    });
   };
 
   const handleDemoteUser = async (userId: string) => {
@@ -79,13 +80,14 @@ const MemberScroll: React.FC<MemberScrollProps> = ({ familyId }) => {
         description: response.error,
         variant: "destructive",
       });
+    } else {
+      getMembers();
+      toast({
+        title: "Usuari descartat",
+        description: response.success,
+        variant: "success",
+      });
     }
-    getMembers();
-    toast({
-      title: "Usuari descartat",
-      description: "L'usuari ha estat descartat d'administrador",
-      variant: "success",
-    });
   };
 
   const handleKickUser = async (userId: string) => {
