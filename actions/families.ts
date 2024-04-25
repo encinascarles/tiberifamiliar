@@ -408,10 +408,15 @@ export const editFamily = async (
 };
 
 // Leave family
-export const leaveFamily = async (familyId: string) => {
+interface leaveFamilyResponse {
+  error?: string;
+  success?: string;
+}
+export const leaveFamily = async (
+  familyId: string
+): Promise<leaveFamilyResponse> => {
   // Get current user
   const user = await currentUser();
-
   if (!user) return { error: "Usuari no trobat!" };
 
   // Check if the user is a member of the family
@@ -421,8 +426,22 @@ export const leaveFamily = async (familyId: string) => {
       familyId: familyId,
     },
   });
-
   if (!isUserMember) return { error: "No ets membre d'aquesta familia!" };
+
+  // Check if the user is the only member of the family
+  const members = await db.familyMembership.findMany({
+    where: {
+      familyId: familyId,
+    },
+  });
+  if (members.length === 1) {
+    await db.family.delete({
+      where: {
+        id: familyId,
+      },
+    });
+    return { success: "Has deixat la familia i s'ha eliminat!" };
+  }
 
   // Check if the user is the only admin of the family
   const isAdmin = await db.familyMembership.findFirst({
@@ -432,8 +451,8 @@ export const leaveFamily = async (familyId: string) => {
       role: "ADMIN",
     },
   });
-
   if (isAdmin) {
+    // Check if there are other admins
     const otherAdmins = await db.familyMembership.findFirst({
       where: {
         familyId: familyId,
@@ -443,24 +462,10 @@ export const leaveFamily = async (familyId: string) => {
         },
       },
     });
-
-    const members = await db.familyMembership.findMany({
-      where: {
-        familyId: familyId,
-      },
-    });
-
-    if (!otherAdmins && members.length > 1) {
+    // If there are no other admins, return an error
+    if (!otherAdmins) {
       return { error: "No pots deixar la familia si ets l'únic admin!" };
     }
-  }
-  if (getFamilyMembers.length === 1) {
-    await db.family.delete({
-      where: {
-        id: familyId,
-      },
-    });
-    return { success: "Has deixat la familia i s'ha eliminat!" };
   }
 
   // Leave family
