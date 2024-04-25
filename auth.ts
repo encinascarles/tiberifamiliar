@@ -23,7 +23,6 @@ export const {
         where: { id: user.id },
         data: {
           emailVerified: new Date(),
-          username: `user-${nanoid(4)}`,
         },
       });
     },

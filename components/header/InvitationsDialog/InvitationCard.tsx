@@ -84,10 +84,10 @@ const InvitationCard: React.FC<InvitationCardProps> = ({
             href={`/perfil/${inviterId}`}
             className="font-semibold hover:text-orange-600"
           >
-            {inviterName} Encinas Turró{" "}
+            {inviterName}{" "}
           </Link>
           t'ha convidat a unir-te a la família{" "}
-          <b className="font-semibold">{familyName} Encinas</b>
+          <b className="font-semibold">{familyName}</b>
         </p>
         <div className="flex justify-center gap-2">
           <Button disabled={isPending} onClick={() => handleAccept()}>

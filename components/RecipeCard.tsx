@@ -9,7 +9,7 @@ import Link from "next/link";
 const RecipeCard = async ({
   title,
   id,
-  username,
+  user_name,
   user_image,
   prep_time,
   total_time,
@@ -18,7 +18,7 @@ const RecipeCard = async ({
 }: {
   title: string;
   id: string;
-  username?: string | null;
+  user_name: string | null;
   user_image?: string | null;
   prep_time: number;
   total_time: number;
@@ -60,9 +60,7 @@ const RecipeCard = async ({
         >
           {!personal && (
             <Link href="perfil/_userid_n" passHref>
-              <span className="hover:text-orange-500">
-                {username && `@${username}`}
-              </span>
+              <span className="hover:text-orange-500">{user_name}</span>
             </Link>
           )}
           <div className="flex gap-2">

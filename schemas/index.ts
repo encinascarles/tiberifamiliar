@@ -16,9 +16,6 @@ export const RegisterSchema = z
     name: z
       .string()
       .min(2, { message: "El nom ha de tenir 2 o més caràcters" }),
-    username: z
-      .string()
-      .min(2, { message: "El nom d'usuari ha de tenir 2 o més caràcters" }),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -76,7 +73,5 @@ export const FamilySchema = z.object({
 });
 
 export const InviteUserSchema = z.object({
-  email_username: z
-    .string()
-    .min(1, "El nom d'usuari o correu electrònic no pot estar buit"),
+  email: z.string().email({ message: "El correu electrònic no és vàlid." }),
 });

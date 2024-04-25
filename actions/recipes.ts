@@ -98,19 +98,20 @@ export const createRecipe = async (values: z.infer<typeof RecipeSchema>) => {
 
 // View all public recipes
 export const getPublicRecipes = async () => {
-  return await db.recipe.findMany({
+  const recipes = await db.recipe.findMany({
     where: {
       visibility: "PUBLIC",
     },
     include: {
       author: {
         select: {
-          username: true,
+          name: true,
           image: true,
         },
       },
     },
   });
+  return { recipes };
 };
 
 // View all personal recipes
@@ -125,7 +126,7 @@ export const getPersonalRecipes = async () => {
         include: {
           author: {
             select: {
-              username: true,
+              name: true,
               image: true,
             },
           },
@@ -133,7 +134,7 @@ export const getPersonalRecipes = async () => {
       },
     },
   });
-  return good_user?.recipes;
+  return { recipes: good_user?.recipes };
 };
 
 // View all families recipes
@@ -148,13 +149,13 @@ export const getFamiliesRecipes = async () => {
     include: {
       author: {
         select: {
-          username: true,
+          name: true,
           image: true,
         },
       },
     },
   });
-  return recipes;
+  return { recipes };
 };
 
 //View all family recipes
@@ -195,7 +196,7 @@ export const getFamilyRecipes = async (familyId: string) => {
     include: {
       author: {
         select: {
-          username: true,
+          name: true,
           image: true,
         },
       },
@@ -216,7 +217,7 @@ export const getRecipe = async (id: string) => {
         select: {
           id: true,
           name: true,
-          username: true,
+
           image: true,
         },
       },

@@ -114,7 +114,6 @@ export const getFamilyMembers = async (familyId: string) => {
       role: member.role,
       image: member.user.image,
       name: member.user.name,
-      username: member.user.username,
       myself,
       familyId: familyId,
     };
@@ -256,6 +255,11 @@ export const inviteUser = async (
   values: z.infer<typeof InviteUserSchema>,
   familyId: string
 ) => {
+  // Parse the email
+  const validatedFields = InviteUserSchema.safeParse(values);
+
+  if (!validatedFields.success) return { error: "Camps invàlids!" };
+
   // Get current user
   const user = await currentUser();
 
@@ -273,22 +277,11 @@ export const inviteUser = async (
   if (!isUserAdmin) return { error: "No tens permís per fer això!" };
 
   // Get invited user
-  let invitedUser;
-
-  try {
-    z.string().email().parse(values.email_username);
-    invitedUser = await db.user.findFirst({
-      where: {
-        email: values.email_username,
-      },
-    });
-  } catch {
-    invitedUser = await db.user.findFirst({
-      where: {
-        username: values.email_username,
-      },
-    });
-  }
+  const invitedUser = await db.user.findFirst({
+    where: {
+      email: values.email,
+    },
+  });
 
   if (!invitedUser) return { error: "Usuari no trobat!" };
 

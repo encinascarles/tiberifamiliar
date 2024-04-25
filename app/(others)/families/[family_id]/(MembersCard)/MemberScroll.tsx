@@ -37,7 +37,6 @@ const MemberScroll: React.FC<MemberScrollProps> = ({ familyId }) => {
         role: Role;
         image: string | null;
         name: string;
-        username: string | null;
         myself: boolean;
         familyId: string;
       }>
@@ -125,8 +124,7 @@ const MemberScroll: React.FC<MemberScrollProps> = ({ familyId }) => {
                 />
               </Avatar>
               <div className="flex flex-col">
-                <p>{member.name}</p>
-                <p>{"@" + member.username}</p>
+                <p className="font-semibold">{member.name}</p>
               </div>
             </Link>
             {admin && !member.myself && (

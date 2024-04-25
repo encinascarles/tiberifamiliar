@@ -43,7 +43,7 @@ export function InviteUserButton({ familyId }: { familyId: string }) {
   const form = useForm<FormData>({
     resolver: zodResolver(InviteUserSchema),
     defaultValues: {
-      email_username: "",
+      email: "",
     },
   });
 
@@ -71,10 +71,10 @@ export function InviteUserButton({ familyId }: { familyId: string }) {
             {/* Nom de la familia */}
             <FormField
               control={form.control}
-              name="email_username"
+              name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nom d&apos;usuari o correu electrònic</FormLabel>
+                  <FormLabel>Convida per correu electrònic</FormLabel>
                   <FormControl>
                     <Input disabled={isPending} {...field} />
                   </FormControl>
