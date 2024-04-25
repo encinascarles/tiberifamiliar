@@ -1,4 +1,14 @@
 "use client";
+import { useToast } from "@/components/ui/use-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Minus, Plus, Trash } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
+import { createRecipe } from "../../../../actions/recipes";
+import { FormError } from "../../../../components/formMessages/FormError";
+import { FormSuccess } from "../../../../components/formMessages/FormSuccess";
 import { Button } from "../../../../components/ui/button";
 import {
   Form,
@@ -6,21 +16,10 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "../../../../components/ui/form";
 import { Input } from "../../../../components/ui/input";
 import { Textarea } from "../../../../components/ui/textarea";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Minus, Plus, Trash } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
 import { RecipeSchema } from "../../../../schemas";
-import { createRecipe } from "../../../../actions/recipes";
-import { FormError } from "../../../../components/formMessages/FormError";
-import { FormSuccess } from "../../../../components/formMessages/FormSuccess";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/components/ui/use-toast";
 
 type FormData = z.infer<typeof RecipeSchema>;
 
@@ -68,15 +67,16 @@ export default function NewRecipePage() {
     setError("");
     setSuccess("");
     startTransition(() => {
-      createRecipe(values).then((data) => {
-        setError(data?.error);
-        if (data?.success) {
-          toast({
-            variant: "success",
-            description: "Recepta creada correctament!",
-          });
-          router.push(`/receptes/${data.id}`);
+      createRecipe(values).then((response) => {
+        if ("error" in response) {
+          setError(response.error);
+          return;
         }
+        toast({
+          variant: "success",
+          description: response.success,
+        });
+        router.push(`/receptes/${response.id}`);
       });
     });
   };

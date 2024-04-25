@@ -10,12 +10,10 @@ interface FamilyRecipesGridProps {
 const FamilyRecipesGrid: React.FC<FamilyRecipesGridProps> = async ({
   familyId,
 }) => {
-  const recipesResponse = await getFamilyRecipes(familyId);
-  const recipes = recipesResponse?.recipes;
+  const recipes = await getFamilyRecipes(familyId);
+  if ("error" in recipes) return null;
 
-  if (!recipes || recipes.length === 0) {
-    return null;
-  }
+  if (recipes.length === 0) return null;
 
   return <RecipesGrid recipes={recipes} />;
 };

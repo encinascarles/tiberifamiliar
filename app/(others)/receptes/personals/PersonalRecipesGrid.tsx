@@ -4,12 +4,11 @@ import { getPersonalRecipes } from "@/actions/recipes";
 import RecipesGrid from "@/components/RecipesGrid";
 
 const PersonalRecipesGrid = async () => {
-  const recipesResponse = await getPersonalRecipes();
-  const recipes = recipesResponse?.recipes;
+  const recipes = await getPersonalRecipes();
+  if ("error" in recipes) return null;
 
-  if (!recipes || recipes.length === 0) {
-    return null;
-  }
+  if (recipes.length === 0) return null;
+
   return <RecipesGrid recipes={recipes} addRecipe personal />;
 };
 

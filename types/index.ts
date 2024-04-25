@@ -24,3 +24,24 @@ export interface invitation {
   familyName: string;
   familyImage: string | null;
 }
+
+export interface error {
+  error: string;
+}
+
+export interface recipe {
+  id: string;
+  title: string;
+  prep_time: number;
+  total_time: number;
+  ingredients: string[];
+  steps: string[];
+  recommendations: string | null;
+  origin: string | null;
+  image: string | null;
+}
+
+export type recipeAndAuthor = recipe & {
+  author_name: string;
+  author_image: string | null;
+};

@@ -25,9 +25,8 @@ export default async function RecipesCarousel({
   } else {
     recipes = await getPublicRecipes();
   }
-
-  if (!recipes?.recipes) return null;
-  if (recipes.recipes.length === 0) return null;
+  if ("error" in recipes) return null;
+  if (recipes.length === 0) return null;
 
   return (
     <Carousel
@@ -38,14 +37,14 @@ export default async function RecipesCarousel({
       }}
     >
       <CarouselContent className="mr-10 ml-6 md:-ml-4 md:mr-0">
-        {recipes.recipes?.map((recipe, i) => (
+        {recipes.map((recipe, i) => (
           <CarouselItem key={i} className="md:basis-1/2 lg:basis-1/3">
             <RecipeCard
               key={i}
               title={recipe.title}
               id={recipe.id}
-              user_image={recipe.author.image as string}
-              user_name={recipe.author.name}
+              user_image={recipe.author_image}
+              user_name={recipe.author_name}
               prep_time={recipe.prep_time}
               total_time={recipe.total_time}
               image={recipe.image}

@@ -1,16 +1,14 @@
-import { Recipe } from "@prisma/client";
-import RecipeCard from "./RecipeCard";
 import AddRecipeCard from "@/components/AddRecipeCard";
+import { recipeAndAuthor } from "@/types";
+import RecipeCard from "./RecipeCard";
 
-interface RecipesGridProps {
-  recipes: (Recipe & {
-    author: { name: string; image: string | null };
-  })[];
+type recipesGridProps = {
+  recipes: recipeAndAuthor[];
   addRecipe?: boolean;
   personal?: boolean;
-}
+};
 
-const RecipesGrid: React.FC<RecipesGridProps> = ({
+const RecipesGrid: React.FC<recipesGridProps> = ({
   recipes,
   addRecipe,
   personal = false,
@@ -23,8 +21,8 @@ const RecipesGrid: React.FC<RecipesGridProps> = ({
           key={i}
           title={recipe.title}
           id={recipe.id}
-          user_name={recipe.author.name}
-          user_image={recipe.author.image}
+          user_name={recipe.author_name}
+          user_image={recipe.author_image}
           prep_time={recipe.prep_time}
           total_time={recipe.total_time}
           image={recipe.image}

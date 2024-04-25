@@ -1,32 +1,22 @@
+import { getRecipe } from "@/actions/recipes";
+import Image from "next/image";
+import { Avatar, AvatarImage } from "../../../../components/ui/avatar";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "../../../../components/ui/card";
-import Image from "next/image";
-import {
-  Avatar,
-  AvatarImage,
-  AvatarFallback,
-} from "../../../../components/ui/avatar";
 import { Checkbox } from "../../../../components/ui/checkbox";
-import { getRecipe } from "@/actions/recipes";
 
 export default async function ShowRecipePage({
   params,
 }: {
   params: { recipe_id: string };
 }) {
-  const response = await getRecipe(params.recipe_id);
-  let recipe;
-  if (response.error) {
-    return <div>{response.error}</div>;
-  } else {
-    recipe = response.recipe;
-  }
+  const recipe = await getRecipe(params.recipe_id);
+  if ("error" in recipe) return;
+
   return (
     <div className="container">
       <h1 className="text-4xl font-bold my-10">{recipe?.title}</h1>
@@ -56,9 +46,15 @@ export default async function ShowRecipePage({
 
             <div className="flex gap-4 items-center w-full justify-center border-t-2 pt-4">
               <Avatar className="cursor-pointer h-12 w-12">
-                <AvatarImage src="/default_user.jpg" />
+                <AvatarImage
+                  src={
+                    recipe.author_image
+                      ? recipe.author_image
+                      : "/default_user.jpg"
+                  }
+                />
               </Avatar>
-              <h1 className="font-bold">Feta per {recipe?.author.name}</h1>
+              <h1 className="font-bold">Feta per {recipe.author_name}</h1>
             </div>
           </div>
         </div>

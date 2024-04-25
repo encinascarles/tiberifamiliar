@@ -4,12 +4,10 @@ import { getFamiliesRecipes } from "@/actions/recipes";
 import RecipesGrid from "@/components/RecipesGrid";
 
 const FamiliesRecipesGrid = async () => {
-  const recipesResponse = await getFamiliesRecipes();
-  const recipes = recipesResponse?.recipes;
+  const recipes = await getFamiliesRecipes();
+  if ("error" in recipes) return null;
 
-  if (!recipes || recipes.length === 0) {
-    return null;
-  }
+  if (recipes.length === 0) return null;
 
   return <RecipesGrid recipes={recipes} />;
 };
