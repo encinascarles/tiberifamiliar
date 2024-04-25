@@ -98,13 +98,14 @@ const MemberScroll: React.FC<MemberScrollProps> = ({ familyId }) => {
         description: response.error,
         variant: "destructive",
       });
+    } else {
+      getMembers();
+      toast({
+        title: "Usuari expulsat",
+        description: response.success,
+        variant: "success",
+      });
     }
-    getMembers();
-    toast({
-      title: "Usuari expulsat",
-      description: "L'usuari ha sigut expulsat correctament",
-      variant: "success",
-    });
   };
 
   return (

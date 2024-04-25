@@ -253,7 +253,14 @@ export const demoteUser = async (
 };
 
 // Kick user from family
-export const kickUser = async (userId: string, familyId: string) => {
+interface kickUserResponse {
+  error?: string;
+  success?: string;
+}
+export const kickUser = async (
+  userId: string,
+  familyId: string
+): Promise<kickUserResponse> => {
   // Get current user
   const user = await currentUser();
   if (!user) return { error: "Usuari no trobat!" };
