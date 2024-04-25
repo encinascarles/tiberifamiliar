@@ -292,18 +292,20 @@ export const kickUser = async (
 };
 
 // Invite user to family
+interface inviteUserResponse {
+  error?: string;
+  success?: string;
+}
 export const inviteUser = async (
   values: z.infer<typeof InviteUserSchema>,
   familyId: string
-) => {
+): Promise<inviteUserResponse> => {
   // Parse the email
   const validatedFields = InviteUserSchema.safeParse(values);
-
   if (!validatedFields.success) return { error: "Camps invàlids!" };
 
   // Get current user
   const user = await currentUser();
-
   if (!user) return { error: "Usuari no trobat!" };
 
   // Check if the user is an admin of the family
@@ -314,7 +316,6 @@ export const inviteUser = async (
       role: "ADMIN",
     },
   });
-
   if (!isUserAdmin) return { error: "No tens permís per fer això!" };
 
   // Get invited user
@@ -323,7 +324,6 @@ export const inviteUser = async (
       email: values.email,
     },
   });
-
   if (!invitedUser) return { error: "Usuari no trobat!" };
 
   // Check if the user to invite already exists
@@ -333,7 +333,6 @@ export const inviteUser = async (
       status: "PENDING",
     },
   });
-
   if (existingInvite) return { error: "Aquest usuari ja ha estat convidat!" };
 
   // Invite user
