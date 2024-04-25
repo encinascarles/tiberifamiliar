@@ -8,7 +8,6 @@ import { FamilySchema, InviteUserSchema } from "@/schemas";
 export const createFamily = async (values: z.infer<typeof FamilySchema>) => {
   // Validate fields
   const validatedFields = FamilySchema.safeParse(values);
-
   if (!validatedFields.success) return { error: "Camps invàlids!" };
 
   // Get fields

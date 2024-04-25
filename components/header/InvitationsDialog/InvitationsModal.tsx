@@ -43,7 +43,7 @@ const InvitationsModal = () => {
           <DialogDescription>
             {isLoading ? (
               <p>Loading...</p>
-            ) : invitations.length === 0 ? (
+            ) : invitations && invitations.length === 0 ? (
               <p>No tens cap invitació</p>
             ) : (
               invitations &&

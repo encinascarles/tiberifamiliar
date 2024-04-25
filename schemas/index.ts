@@ -9,7 +9,10 @@ export const LoginSchema = z.object({
 
 export const RegisterSchema = z
   .object({
-    email: z.string().email({ message: "El correu electrònic no és vàlid." }),
+    email: z
+      .string()
+      .email({ message: "El correu electrònic no és vàlid." })
+      .transform((email) => email.toLowerCase()),
     password: z
       .string()
       .min(5, { message: "La contrassenya ha de tenir 5 o més caràcters" }),
