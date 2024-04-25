@@ -352,14 +352,18 @@ export const inviteUser = async (
 };
 
 // Edit family
+interface editFamilyResponse {
+  error?: string;
+  success?: string;
+}
 export const editFamily = async (
   values: z.infer<typeof FamilySchema>,
   familyId: string
-) => {
+): Promise<editFamilyResponse> => {
   // Validate fields
   const validatedFields = FamilySchema.safeParse(values);
-
   if (!validatedFields.success) return { error: "Camps invàlids!" };
+  const { name, description } = validatedFields.data;
 
   //Check if the user is an admin of the family
   const user = await currentUser();
@@ -372,9 +376,6 @@ export const editFamily = async (
     },
   });
   if (!isAdmin) return { error: "No tens permís per fer això!" };
-
-  // Get fields
-  const { name, description } = validatedFields.data;
 
   // Check if there's a family with the same name
   const existingFamily = await db.family.findFirst({
@@ -390,9 +391,6 @@ export const editFamily = async (
   }
 
   // Update family
-  console.log(familyId);
-  console.log(name);
-  console.log(description);
   try {
     const updatedFamily = await db.family.update({
       where: {
