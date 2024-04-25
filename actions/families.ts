@@ -3,6 +3,8 @@ import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import * as z from "zod";
 import { FamilySchema, InviteUserSchema } from "@/schemas";
+import { Role } from "@prisma/client";
+import { member } from "@/types";
 
 // Create new family
 interface createFamilyResponse {
@@ -99,7 +101,16 @@ export const getFamily = async (
 };
 
 // Get family members
-export const getFamilyMembers = async (familyId: string) => {
+interface getFamilyMembersResponse {
+  error?: string;
+  data?: {
+    members: member[];
+    admin: boolean;
+  };
+}
+export const getFamilyMembers = async (
+  familyId: string
+): Promise<getFamilyMembersResponse> => {
   // Get family members with their roles
   const members = await db.familyMembership.findMany({
     where: {
@@ -135,7 +146,7 @@ export const getFamilyMembers = async (familyId: string) => {
     };
   });
 
-  return { admin: isUserAdmin ? true : false, members: membersToSend };
+  return { data: { members: membersToSend, admin: !!isUserAdmin } };
 };
 
 // Promote user to admin

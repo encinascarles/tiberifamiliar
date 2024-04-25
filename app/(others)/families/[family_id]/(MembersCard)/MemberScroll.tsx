@@ -25,30 +25,29 @@ import { useEffect, useState } from "react";
 import { Avatar, AvatarImage } from "../../../../../components/ui/avatar";
 import { Button } from "../../../../../components/ui/button";
 import { ScrollArea } from "../../../../../components/ui/scroll-area";
+import { member } from "@/types";
 
 interface MemberScrollProps {
   familyId: string;
 }
 
 const MemberScroll: React.FC<MemberScrollProps> = ({ familyId }) => {
-  const [members, setMembers] = useState<
-    | Array<{
-        id: string;
-        role: Role;
-        image: string | null;
-        name: string;
-        myself: boolean;
-        familyId: string;
-      }>
-    | undefined
-  >([]);
-  const [admin, setAdmin] = useState<boolean | undefined>(false);
+  const [members, setMembers] = useState<member[]>([]);
+  const [admin, setAdmin] = useState<boolean>(false);
   const { toast } = useToast();
 
   const getMembers = async () => {
     const response = await getFamilyMembers(familyId);
-    setMembers(response.members);
-    setAdmin(response.admin);
+    if (response.error || !response.data) {
+      return toast({
+        title: "Error",
+        description: response.error,
+        variant: "destructive",
+      });
+    } else {
+      setMembers(response.data.members);
+      setAdmin(response.data.admin);
+    }
   };
 
   useEffect(() => {
