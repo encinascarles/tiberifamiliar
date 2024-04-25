@@ -74,7 +74,7 @@ export function InviteUserButton({ familyId }: { familyId: string }) {
               name="email_username"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Nom d`&apos;`usuari o correu electrònic</FormLabel>
+                  <FormLabel>Nom d&apos;usuari o correu electrònic</FormLabel>
                   <FormControl>
                     <Input disabled={isPending} {...field} />
                   </FormControl>
