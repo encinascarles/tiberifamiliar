@@ -340,6 +340,83 @@ export const getRecipe = async (id: string): Promise<recipeResponse> => {
   }
 };
 
+// Is favorite recipe
+type isFavoriteResponse = { favorite: boolean } | error;
+export const isFavoriteRecipe = async (
+  recipeId: string
+): Promise<isFavoriteResponse> => {
+  // Get current user
+  const user = await currentUser();
+  if (!user) return { error: "Usuari no trobat!" };
+
+  // Check if the recipe is a favorite
+  const favorite = await db.user.findFirst({
+    where: {
+      id: user.id,
+      favoriteRecipes: {
+        some: {
+          id: recipeId,
+        },
+      },
+    },
+  });
+  if (favorite) return { favorite: true };
+  return { favorite: false };
+};
+
+// Toggle favorite recipe
+type toggleFavoriteRecipe = { favorite: boolean } | error;
+export const toggleFavoriteRecipe = async (
+  recipeId: string
+): Promise<isFavoriteResponse> => {
+  // Get current user
+  const user = await currentUser();
+  if (!user) return { error: "Usuari no trobat!" };
+
+  // Check if the recipe is a favorite
+  const favorite = await db.user.findFirst({
+    where: {
+      id: user.id,
+      favoriteRecipes: {
+        some: {
+          id: recipeId,
+        },
+      },
+    },
+  });
+
+  // Add or remove from favorites
+  if (favorite) {
+    await db.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        favoriteRecipes: {
+          disconnect: {
+            id: recipeId,
+          },
+        },
+      },
+    });
+    return { favorite: false };
+  } else {
+    await db.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        favoriteRecipes: {
+          connect: {
+            id: recipeId,
+          },
+        },
+      },
+    });
+    return { favorite: true };
+  }
+};
+
 // Edit recipe
 
 // Delete recipe
