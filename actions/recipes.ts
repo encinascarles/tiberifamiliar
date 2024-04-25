@@ -3,7 +3,8 @@ import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import * as z from "zod";
 import { RecipeSchema } from "@/schemas";
-import { recipe, error, recipeAndAuthor } from "@/types";
+import { recipe, error, recipeAndAuthor, member } from "@/types";
+import { FamilyMembership } from "@prisma/client";
 
 //TYPES
 type recipesResponse = recipeAndAuthor[] | error;
@@ -227,7 +228,18 @@ export const getFamiliesRecipes = async (): Promise<recipesResponse> => {
 export const getFamilyRecipes = async (
   familyId: string
 ): Promise<recipesResponse> => {
-  // Check if the family exists
+  // Check if the user is a member of the family
+  const user = await currentUser();
+  if (!user) return { error: "Usuari no trobat!" };
+  const member = await db.familyMembership.findFirst({
+    where: {
+      userId: user.id,
+      familyId: familyId,
+    },
+  });
+  if (!member) return { error: "No ets membre d'aquesta familia!" };
+
+  // Get all recipes from the family
   const family = await db.family.findUnique({
     where: {
       id: familyId,
@@ -242,18 +254,6 @@ export const getFamilyRecipes = async (
   });
   if (!family) return { error: "Familia no trobada!" };
 
-  // Check if the user is a member of the family
-  const user = await currentUser();
-  if (!user) return { error: "Usuari no trobat!" };
-  const member = await db.familyMembership.findFirst({
-    where: {
-      userId: user.id,
-      familyId: familyId,
-    },
-  });
-  if (!member) return { error: "No ets membre d'aquesta familia!" };
-
-  // Get all recipes from the family
   const familyMembers = family.members.map((member) => member.userId);
   const recipes = await db.recipe.findMany({
     where: {
@@ -285,6 +285,49 @@ export const getFamilyRecipes = async (
     author_name: recipe.author.name,
     author_image: recipe.author.image,
   }));
+  return recipesToSend;
+};
+
+// View all favorite recipes
+export const getFavoriteRecipes = async (): Promise<recipesResponse> => {
+  // Get favorite recipes
+  const user = await currentUser();
+  if (!user) return { error: "Usuari no trobat!" };
+
+  const fullUser = await db.user.findUnique({
+    where: {
+      id: user.id,
+    },
+    include: {
+      favoriteRecipes: {
+        include: {
+          author: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  if (!fullUser) return { error: "Usuari no trobat!" };
+
+  // Prepare response
+  const recipesToSend = fullUser.favoriteRecipes.map((recipe) => ({
+    id: recipe.id,
+    title: recipe.title,
+    prep_time: recipe.prep_time,
+    total_time: recipe.total_time,
+    ingredients: recipe.ingredients,
+    steps: recipe.steps,
+    recommendations: recipe.recommendations,
+    origin: recipe.origin,
+    image: recipe.image,
+    author_name: recipe.author.name,
+    author_image: recipe.author.image,
+  }));
+
   return recipesToSend;
 };
 
@@ -368,7 +411,7 @@ export const isFavoriteRecipe = async (
 type toggleFavoriteRecipe = { favorite: boolean } | error;
 export const toggleFavoriteRecipe = async (
   recipeId: string
-): Promise<isFavoriteResponse> => {
+): Promise<toggleFavoriteRecipe> => {
   // Get current user
   const user = await currentUser();
   if (!user) return { error: "Usuari no trobat!" };
