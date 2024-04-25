@@ -107,7 +107,7 @@ model FamilyMembership {
   user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   familyId String
   family   Family @relation(fields: [familyId], references: [id], onDelete: Cascade)
-  role     Role
+  role     Role   @default(MEMBER)
 
   @@id([userId, familyId])
 }

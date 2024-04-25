@@ -32,7 +32,11 @@ export function LeaveFamilyButton({ familyId }: { familyId: string }) {
   };
 
   return (
-    <Button className="gap-2" onClick={() => handleClick()}>
+    <Button
+      className="gap-2"
+      onClick={() => handleClick()}
+      disabled={isPending}
+    >
       <LogOut className="w-5 h-5" />
       Surt
     </Button>

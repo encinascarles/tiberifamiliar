@@ -1,5 +1,5 @@
 "use client";
-import { getUserInvitations } from "@/actions/user";
+import { getUserInvitations } from "@/actions/invitations";
 import {
   Dialog,
   DialogContent,
@@ -10,6 +10,7 @@ import {
 
 import { useInvitationsModal } from "@/stores/useInvitationsModal";
 import { useEffect, useState } from "react";
+import InvitationCard from "./InvitationCard";
 
 interface Invitation {
   id: string;
@@ -21,13 +22,13 @@ interface Invitation {
 
 const InvitationsModal = () => {
   const { isOpen, close } = useInvitationsModal();
-  const [invitations, setInvitations] = useState<Array<Invitation | undefined>>(
-    []
-  );
+  const [invitations, setInvitations] = useState<Array<Invitation>>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const getInvitations = async () => {
     const invitations = await getUserInvitations();
     setInvitations(invitations);
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -40,8 +41,20 @@ const InvitationsModal = () => {
         <DialogHeader>
           <DialogTitle>Invitacions:</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            {isLoading ? (
+              <p>Loading...</p>
+            ) : invitations.length === 0 ? (
+              <p>No tens cap invitació</p>
+            ) : (
+              invitations &&
+              invitations.map((invitation) => (
+                <InvitationCard
+                  key={invitation?.id}
+                  {...invitation}
+                  refresh={getInvitations}
+                />
+              ))
+            )}
           </DialogDescription>
         </DialogHeader>
       </DialogContent>
