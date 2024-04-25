@@ -4,11 +4,9 @@ import { getUserFamilies } from "@/actions/families";
 import FamilyCard from "./FamilyCard";
 
 const UserFamiliesPage = async () => {
-  const families = await getUserFamilies();
-
-  if ("error" in families) {
-    return;
-  }
+  const responseFamilies = await getUserFamilies();
+  if (responseFamilies.error || !responseFamilies.data) return;
+  const families = responseFamilies.data;
 
   return (
     <div className="container">

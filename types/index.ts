@@ -8,3 +8,11 @@ export interface member {
   myself: boolean;
   familyId: string;
 }
+
+export interface familycard {
+  id: string;
+  name: string;
+  description: string | null;
+  image: string | null;
+  members: number;
+}
