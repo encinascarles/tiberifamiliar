@@ -7,10 +7,14 @@ import { NewPasswordSchema } from "../schemas";
 import bcrypt from "bcryptjs";
 import * as z from "zod";
 
+interface newPasswordResponse {
+  error?: string;
+  success?: string;
+}
 export const newPassword = async (
   values: z.infer<typeof NewPasswordSchema>,
   token?: string | null
-) => {
+): Promise<newPasswordResponse> => {
   if (!token) return { error: "Falta el token!" };
 
   const validatedFields = NewPasswordSchema.safeParse(values);
