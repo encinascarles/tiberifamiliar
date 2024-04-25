@@ -5,7 +5,15 @@ import * as z from "zod";
 import { FamilySchema, InviteUserSchema } from "@/schemas";
 
 // Create new family
-export const createFamily = async (values: z.infer<typeof FamilySchema>) => {
+interface createFamilyResponse {
+  error?: string;
+  success?: string;
+  data?: { id: string };
+}
+
+export const createFamily = async (
+  values: z.infer<typeof FamilySchema>
+): Promise<createFamilyResponse> => {
   // Validate fields
   const validatedFields = FamilySchema.safeParse(values);
   if (!validatedFields.success) return { error: "Camps invàlids!" };
@@ -34,14 +42,27 @@ export const createFamily = async (values: z.infer<typeof FamilySchema>) => {
         role: "ADMIN", // Assuming 'ADMIN' is a valid role
       },
     });
-    return { success: "Familia creada amb èxit!", id: family.id };
+    return { success: "Familia creada amb èxit!", data: { id: family.id } };
   } catch {
     return { error: "Error al crear la familia!" };
   }
 };
 
 // Get family
-export const getFamily = async (familyId: string) => {
+interface getFamilyResponse {
+  error?: string;
+  data?: {
+    id: string;
+    name: string;
+    description: string | null;
+    image: string | null;
+    admin: boolean;
+  };
+}
+
+export const getFamily = async (
+  familyId: string
+): Promise<getFamilyResponse> => {
   // Get family
   let family = await db.family.findFirst({
     where: {
@@ -63,11 +84,18 @@ export const getFamily = async (familyId: string) => {
   if (!isFamilyMember) return { error: "No ets membre d'aquesta familia!" };
 
   //Check if the user is an admin of the family
-  if (isFamilyMember.role === "ADMIN") {
-    return { family, admin: true };
-  }
+  const isAdmin = isFamilyMember.role === "ADMIN";
 
-  return { family, admin: false };
+  // Return the family
+  return {
+    data: {
+      id: family.id,
+      name: family.name,
+      description: family.description,
+      image: family.image,
+      admin: isAdmin,
+    },
+  };
 };
 
 // Get family members

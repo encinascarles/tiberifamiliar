@@ -20,9 +20,8 @@ interface FamilyPageProps {
 const FamilyPage: React.FC<FamilyPageProps> = async ({ params }) => {
   const familyId = params.family_id;
 
-  const familyResponse = await getFamily(familyId);
-  const family = familyResponse?.family;
-  const admin = familyResponse?.admin ? true : false;
+  const family = await getFamily(familyId);
+  if (family.error || !family.data) return null;
 
   return (
     <div className="container">
@@ -39,20 +38,20 @@ const FamilyPage: React.FC<FamilyPageProps> = async ({ params }) => {
               />
             </div>
             <CardFooter className="pt-4 flex justify-between">
-              <h1 className="text-3xl font-semibold">{family?.name}</h1>
+              <h1 className="text-3xl font-semibold">{family.data.name}</h1>
               <div className="space-x-2">
                 <LeaveFamilyButton familyId={params.family_id} />
-                {admin && (
+                {family.data.admin && (
                   <EditFamilyButton
                     familyId={params.family_id}
-                    name={family?.name as string}
-                    description={family?.description as string}
+                    name={family.data.name as string}
+                    description={family.data.description as string}
                   />
                 )}
               </div>
             </CardFooter>
           </Card>
-          <MembersCard familyId={params.family_id} admin={admin} />
+          <MembersCard familyId={family.data.id} admin={family.data.admin} />
         </div>
 
         <Card>
@@ -60,7 +59,7 @@ const FamilyPage: React.FC<FamilyPageProps> = async ({ params }) => {
             <CardTitle>Descripció</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>{family?.description}</p>
+            <p>{family.data.description}</p>
           </CardContent>
         </Card>
 
