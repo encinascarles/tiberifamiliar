@@ -38,21 +38,23 @@ export const getUserInvitations =
   };
 
 // Accept invitation
-export const acceptInvitation = async (invitationId: string) => {
+interface acceptInvitationResponse {
+  error?: string;
+  success?: string;
+}
+export const acceptInvitation = async (
+  invitationId: string
+): Promise<acceptInvitationResponse> => {
   //check if the user is the invited user
   const user = await currentUser();
   if (!user?.id) return { error: "Usuari no trobat" };
-
   const invitation = await db.invitation.findFirst({
     where: {
       id: invitationId,
       inviteeId: user.id,
     },
   });
-
-  if (!invitation) {
-    return { error: "No tens cap invitació amb aquest id" };
-  }
+  if (!invitation) return { error: "No tens cap invitació amb aquest id" };
 
   //create the family member
   await db.familyMembership.create({
@@ -76,21 +78,23 @@ export const acceptInvitation = async (invitationId: string) => {
 };
 
 // Reject invitation
-export const rejectInvitation = async (invitationId: string) => {
+interface rejectInvitationResponse {
+  error?: string;
+  success?: string;
+}
+export const rejectInvitation = async (
+  invitationId: string
+): Promise<rejectInvitationResponse> => {
   //check if the user is the invited user
   const user = await currentUser();
   if (!user?.id) return { error: "Usuari no trobat" };
-
   const invitation = await db.invitation.findFirst({
     where: {
       id: invitationId,
       inviteeId: user.id,
     },
   });
-
-  if (!invitation) {
-    return { error: "No tens cap invitació amb aquest id" };
-  }
+  if (!invitation) return { error: "No tens cap invitació amb aquest id" };
 
   //update the invitation status
   await db.invitation.update({
