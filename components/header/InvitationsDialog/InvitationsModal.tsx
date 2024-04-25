@@ -20,6 +20,7 @@ const InvitationsModal = () => {
 
   const getInvitations = async () => {
     const invitations = await getUserInvitations();
+    if ("error" in invitations) return;
     setInvitations(invitations);
     setIsLoading(false);
   };

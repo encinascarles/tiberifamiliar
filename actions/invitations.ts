@@ -1,18 +1,18 @@
 "use server";
 import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { invitation } from "@/types";
+import { actionResponse, error, invitation } from "@/types";
 
 // Get user invitations
-interface getUserInvitationsResponse {
-  error?: string;
-  data?: invitation[];
-}
+
+type getUserInvitationsResponse = error | invitation[];
 export const getUserInvitations =
   async (): Promise<getUserInvitationsResponse> => {
+    // Get the current user
     const user = await currentUser();
     if (!user?.id) return { error: "Usuari no trobat" };
 
+    // Get the user's invitations
     const invitations = await db.invitation.findMany({
       where: {
         inviteeId: user?.id,
@@ -24,6 +24,7 @@ export const getUserInvitations =
       },
     });
 
+    // Format the invitations to send
     const invitationsToSend = invitations.map((invitation) => {
       return {
         id: invitation.id,
@@ -34,18 +35,15 @@ export const getUserInvitations =
       };
     });
 
-    return { data: invitationsToSend };
+    return invitationsToSend;
   };
 
 // Accept invitation
-interface acceptInvitationResponse {
-  error?: string;
-  success?: string;
-}
+// TYPE: actionResponse = error | success;
 export const acceptInvitation = async (
   invitationId: string
-): Promise<acceptInvitationResponse> => {
-  //check if the user is the invited user
+): Promise<actionResponse> => {
+  // Check if the user is the invited user
   const user = await currentUser();
   if (!user?.id) return { error: "Usuari no trobat" };
   const invitation = await db.invitation.findFirst({
@@ -56,7 +54,7 @@ export const acceptInvitation = async (
   });
   if (!invitation) return { error: "No tens cap invitació amb aquest id" };
 
-  //create the family member
+  // Create the family member
   await db.familyMembership.create({
     data: {
       userId: user.id,
@@ -64,7 +62,7 @@ export const acceptInvitation = async (
     },
   });
 
-  //update the invitation status
+  // Update the invitation status
   await db.invitation.update({
     where: {
       id: invitationId,
@@ -78,13 +76,9 @@ export const acceptInvitation = async (
 };
 
 // Reject invitation
-interface rejectInvitationResponse {
-  error?: string;
-  success?: string;
-}
 export const rejectInvitation = async (
   invitationId: string
-): Promise<rejectInvitationResponse> => {
+): Promise<actionResponse> => {
   //check if the user is the invited user
   const user = await currentUser();
   if (!user?.id) return { error: "Usuari no trobat" };

@@ -27,40 +27,40 @@ const InvitationCard: React.FC<InvitationCardProps> = ({
 
   const handleAccept = () => {
     startTransition(() => {
-      acceptInvitation(id).then((data) => {
-        if (data?.success) {
-          toast({
-            variant: "success",
-            description: data?.success,
-          });
-          refresh();
-          //router.push(`/families/`);
-        } else {
+      acceptInvitation(id).then((response) => {
+        if ("error" in response) {
           toast({
             variant: "destructive",
-            description: data?.error,
+            description: response.error,
           });
+          return;
         }
+        toast({
+          variant: "success",
+          description: response.success,
+        });
+        refresh();
+        //router.push(`/families/`);
       });
     });
   };
 
   const handleReject = () => {
     startTransition(() => {
-      rejectInvitation(id).then((data) => {
-        if (data?.success) {
-          toast({
-            variant: "success",
-            description: data?.success,
-          });
-          refresh();
-          //router.push(`/families/`);
-        } else {
+      rejectInvitation(id).then((response) => {
+        if ("error" in response) {
           toast({
             variant: "destructive",
-            description: data?.error,
+            description: response.error,
           });
+          return;
         }
+        toast({
+          variant: "success",
+          description: response.success,
+        });
+        refresh();
+        //router.push(`/families/`);
       });
     });
   };
