@@ -72,16 +72,18 @@ model User {
 model Recipe {
   id String @id @default(cuid())
 
-  title           String
-  prep_time       Int
-  total_time      Int
+  title           String?
+  prep_time       Int?
+  total_time      Int?
   ingredients     String[]
   steps           String[]
   recommendations String?
   origin          String?
   image           String?
 
-  visibility Visibility
+  draft Boolean @default(false)
+
+  visibility Visibility @default(FAMILY)
 
   authorId    String
   author      User   @relation(fields: [authorId], references: [id], onDelete: Cascade)

@@ -42,9 +42,6 @@ export const NewPasswordSchema = z
     path: ["confirmPassword"], // this will point the error to 'confirmPassword' field
   });
 
-//Image properties
-export const MAX_UPLOAD_SIZE = 1024 * 1024 * 3; // 3MB
-
 export const RecipeSchema = z.object({
   title: z.string().min(1, "El títol no pot estar buit"),
   prep_time: z.number().refine((value) => value > 0, {
@@ -69,17 +66,30 @@ export const RecipeSchema = z.object({
     .nonempty({ message: "Debe agregar al menos un paso de preparación." }),
   recommendations: z.string().optional(),
   origin: z.string().optional(),
-  image: z.string().optional(),
   visibility: z.enum(["PUBLIC", "PRIVATE", "FAMILY"]),
-  image_file: z
-    .instanceof(File)
-    .refine((file) => {
-      return !file || file.size <= MAX_UPLOAD_SIZE;
-    }, "La imatge ha d'ocupar menys de 3MB")
-    .refine((file) => {
-      return file.type.startsWith("image/");
-    }, "L'arxiu ha de ser una imatge")
+});
+
+export const DraftRecipeSchema = z.object({
+  title: z.string().optional(),
+  prep_time: z.number().optional(),
+  total_time: z.number().optional(),
+  ingredients: z
+    .array(
+      z.object({
+        value: z.string(),
+      })
+    )
     .optional(),
+  steps: z
+    .array(
+      z.object({
+        value: z.string(),
+      })
+    )
+    .optional(),
+  recommendations: z.string().optional(),
+  origin: z.string().optional(),
+  visibility: z.enum(["PUBLIC", "PRIVATE", "FAMILY"]).optional(),
 });
 
 export const FamilySchema = z.object({

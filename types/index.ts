@@ -42,6 +42,20 @@ export interface recipe {
   steps: string[];
   recommendations: string | null;
   origin: string | null;
+  visibility: string;
+  image: string | null;
+}
+
+export interface draftRecipe {
+  id: string;
+  title: string | null;
+  prep_time: number | null;
+  total_time: number | null;
+  ingredients: string[];
+  steps: string[];
+  recommendations: string | null;
+  origin: string | null;
+  visibility: string | null;
   image: string | null;
 }
 

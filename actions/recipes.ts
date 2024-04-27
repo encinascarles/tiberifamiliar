@@ -1,22 +1,12 @@
 "use server";
 import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { DraftRecipeSchema, RecipeSchema } from "@/schemas";
+import { actionResponse, draftRecipe, error, recipeAndAuthor } from "@/types";
 import * as z from "zod";
-import { RecipeSchema } from "@/schemas";
-import { recipe, error, recipeAndAuthor, member } from "@/types";
-import { FamilyMembership } from "@prisma/client";
 
-//TYPES
+//GLOBAL TYPES
 type recipesResponse = recipeAndAuthor[] | error;
-
-type createRecipeResponse =
-  | error
-  | {
-      success: string;
-      id: string;
-    };
-
-type recipeResponse = recipeAndAuthor | error;
 
 // UTIL: Get members from all families the user is from
 const getUserFamiliesMembers = async (): Promise<string[]> => {
@@ -51,10 +41,12 @@ const getUserFamiliesMembers = async (): Promise<string[]> => {
   return uniqueContacts;
 };
 
-// Create new recipe
-export const createRecipe = async (
-  values: z.infer<typeof RecipeSchema>
-): Promise<createRecipeResponse> => {
+// Save recipe
+// TYPE: actionResponse = error | success;
+export const saveRecipe = async (
+  values: z.infer<typeof RecipeSchema>,
+  recipeId: string
+): Promise<actionResponse> => {
   // Get current user
   const user = await currentUser();
   if (!user) return { error: "Usuari no trobat!" };
@@ -62,16 +54,8 @@ export const createRecipe = async (
   // Validate fields
   const validatedFields = RecipeSchema.safeParse(values);
   if (!validatedFields.success) return { error: "Camps invàlids!" };
-  console.log(validatedFields.data);
-  const {
-    title,
-    prep_time,
-    total_time,
-    recommendations,
-    origin,
-    image,
-    visibility,
-  } = validatedFields.data;
+  const { title, prep_time, total_time, recommendations, origin, visibility } =
+    validatedFields.data;
 
   // Get ingredients and steps
   const ingredients = validatedFields.data.ingredients.map(
@@ -86,33 +70,94 @@ export const createRecipe = async (
     where: {
       title: title,
       authorId: user.id,
+      NOT: {
+        id: recipeId,
+      },
     },
   });
   if (existingRecipe) {
     return { error: "Ja existeix una recepta amb aquest títol!" };
   }
 
-  // Create recipe
+  // Edit recipe
   try {
-    const recipe = await db.recipe.create({
+    const recipe = await db.recipe.update({
+      where: {
+        id: recipeId,
+      },
       data: {
-        title,
-        prep_time,
-        total_time,
-        ingredients,
-        steps,
-        recommendations,
-        origin,
-        image,
-        visibility,
-        author: {
-          connect: { id: user.id },
-        },
+        title: title,
+        prep_time: prep_time,
+        total_time: total_time,
+        ingredients: ingredients,
+        steps: steps,
+        recommendations: recommendations,
+        origin: origin,
+        visibility: visibility,
+        draft: false,
       },
     });
-    return { success: "Recepta creada amb èxit!", id: recipe.id };
+    return { success: "Recepta guardada amb èxit!" };
   } catch {
-    return { error: "Error al crear la recepta!" };
+    return { error: "Error al guardar la recepta!" };
+  }
+};
+
+// Save draft recipe
+// TYPE: actionResponse = error | success;
+export const saveDraftRecipe = async (
+  values: z.infer<typeof DraftRecipeSchema>,
+  recipeId: string
+): Promise<actionResponse> => {
+  // Get current user
+  const user = await currentUser();
+  if (!user) return { error: "Usuari no trobat!" };
+
+  // Validate fields
+  // const validatedFields = RecipeSchema.safeParse(values);
+  // if (!validatedFields.success) return { error: "Camps invàlids!" };
+  const { title, prep_time, total_time, recommendations, origin, visibility } =
+    values;
+
+  // Get ingredients and steps
+  const ingredients = values.ingredients?.map((ingredient) => ingredient.value);
+  const steps = values.steps?.map((ingredient) => ingredient.value);
+
+  // Check if a recipe with the same title already exists for the user
+  const existingRecipe = await db.recipe.findFirst({
+    where: {
+      title: title,
+      authorId: user.id,
+      NOT: {
+        id: recipeId,
+      },
+    },
+  });
+  if (existingRecipe) {
+    return { error: "Ja existeix una recepta amb aquest títol!" };
+  }
+
+  // Edit recipe
+  try {
+    const recipe = await db.recipe.update({
+      where: {
+        id: recipeId,
+      },
+      data: {
+        title: title,
+        prep_time: prep_time,
+        total_time: total_time,
+        ingredients: ingredients,
+        steps: steps,
+        recommendations: recommendations,
+        origin: origin,
+        visibility: visibility,
+        draft: true,
+      },
+    });
+    return { success: "Recepta guardada amb èxit!" };
+  } catch {
+    return { error: "Error al guardar la recepta!" };
   }
 };
 
@@ -122,6 +167,7 @@ export const getPublicRecipes = async (): Promise<recipesResponse> => {
   const recipes = await db.recipe.findMany({
     where: {
       visibility: "PUBLIC",
+      draft: false,
     },
     include: {
       author: {
@@ -136,13 +182,14 @@ export const getPublicRecipes = async (): Promise<recipesResponse> => {
   // Prepare response
   const recipesToSend = recipes.map((recipe) => ({
     id: recipe.id,
-    title: recipe.title,
-    prep_time: recipe.prep_time,
-    total_time: recipe.total_time,
+    title: recipe.title as string,
+    prep_time: recipe.prep_time as number,
+    total_time: recipe.total_time as number,
     ingredients: recipe.ingredients,
     steps: recipe.steps,
     recommendations: recipe.recommendations,
     origin: recipe.origin,
+    visibility: recipe.visibility,
     image: recipe.image,
     author_name: recipe.author.name,
     author_image: recipe.author.image,
@@ -158,6 +205,7 @@ export const getPersonalRecipes = async (): Promise<recipesResponse> => {
   const recipes = await db.recipe.findMany({
     where: {
       authorId: user?.id,
+      draft: false,
     },
     include: {
       author: {
@@ -172,13 +220,14 @@ export const getPersonalRecipes = async (): Promise<recipesResponse> => {
   // Prepare response
   const recipesToSend = recipes.map((recipe) => ({
     id: recipe.id,
-    title: recipe.title,
-    prep_time: recipe.prep_time,
-    total_time: recipe.total_time,
+    title: recipe.title as string,
+    prep_time: recipe.prep_time as number,
+    total_time: recipe.total_time as number,
     ingredients: recipe.ingredients,
     steps: recipe.steps,
     recommendations: recipe.recommendations,
     origin: recipe.origin,
+    visibility: recipe.visibility,
     image: recipe.image,
     author_name: recipe.author.name,
     author_image: recipe.author.image,
@@ -197,6 +246,7 @@ export const getFamiliesRecipes = async (): Promise<recipesResponse> => {
       authorId: {
         in: users,
       },
+      draft: false,
     },
     include: {
       author: {
@@ -211,13 +261,14 @@ export const getFamiliesRecipes = async (): Promise<recipesResponse> => {
   // Prepare response
   const recipesToSend = recipes.map((recipe) => ({
     id: recipe.id,
-    title: recipe.title,
-    prep_time: recipe.prep_time,
-    total_time: recipe.total_time,
+    title: recipe.title as string,
+    prep_time: recipe.prep_time as number,
+    total_time: recipe.total_time as number,
     ingredients: recipe.ingredients,
     steps: recipe.steps,
     recommendations: recipe.recommendations,
     origin: recipe.origin,
+    visibility: recipe.visibility,
     image: recipe.image,
     author_name: recipe.author.name,
     author_image: recipe.author.image,
@@ -261,6 +312,7 @@ export const getFamilyRecipes = async (
       authorId: {
         in: familyMembers,
       },
+      draft: false,
     },
     include: {
       author: {
@@ -275,13 +327,14 @@ export const getFamilyRecipes = async (
   // Prepare response
   const recipesToSend = recipes.map((recipe) => ({
     id: recipe.id,
-    title: recipe.title,
-    prep_time: recipe.prep_time,
-    total_time: recipe.total_time,
+    title: recipe.title as string,
+    prep_time: recipe.prep_time as number,
+    total_time: recipe.total_time as number,
     ingredients: recipe.ingredients,
     steps: recipe.steps,
     recommendations: recipe.recommendations,
     origin: recipe.origin,
+    visibility: recipe.visibility,
     image: recipe.image,
     author_name: recipe.author.name,
     author_image: recipe.author.image,
@@ -301,6 +354,9 @@ export const getFavoriteRecipes = async (): Promise<recipesResponse> => {
     },
     include: {
       favoriteRecipes: {
+        where: {
+          draft: false,
+        },
         include: {
           author: {
             select: {
@@ -317,13 +373,14 @@ export const getFavoriteRecipes = async (): Promise<recipesResponse> => {
   // Prepare response
   const recipesToSend = fullUser.favoriteRecipes.map((recipe) => ({
     id: recipe.id,
-    title: recipe.title,
-    prep_time: recipe.prep_time,
-    total_time: recipe.total_time,
+    title: recipe.title as string,
+    prep_time: recipe.prep_time as number,
+    total_time: recipe.total_time as number,
     ingredients: recipe.ingredients,
     steps: recipe.steps,
     recommendations: recipe.recommendations,
     origin: recipe.origin,
+    visibility: recipe.visibility,
     image: recipe.image,
     author_name: recipe.author.name,
     author_image: recipe.author.image,
@@ -333,6 +390,7 @@ export const getFavoriteRecipes = async (): Promise<recipesResponse> => {
 };
 
 // View recipe
+type recipeResponse = recipeAndAuthor | error;
 export const getRecipe = async (id: string): Promise<recipeResponse> => {
   const user = await currentUser();
   if (!user) return { error: "Usuari no trobat!" };
@@ -340,6 +398,7 @@ export const getRecipe = async (id: string): Promise<recipeResponse> => {
   const recipe = await db.recipe.findUnique({
     where: {
       id: id,
+      draft: false,
     },
     include: {
       author: {
@@ -356,13 +415,14 @@ export const getRecipe = async (id: string): Promise<recipeResponse> => {
   // Prepare response
   const recipesToSend = {
     id: recipe.id,
-    title: recipe.title,
-    prep_time: recipe.prep_time,
-    total_time: recipe.total_time,
+    title: recipe.title as string,
+    prep_time: recipe.prep_time as number,
+    total_time: recipe.total_time as number,
     ingredients: recipe.ingredients,
     steps: recipe.steps,
     recommendations: recipe.recommendations,
     origin: recipe.origin,
+    visibility: recipe.visibility,
     image: recipe.image,
     author_name: recipe.author.name,
     author_image: recipe.author.image,
@@ -382,6 +442,41 @@ export const getRecipe = async (id: string): Promise<recipeResponse> => {
     if (contacts.includes(recipe.author.id)) return recipesToSend;
     return { error: "Recepta privada!" };
   }
+};
+
+// Get draft recipe
+type draftRecipeResponse = draftRecipe | error;
+export const getDraftRecipe = async (
+  id: string
+): Promise<draftRecipeResponse> => {
+  const user = await currentUser();
+  if (!user) return { error: "Usuari no trobat!" };
+
+  const recipe = await db.recipe.findUnique({
+    where: {
+      id: id,
+    },
+  });
+  if (!recipe) return { error: "Recepta no trobada!" };
+
+  // Prepare response
+  const recipesToSend = {
+    id: recipe.id,
+    title: recipe.title,
+    prep_time: recipe.prep_time,
+    total_time: recipe.total_time,
+    ingredients: recipe.ingredients,
+    steps: recipe.steps,
+    recommendations: recipe.recommendations,
+    origin: recipe.origin,
+    visibility: recipe.visibility,
+    image: recipe.image,
+  };
+
+  // Accept if user is the author
+  if (recipe.authorId !== user.id)
+    return { error: "No autoritzat per veure la recepta" };
+  return recipesToSend;
 };
 
 // Is favorite recipe
@@ -459,6 +554,22 @@ export const toggleFavoriteRecipe = async (
     });
     return { favorite: true };
   }
+};
+
+export const createEmptyRecipe = async () => {
+  // Get current user
+  const user = await currentUser();
+  if (!user?.id) return { error: "Usuari no trobat!" };
+
+  // Create empty recipe
+  const recipe = await db.recipe.create({
+    data: {
+      authorId: user.id,
+      draft: true,
+    },
+  });
+  if (!recipe) return { error: "Error al crear la recepta!" };
+  return { id: recipe.id };
 };
 
 // Edit recipe
