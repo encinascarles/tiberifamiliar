@@ -6,20 +6,22 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
-import { createRecipe } from "../../../../actions/recipes";
-import { FormError } from "../../../../components/formMessages/FormError";
-import { FormSuccess } from "../../../../components/formMessages/FormSuccess";
-import { Button } from "../../../../components/ui/button";
+import { createRecipe } from "@/actions/recipes";
+import { FormError } from "@/components/formMessages/FormError";
+import { FormSuccess } from "@/components/formMessages/FormSuccess";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from "../../../../components/ui/form";
-import { Input } from "../../../../components/ui/input";
-import { Textarea } from "../../../../components/ui/textarea";
-import { RecipeSchema } from "../../../../schemas";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { RecipeSchema } from "@/schemas";
+import { getSignedURL } from "@/actions/imageUpload";
+import Image from "next/image";
 
 type FormData = z.infer<typeof RecipeSchema>;
 
@@ -29,6 +31,7 @@ export default function NewRecipePage() {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const { toast } = useToast();
   const router = useRouter();
 
@@ -42,6 +45,7 @@ export default function NewRecipePage() {
       origin: "",
       image: "",
       visibility: "PUBLIC",
+      image_file: undefined,
     },
   });
 
@@ -63,11 +67,47 @@ export default function NewRecipePage() {
     name: "steps",
   });
 
-  const onSubmit = (values: z.infer<typeof RecipeSchema>) => {
+  const computeSHA256 = async (file: File) => {
+    const buffer = await file.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+    return hashHex;
+  };
+
+  const onSubmit = async (values: z.infer<typeof RecipeSchema>) => {
     setError("");
     setSuccess("");
+    const valuesToSend = { ...values };
+    delete valuesToSend.image_file;
+    if (values.image_file) {
+      const checksum = await computeSHA256(values.image_file);
+      const signedURL = await getSignedURL(
+        values.image_file.type,
+        values.image_file.size,
+        checksum
+      );
+      if ("error" in signedURL) {
+        setError(signedURL.error);
+        return;
+      }
+      valuesToSend.image = signedURL.url.split("?")[0];
+      console.log(signedURL);
+      await fetch(signedURL.url, {
+        method: "PUT",
+        body: values.image_file,
+        headers: {
+          "Content-Type": values.image_file.type,
+        },
+      });
+      // Clona los valores para no modificar el objeto original
+    }
+
     startTransition(() => {
-      createRecipe(values).then((response) => {
+      // Elimina la propiedad image_file
+      createRecipe(valuesToSend).then((response) => {
         if ("error" in response) {
           setError(response.error);
           return;
@@ -81,9 +121,47 @@ export default function NewRecipePage() {
     });
   };
 
+  const generatePreview = (file: File) => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+    } else {
+      setPreviewUrl(null);
+    }
+  };
+
   return (
     <div className="container">
       <h1 className="text-4xl font-bold my-10">Nova Receta</h1>
+      {previewUrl && (
+        <Image src={previewUrl} alt="Preview" width={200} height={200} />
+      )}
+      <FormField
+        control={form.control}
+        name="image_file"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Nom de la recepta</FormLabel>
+            <FormControl>
+              <Input
+                type="file"
+                accept="image/*"
+                disabled={isPending}
+                onChange={(e) => {
+                  if (e.target.files) {
+                    form.setValue("image_file", e.target.files[0]);
+                    generatePreview(e.target.files[0]);
+                  }
+                }}
+              />
+            </FormControl>
+            <FormError message={form.formState.errors.image_file?.message} />
+          </FormItem>
+        )}
+      />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           {/* Nom de la recepta */}

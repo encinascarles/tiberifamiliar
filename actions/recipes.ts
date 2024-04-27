@@ -62,6 +62,7 @@ export const createRecipe = async (
   // Validate fields
   const validatedFields = RecipeSchema.safeParse(values);
   if (!validatedFields.success) return { error: "Camps invàlids!" };
+  console.log(validatedFields.data);
   const {
     title,
     prep_time,

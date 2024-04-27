@@ -4,7 +4,10 @@ import { PrismaPlugin } from "@prisma/nextjs-monorepo-workaround-plugin";
 const nextConfig = {
   //fix prisma error
   images: {
-    domains: ["lh3.googleusercontent.com"],
+    domains: [
+      "lh3.googleusercontent.com",
+      "tiberifamiliar.s3.eu-west-3.amazonaws.com",
+    ],
   },
   webpack: (config, { isServer }) => {
     if (isServer) {
