@@ -15,6 +15,7 @@ const RecipeCard = async ({
   total_time,
   image,
   personal = false,
+  draft = false,
 }: {
   title: string;
   id: string;
@@ -24,12 +25,16 @@ const RecipeCard = async ({
   total_time: number;
   image: string | null;
   personal?: boolean;
+  draft?: boolean;
 }) => {
   const user = await currentUser();
   console.log(image);
   return (
     <Card className="w-[400] h-[400]">
-      <Link href={`/receptes/${id}`} className="cursor-pointer">
+      <Link
+        href={`/receptes/${id}${draft ? "/edita" : ""}`}
+        className="cursor-pointer"
+      >
         <div className="relative aspect-square">
           <Image
             src={image ? image : "/demo_images/recipe_image.jpg"}

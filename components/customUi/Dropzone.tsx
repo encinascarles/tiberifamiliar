@@ -152,7 +152,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
               <span className="font-medium flex items-center gap-4">
                 {isDragOver ? (
                   <>
-                    <SquarePlus /> Deixa anar l'arxiu
+                    <SquarePlus /> Deixa anar l&apos;arxiu
                   </>
                 ) : (
                   <>

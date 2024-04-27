@@ -12,6 +12,7 @@ import {
   Heart,
   LogOut,
   Menu,
+  PencilRuler,
   Plus,
   Settings,
   User,
@@ -42,6 +43,10 @@ export default function MobileDrawerMenu() {
               <MobileMenuItem href="/receptes/personals">
                 <User className="mr-2 h-4 w-4" />
                 Receptes personals
+              </MobileMenuItem>
+              <MobileMenuItem href="/receptes/esborranys">
+                <PencilRuler className="mr-2 h-4 w-4" />
+                Esborranys
               </MobileMenuItem>
               <MobileMenuItem href="/receptes/preferides">
                 <Heart className="mr-2 h-4 w-4" />

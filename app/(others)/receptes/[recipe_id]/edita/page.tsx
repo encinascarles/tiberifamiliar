@@ -30,7 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Minus, Plus, Trash } from "lucide-react";
+import { Minus, PencilRuler, Plus, Save, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -49,6 +49,7 @@ export default function EditRecipePage({
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
+  const [title, setTitle] = useState("");
   const { toast } = useToast();
   const router = useRouter();
 
@@ -129,6 +130,7 @@ export default function EditRecipePage({
       } = recipeData;
 
       form.setValue("title", title!);
+      setTitle(title!);
       form.setValue("prep_time", prep_time!);
       form.setValue("total_time", total_time!);
       if (recommendations) {
@@ -163,7 +165,9 @@ export default function EditRecipePage({
   }
   return (
     <div className="container max-w-[750px]">
-      <h1 className="text-4xl font-bold my-10">Nova Recepta</h1>
+      <h1 className="text-4xl font-bold my-10">
+        {title ? title : <>Nova Recepta</>}
+      </h1>
       <ImageDropzone recipeId={params.recipe_id} />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-8">
@@ -175,7 +179,14 @@ export default function EditRecipePage({
               <FormItem>
                 <FormLabel>Nom de la recepta</FormLabel>
                 <FormControl>
-                  <Input disabled={isPending} {...field} />
+                  <Input
+                    disabled={isPending}
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(e);
+                      setTitle(e.target.value);
+                    }}
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -416,19 +427,23 @@ export default function EditRecipePage({
           />
           <FormError message={error} />
           <FormSuccess message={success} />
-          {/* Botó de guardar */}
-
-          <Button disabled={isPending} type="submit">
-            Guardar la Recepta
-          </Button>
-          <Button
-            disabled={isPending}
-            variant="outline"
-            type="button"
-            onClick={() => handleDraftSave()}
-          >
-            Guardar com a esborrany
-          </Button>
+          {/* Botons de guardar */}
+          <div className="flex flex-col gap-4 items-start md:flex-row">
+            <Button disabled={isPending} type="submit" className="gap-2">
+              <Save size={20} />
+              Guardar la Recepta
+            </Button>
+            <Button
+              disabled={isPending}
+              variant="outline"
+              type="button"
+              onClick={() => handleDraftSave()}
+              className="gap-2"
+            >
+              <PencilRuler size={20} />
+              Guardar com a esborrany
+            </Button>
+          </div>
         </form>
       </Form>
     </div>

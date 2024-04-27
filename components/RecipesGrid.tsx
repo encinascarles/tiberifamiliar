@@ -6,12 +6,14 @@ type recipesGridProps = {
   recipes: recipeAndAuthor[];
   addRecipe?: boolean;
   personal?: boolean;
+  draft?: boolean;
 };
 
 const RecipesGrid: React.FC<recipesGridProps> = ({
   recipes,
   addRecipe,
   personal = false,
+  draft = false,
 }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-4">
@@ -27,6 +29,7 @@ const RecipesGrid: React.FC<recipesGridProps> = ({
           total_time={recipe.total_time}
           image={recipe.image}
           personal={personal}
+          draft={draft}
         />
       ))}
     </div>

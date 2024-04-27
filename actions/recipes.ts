@@ -389,7 +389,44 @@ export const getFavoriteRecipes = async (): Promise<recipesResponse> => {
   return recipesToSend;
 };
 
-// View recipe
+// View all draft recipes
+export const getDraftRecipes = async (): Promise<recipesResponse> => {
+  const user = await currentUser();
+  if (!user) return { error: "Usuari no trobat!" };
+  const recipes = await db.recipe.findMany({
+    where: {
+      authorId: user?.id,
+      draft: true,
+    },
+    include: {
+      author: {
+        select: {
+          name: true,
+          image: true,
+        },
+      },
+    },
+  });
+
+  // Prepare response
+  const recipesToSend = recipes.map((recipe) => ({
+    id: recipe.id,
+    title: recipe.title as string,
+    prep_time: recipe.prep_time as number,
+    total_time: recipe.total_time as number,
+    ingredients: recipe.ingredients,
+    steps: recipe.steps,
+    recommendations: recipe.recommendations,
+    origin: recipe.origin,
+    visibility: recipe.visibility,
+    image: recipe.image,
+    author_name: recipe.author.name,
+    author_image: recipe.author.image,
+  }));
+  return recipesToSend;
+};
+
+// Get recipe
 type recipeResponse = recipeAndAuthor | error;
 export const getRecipe = async (id: string): Promise<recipeResponse> => {
   const user = await currentUser();

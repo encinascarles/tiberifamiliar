@@ -7,7 +7,7 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { Earth, Heart, Plus, User, Users } from "lucide-react";
+import { Earth, Heart, PencilRuler, Plus, User, Users } from "lucide-react";
 import TopMenuItem from "./TopMenuItem";
 
 const TopNavigation = () => {
@@ -21,6 +21,10 @@ const TopNavigation = () => {
               <TopMenuItem href="/receptes/personals">
                 <User size={20} />
                 Receptes personals
+              </TopMenuItem>
+              <TopMenuItem href="/receptes/esborranys">
+                <PencilRuler size={20} />
+                Esborranys
               </TopMenuItem>
               <TopMenuItem href="/receptes/preferides">
                 <Heart size={20} />
