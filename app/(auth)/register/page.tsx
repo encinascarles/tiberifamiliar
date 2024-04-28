@@ -31,7 +31,7 @@ export default function RegisterPage() {
             className="px-0 font-normal"
             type="button"
           >
-            <Link href="/register">Inicia sessió</Link>
+            <Link href="/login">Inicia sessió</Link>
           </Button>
         </p>
       </div>
