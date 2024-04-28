@@ -1,13 +1,13 @@
 "use client";
 
-import { Button } from "../../../components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../../components/ui/dialog";
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -15,16 +15,16 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../../../components/ui/form";
-import { Input } from "../../../components/ui/input";
-import { RegisterSchema } from "../../../schemas";
-import { register } from "../../../actions/register";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { RegisterSchema } from "@/schemas";
+import { register } from "@/actions/authentication";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { FormError } from "../../../components/formMessages/FormError";
-import { FormSuccess } from "../../../components/formMessages/FormSuccess";
+import { FormError } from "@/components/formMessages/FormError";
+import { FormSuccess } from "@/components/formMessages/FormSuccess";
 
 export const RegisterForm = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -46,9 +46,12 @@ export const RegisterForm = () => {
     setSuccess("");
 
     startTransition(() => {
-      register(values).then((data) => {
-        setError(data.error);
-        setSuccess(data.success);
+      register(values).then((response) => {
+        if ("error" in response) {
+          setError(response.error);
+          return;
+        }
+        setSuccess(response.success);
       });
     });
   };

@@ -1,22 +1,22 @@
 "use client";
 
-import { FormError } from "../../../components/formMessages/FormError";
-import { FormSuccess } from "../../../components/formMessages/FormSuccess";
-import { Button } from "../../../components/ui/button";
+import { FormError } from "@/components/formMessages/FormError";
+import { FormSuccess } from "@/components/formMessages/FormSuccess";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "../../../components/ui/form";
-import { Input } from "../../../components/ui/input";
-import { PasswordResetSchema } from "../../../schemas";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { PasswordResetSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { resetPassword } from "../../../actions/resetPassword";
+import { resetPassword } from "@/actions/authentication";
 
 export const ResetPasswordForm = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -36,9 +36,12 @@ export const ResetPasswordForm = () => {
     setSuccess("");
 
     startTransition(() => {
-      resetPassword(values).then((data) => {
-        setError(data?.error);
-        setSuccess(data?.success);
+      resetPassword(values).then((response) => {
+        if ("error" in response) {
+          setError(response.error);
+          return;
+        }
+        setSuccess(response.success);
       });
     });
   };

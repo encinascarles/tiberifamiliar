@@ -1,18 +1,18 @@
 "use client";
 
-import { FormError } from "../../../components/formMessages/FormError";
-import { FormSuccess } from "../../../components/formMessages/FormSuccess";
-import { Button } from "../../../components/ui/button";
+import { FormError } from "@/components/formMessages/FormError";
+import { FormSuccess } from "@/components/formMessages/FormSuccess";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "../../../components/ui/form";
-import { Input } from "../../../components/ui/input";
-import { NewPasswordSchema } from "../../../schemas";
-import { newPassword } from "../../../actions/new-password";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { NewPasswordSchema } from "@/schemas";
+import { newPassword } from "@/actions/authentication";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -41,9 +41,13 @@ export const NewPasswordForm = () => {
     setSuccess("");
 
     startTransition(() => {
-      newPassword(values, token).then((data) => {
-        setError(data.error);
-        setSuccess(data.success);
+      if (!token) return setError("Falta el token!");
+      newPassword(values, token).then((response) => {
+        if ("error" in response) {
+          setError(response.error);
+          return;
+        }
+        setSuccess(response.success);
       });
     });
   };

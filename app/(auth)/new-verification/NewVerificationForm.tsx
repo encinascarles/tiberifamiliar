@@ -3,9 +3,9 @@
 import { BeatLoader } from "react-spinners";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
-import { newVerification } from "../../../actions/new-verification";
-import { FormError } from "../../../components/formMessages/FormError";
-import { FormSuccess } from "../../../components/formMessages/FormSuccess";
+import { newVerification } from "@/actions/authentication";
+import { FormError } from "@/components/formMessages/FormError";
+import { FormSuccess } from "@/components/formMessages/FormSuccess";
 
 const NewVerificationForm = () => {
   const searchParams = useSearchParams();
@@ -21,9 +21,12 @@ const NewVerificationForm = () => {
       return;
     }
     newVerification(token)
-      .then((data) => {
-        setSuccess(data.success);
-        setError(data.error);
+      .then((response) => {
+        if ("error" in response) {
+          setError(response.error);
+          return;
+        }
+        setSuccess(response.success);
       })
       .catch(() => {
         setError("Error en la verificació");

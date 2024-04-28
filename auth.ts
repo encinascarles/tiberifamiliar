@@ -1,9 +1,7 @@
-import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import NextAuth from "next-auth";
 import authConfig from "./auth.config";
 import { db } from "./lib/db";
-import { getUserById } from "./data/user";
-import { nanoid } from "nanoid";
 
 export const {
   handlers: { GET, POST },
@@ -30,7 +28,9 @@ export const {
   callbacks: {
     async signIn({ user, account }) {
       if (account?.provider !== "credentials") return true;
-      const existingUser = await getUserById(user.id as string);
+      const existingUser = await db.user.findUnique({
+        where: { id: user.id },
+      });
 
       //prevent login if email is not verified
       if (!existingUser?.emailVerified) return false;

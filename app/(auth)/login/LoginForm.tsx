@@ -1,18 +1,18 @@
 "use client";
 
-import { FormError } from "../../../components/formMessages/FormError";
-import { FormSuccess } from "../../../components/formMessages/FormSuccess";
-import { Button } from "../../../components/ui/button";
+import { FormError } from "@/components/formMessages/FormError";
+import { FormSuccess } from "@/components/formMessages/FormSuccess";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "../../../components/ui/form";
-import { Input } from "../../../components/ui/input";
-import { LoginSchema } from "../../../schemas";
-import { login } from "../../../actions/login";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { LoginSchema } from "@/schemas";
+import { login } from "@/actions/authentication";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -44,9 +44,14 @@ export const LoginForm = () => {
     setSuccess("");
 
     startTransition(() => {
-      login(values).then((data) => {
-        setError(data?.error);
-        setSuccess(data?.success);
+      login(values).then((response) => {
+        if (response) {
+          if ("error" in response) {
+            setError(response.error);
+            return;
+          }
+          setSuccess(response.success);
+        }
       });
     });
   };

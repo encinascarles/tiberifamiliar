@@ -1,4 +1,4 @@
-import { deleteImage, getSignedURL } from "@/actions/imageUpload";
+import { deleteRecipeImage, getRecipeSignedImageURL } from "@/actions/recipes";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ImagePlus, LoaderCircle, SquarePlus, TrashIcon } from "lucide-react";
@@ -79,7 +79,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
     setError(null);
     setIsLoading(true);
     const checksum = await computeSHA256(file);
-    const signedURL = await getSignedURL(
+    const signedURL = await getRecipeSignedImageURL(
       file.type,
       file.size,
       checksum,
@@ -90,7 +90,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
       return;
     }
     try {
-      await fetch(signedURL.url, {
+      await fetch(signedURL.uploadUrl, {
         method: "PUT",
         body: file,
         headers: {
@@ -101,13 +101,13 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
       setError("Error pujant la imatge");
       return;
     }
-    setImageSrc(signedURL.imageURL);
+    setImageSrc(signedURL.image);
     setIsLoading(false);
   };
 
   const handleDelete = async () => {
     if (imageSrc) {
-      deleteImage(imageSrc);
+      deleteRecipeImage(imageSrc).then(() => {});
       setImageSrc(null);
     }
   };

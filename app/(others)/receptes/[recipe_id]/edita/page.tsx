@@ -1,7 +1,6 @@
 "use client";
 import {
-  getDraftRecipe,
-  getRecipe,
+  getRecipeToEdit,
   saveDraftRecipe,
   saveRecipe,
 } from "@/actions/recipes";
@@ -17,24 +16,23 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
-import { RecipeSchema } from "@/schemas";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/use-toast";
+import { RecipeSchema } from "@/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Minus, PencilRuler, Plus, Save, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { set, z } from "zod";
+import { z } from "zod";
 
 type FormData = z.infer<typeof RecipeSchema>;
 
@@ -52,6 +50,7 @@ export default function EditRecipePage({
   const [title, setTitle] = useState("");
   const { toast } = useToast();
   const router = useRouter();
+  const [image, setImage] = useState<string | null>(null);
 
   const form = useForm<FormData>({
     resolver: zodResolver(RecipeSchema),
@@ -113,7 +112,7 @@ export default function EditRecipePage({
   };
 
   useEffect(() => {
-    getDraftRecipe(params.recipe_id).then((recipeData) => {
+    getRecipeToEdit(params.recipe_id).then((recipeData) => {
       if ("error" in recipeData) {
         setError(recipeData.error);
         return;
@@ -145,6 +144,7 @@ export default function EditRecipePage({
         "visibility",
         visibility as "PUBLIC" | "FAMILY" | "PRIVATE"
       );
+      setImage(recipeData.image);
       // Transforma los ingredientes y los pasos a la forma que necesita el formulario
       if (ingredients.length > 0) {
         ingredients.forEach((ingredient) => {
@@ -168,7 +168,7 @@ export default function EditRecipePage({
       <h1 className="text-4xl font-bold my-10">
         {title ? title : <>Nova Recepta</>}
       </h1>
-      <ImageDropzone recipeId={params.recipe_id} />
+      <ImageDropzone recipeId={params.recipe_id} image={image} />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-8">
           {/* Nom de la recepta */}

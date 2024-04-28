@@ -1,6 +1,5 @@
-import { get } from "http";
 import { auth } from "../auth";
-import { getUserById } from "@/data/user";
+import { db } from "./db";
 
 export const currentUser = async () => {
   const session = await auth();
@@ -9,6 +8,14 @@ export const currentUser = async () => {
 
 export const currentFullUser = async () => {
   const session = await auth();
-  const user = await getUserById(session?.user?.id as string);
+  const user = await db.user.findUnique({
+    where: { id: session?.user?.id },
+  });
+  return user;
+};
+
+export const safeGetSessionUser = async () => {
+  const user = await currentUser();
+  if (!user?.id) throw new Error("show: Usuari no trobat!");
   return user;
 };
