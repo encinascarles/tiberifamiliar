@@ -1,7 +1,7 @@
 "use client";
 
+import { newPassword } from "@/actions/authentication";
 import { FormError } from "@/components/formMessages/FormError";
-import { FormSuccess } from "@/components/formMessages/FormSuccess";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -11,23 +11,30 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import { NewPasswordSchema } from "@/schemas";
-import { newPassword } from "@/actions/authentication";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 export const NewPasswordForm = () => {
+  // Get the token from the URL
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
 
+  // State for displaying error messages
   const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
+  const { toast } = useToast();
 
+  // Router for navigation
+  const router = useRouter();
+
+  // Transition for the loading state
   const [isPending, startTransition] = useTransition();
 
+  // Form hook
   const form = useForm<z.infer<typeof NewPasswordSchema>>({
     resolver: zodResolver(NewPasswordSchema),
     defaultValues: {
@@ -36,9 +43,9 @@ export const NewPasswordForm = () => {
     },
   });
 
+  // Form submission handler
   const onSubmit = (values: z.infer<typeof NewPasswordSchema>) => {
     setError("");
-    setSuccess("");
 
     startTransition(() => {
       if (!token) return setError("Falta el token!");
@@ -47,13 +54,19 @@ export const NewPasswordForm = () => {
           setError(response.error);
           return;
         }
-        setSuccess(response.success);
+        toast({
+          title: "Contrassenya canviada",
+          description: response.success,
+          variant: "success",
+        });
+        router.push("/");
       });
     });
   };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 w-full">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 w-full">
         <FormField
           control={form.control}
           name="password"
@@ -89,7 +102,6 @@ export const NewPasswordForm = () => {
           )}
         />
         <FormError message={error} />
-        <FormSuccess message={success} />
         <Button type="submit" className="w-full" disabled={isPending}>
           Canviar contrassenya
         </Button>

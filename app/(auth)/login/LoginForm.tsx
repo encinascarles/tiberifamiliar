@@ -19,8 +19,10 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export const LoginForm = () => {
+  const router = useRouter();
   // Get the error from the URL if google oauth failed
   const searchParams = useSearchParams();
   const urlError =
@@ -65,6 +67,13 @@ export const LoginForm = () => {
     });
   };
 
+  // Forgot password button click handler
+  const handleForgotPassword = () => {
+    // Add email to the URL to autofill the email field in the forgot password form
+    const email = form.getValues("email");
+    router.push(`/reset-password?email=${email && encodeURIComponent(email)}`);
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 w-full">
@@ -104,11 +113,11 @@ export const LoginForm = () => {
         <Button
           size="sm"
           variant="link"
-          asChild
           className="px-0 font-normal"
           type="button"
+          onClick={() => handleForgotPassword()}
         >
-          <Link href="/reset-password">Has oblidat la contrassenya?</Link>
+          Has oblidat la contrassenya?
         </Button>
         <FormError message={error} />
         <FormSuccess message={success} />

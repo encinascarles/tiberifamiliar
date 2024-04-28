@@ -1,5 +1,6 @@
 "use server";
 import { signIn } from "@/auth";
+import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import errorHandler from "@/lib/errorHandler";
 import { sendPasswordResetEmail, sendVerificationEmail } from "@/lib/mail";
@@ -128,7 +129,17 @@ export const newVerification = async (
     // Check if token has expired
     const hasExpired = new Date(existingToken.expires) < new Date();
     if (hasExpired) {
-      throw new Error("show: El token ha expirat!");
+      // Send new verification email
+      const verificationToken = await generateVerificationToken(
+        existingToken.email
+      );
+      await sendVerificationEmail(
+        verificationToken.email,
+        verificationToken.token
+      );
+      throw new Error(
+        "show: El token ha expirat, s'ha enviat un nou correu de verificació!"
+      );
     }
 
     // Update user email and emailVerified
@@ -141,7 +152,7 @@ export const newVerification = async (
       where: { id: existingToken.id },
     });
 
-    return { success: "Correu electrònic verificat!" };
+    return { success: "Correu electrònic verificat, inicia sessió!" };
   } catch (e: any) {
     return errorHandler(e);
   }
@@ -212,6 +223,17 @@ export const newPassword = async (
       await db.passwordResetToken.delete({ where: { id: existingToken.id } });
     });
 
+    // Check if user is logged in
+    const user = await currentUser();
+    if (!user) {
+      // Login the user without redirect
+      await signIn("credentials", {
+        email: existingToken.email,
+        password,
+        redirect: false,
+      });
+    }
+    //TODO send mail to user saying that the password has been changed
     return { success: "Contrassenya actualitzada correctament!" };
   } catch (e: any) {
     return errorHandler(e);

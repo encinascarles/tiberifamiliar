@@ -1,3 +1,4 @@
+import GoBackToLoginButton from "../GoBackToLoginButton";
 import { ResetPasswordForm } from "./ResetPasswordForm";
 
 const ResetPasswordPage = () => {
@@ -6,10 +7,11 @@ const ResetPasswordPage = () => {
       <h1 className="text-2xl font-semibold tracking-tight">
         Reseteja la contrassenya
       </h1>
-      <p className="text-sm text-muted-foreground">
+      <p className="text-sm text-muted-foreground mb-4">
         Entra el teu correu electrònic per continuar
       </p>
       <ResetPasswordForm />
+      <GoBackToLoginButton />
     </div>
   );
 };
