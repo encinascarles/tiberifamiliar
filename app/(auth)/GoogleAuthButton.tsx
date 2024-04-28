@@ -6,14 +6,18 @@ import { cn } from "../../lib/utils";
 import { DEFAULT_LOGIN_REDIRECT } from "../../routes";
 
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 
 interface GoogleAuthButtonProps {
   className?: string;
 }
 
 export const GoogleAuthButton = ({ className }: GoogleAuthButtonProps) => {
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl");
+
   const handleClick = () => {
-    signIn("google", { callbackUrl: DEFAULT_LOGIN_REDIRECT });
+    signIn("google", { callbackUrl: callbackUrl || DEFAULT_LOGIN_REDIRECT });
   };
   return (
     <Button

@@ -27,6 +27,7 @@ export const LoginForm = () => {
     searchParams.get("error") === "OAuthAccountNotLinked"
       ? "El correu ja està associat a un compte, prova d'iniciar sessió directament"
       : "";
+  const callbackUrl = searchParams.get("callbackUrl");
 
   // States for displaying error and success messages
   const [error, setError] = useState<string | undefined>(urlError);
@@ -52,7 +53,7 @@ export const LoginForm = () => {
 
     // Login with oauth
     startTransition(() => {
-      login(values).then((response) => {
+      login(values, callbackUrl).then((response) => {
         if (response) {
           if ("error" in response) {
             setError(response.error);
