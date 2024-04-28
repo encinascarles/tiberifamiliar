@@ -3,6 +3,7 @@ import { TextDivider } from "../../../components/TextDivider";
 import { Button } from "../../../components/ui/button";
 import { GoogleAuthButton } from "../GoogleAuthButton";
 import { RegisterForm } from "./RegisterForm";
+import { Suspense } from "react";
 
 export default function RegisterPage() {
   return (
@@ -19,9 +20,13 @@ export default function RegisterPage() {
         <p className="text-sm text-muted-foreground mb-4">
           Entra el teu correu electrònic per continuar
         </p>
-        <RegisterForm />
+        <Suspense>
+          <RegisterForm />
+        </Suspense>
         <TextDivider>o continua amb</TextDivider>
-        <GoogleAuthButton className="w-full" />
+        <Suspense>
+          <GoogleAuthButton className="w-full" />
+        </Suspense>
         <p className="text-sm text-muted-foreground mt-2">
           Ja tens un compte?{" "}
           <Button

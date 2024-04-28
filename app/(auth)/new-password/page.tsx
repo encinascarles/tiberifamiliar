@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import GoBackToLoginButton from "../GoBackToLoginButton";
 import { NewPasswordForm } from "./NewPasswordForm";
 
@@ -10,7 +11,9 @@ const NewPasswordPage = () => {
       <p className="text-sm text-muted-foreground mb-4">
         Entra la nova contrassenya per continuar
       </p>
-      <NewPasswordForm />
+      <Suspense>
+        <NewPasswordForm />
+      </Suspense>
       <GoBackToLoginButton />
     </div>
   );

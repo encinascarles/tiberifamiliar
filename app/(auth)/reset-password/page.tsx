@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import GoBackToLoginButton from "../GoBackToLoginButton";
 import { ResetPasswordForm } from "./ResetPasswordForm";
 
@@ -10,7 +11,9 @@ const ResetPasswordPage = () => {
       <p className="text-sm text-muted-foreground mb-4">
         Entra el teu correu electrònic per continuar
       </p>
-      <ResetPasswordForm />
+      <Suspense>
+        <ResetPasswordForm />
+      </Suspense>
       <GoBackToLoginButton />
     </div>
   );

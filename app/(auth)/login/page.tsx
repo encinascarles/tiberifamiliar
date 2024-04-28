@@ -3,6 +3,7 @@ import { TextDivider } from "../../../components/TextDivider";
 import { GoogleAuthButton } from "../GoogleAuthButton";
 import { LoginForm } from "./LoginForm";
 import { Button } from "@/components/ui/button";
+import { Suspense } from "react";
 
 export default function LoginPage() {
   return (
@@ -17,9 +18,13 @@ export default function LoginPage() {
         <p className="text-sm text-muted-foreground mb-4">
           Entra les teves credencials per continuar
         </p>
-        <LoginForm />
+        <Suspense>
+          <LoginForm />
+        </Suspense>
         <TextDivider>o continua amb</TextDivider>
-        <GoogleAuthButton className="w-full" />
+        <Suspense>
+          <GoogleAuthButton className="w-full" />
+        </Suspense>
         <p className="text-sm text-muted-foreground mt-2">
           Encara no tens un compte?{" "}
           <Button
