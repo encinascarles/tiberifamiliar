@@ -22,8 +22,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
+  // const session = await auth();
   return (
+    // <SessionProvider session={session}>
     <html lang="en">
       <head>
         <meta
@@ -37,9 +38,10 @@ export default async function RootLayout({
           fontSans.variable
         )}
       >
-        <SessionProvider session={session}>{children}</SessionProvider>
+        {children}
         <Toaster />
       </body>
     </html>
+    // </SessionProvider>
   );
 }

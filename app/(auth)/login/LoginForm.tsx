@@ -21,16 +21,21 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 export const LoginForm = () => {
+  // Get the error from the URL if google oauth failed
   const searchParams = useSearchParams();
   const urlError =
     searchParams.get("error") === "OAuthAccountNotLinked"
-      ? "El correu ja està associat a un compte, prova d'iniciar sessió sense Google"
+      ? "El correu ja està associat a un compte, prova d'iniciar sessió directament"
       : "";
-  const [error, setError] = useState<string | undefined>("");
+
+  // States for displaying error and success messages
+  const [error, setError] = useState<string | undefined>(urlError);
   const [success, setSuccess] = useState<string | undefined>("");
 
+  // Transition for the loading state
   const [isPending, startTransition] = useTransition();
 
+  // Form hook
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -39,10 +44,13 @@ export const LoginForm = () => {
     },
   });
 
+  // Form submission handler
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+    // Reset the error and success messages
     setError("");
     setSuccess("");
 
+    // Login with oauth
     startTransition(() => {
       login(values).then((response) => {
         if (response) {
@@ -55,6 +63,7 @@ export const LoginForm = () => {
       });
     });
   };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 w-full">
@@ -87,21 +96,20 @@ export const LoginForm = () => {
                   placeholder="Contrassenya"
                 />
               </FormControl>
-              <Button
-                size="sm"
-                variant="link"
-                asChild
-                className="px-0 font-normal"
-                type="button"
-              >
-                <Link href="/reset-password">Has oblidat la contrassenya?</Link>
-              </Button>
               <FormMessage />
             </FormItem>
           )}
         />
-
-        <FormError message={error || urlError} />
+        <Button
+          size="sm"
+          variant="link"
+          asChild
+          className="px-0 font-normal"
+          type="button"
+        >
+          <Link href="/reset-password">Has oblidat la contrassenya?</Link>
+        </Button>
+        <FormError message={error} />
         <FormSuccess message={success} />
         <Button type="submit" className="w-full" disabled={isPending}>
           Inicia Sessió amb correu electrònic

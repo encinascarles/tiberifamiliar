@@ -1,6 +1,11 @@
 export default (err: Error) => {
-  if (err.message.startsWith("show:"))
+  if (err.message === "NEXT_REDIRECT") {
+    throw err;
+  }
+
+  if (err.message.startsWith("show:")) {
     return { error: err.message.replace("show: ", "") };
+  }
 
   console.error(err);
   return {

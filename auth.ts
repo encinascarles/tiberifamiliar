@@ -9,7 +9,7 @@ export const {
   signIn,
   signOut,
 } = NextAuth({
-  //secret: "WH/zShoHiG9NoVdaibKrhw85lJFtH9H/2hhOSkCxHCM=", //TODO it fails if not set here
+  secret: "WH/zShoHiG9NoVdaibKrhw85lJFtH9H/2hhOSkCxHCM=", //TODO it fails if not set here
   pages: {
     signIn: "/login",
     error: "/autherror",

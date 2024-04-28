@@ -1,7 +1,7 @@
 "use client";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { LogOut, Settings, User } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   DropdownMenu,
@@ -14,7 +14,9 @@ import {
 import InvitationsButton from "./InvitationsDialog/InvitationsButton";
 
 export const UserDropdownMenu = () => {
-  const user = useCurrentUser();
+  //const user = useCurrentUser();
+  const session = useSession();
+  const user = session.data?.user;
 
   return (
     <DropdownMenu>

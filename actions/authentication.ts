@@ -22,7 +22,8 @@ import * as z from "zod";
 // - Login the user with credentials
 // TYPE: actionResponse | undefined = error | success | undefined;
 export const login = async (
-  values: z.infer<typeof LoginSchema>
+  values: z.infer<typeof LoginSchema>,
+  callbackUrl?: string | null
 ): Promise<actionResponse | undefined> => {
   try {
     // Validate fields
@@ -53,7 +54,7 @@ export const login = async (
       await signIn("credentials", {
         email,
         password,
-        redirectTo: DEFAULT_LOGIN_REDIRECT, //TODO redirect to the previous page
+        redirectTo: callbackUrl || DEFAULT_LOGIN_REDIRECT, //TODO redirect to the previous page
       });
     } catch (error) {
       if (error instanceof AuthError && error.type === "CredentialsSignin")
