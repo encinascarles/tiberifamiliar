@@ -8,7 +8,7 @@ const NewRecipePage = async () => {
     return { error: id.error };
   }
 
-  redirect(`/receptes/${id.id}/edita`);
+  redirect(`/receptes/${id.id}/edita?nou=true`);
 
   return;
 };

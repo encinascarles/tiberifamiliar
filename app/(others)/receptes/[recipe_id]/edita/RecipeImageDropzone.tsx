@@ -1,8 +1,7 @@
 import { deleteRecipeImage, getRecipeSignedImageURL } from "@/actions/recipes";
 import React from "react";
 import ImageDropZone from "@/components/ImageDropZone";
-
-const maxFileSize = 5; // 5MB
+import { MAX_RECIPE_IMAGE_UPLOAD_SIZE } from "@/config";
 
 interface ImageDropzoneProps {
   image?: string | null;
@@ -17,7 +16,7 @@ export const RecipeImageDropZone: React.FC<ImageDropzoneProps> = ({
     <ImageDropZone
       text="Adjunta una foto del plat"
       image={image}
-      maxFileSize={maxFileSize}
+      maxFileSize={MAX_RECIPE_IMAGE_UPLOAD_SIZE}
       getUploadUrl={(fileType: string, fileSize: number, checksum: string) =>
         getRecipeSignedImageURL(fileType, fileSize, checksum, recipeId)
       }

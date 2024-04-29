@@ -6,7 +6,6 @@ import {
 } from "@/actions/recipes";
 import { RecipeImageDropZone } from "@/app/(others)/receptes/[recipe_id]/edita/RecipeImageDropzone";
 import { FormError } from "@/components/formMessages/FormError";
-import { FormSuccess } from "@/components/formMessages/FormSuccess";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -29,10 +28,11 @@ import { useToast } from "@/components/ui/use-toast";
 import { RecipeSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Minus, PencilRuler, Plus, Save, Trash } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
+import EditPageSkeleton from "./EditPageSkeleton";
 
 type FormData = z.infer<typeof RecipeSchema>;
 
@@ -41,21 +41,37 @@ export default function EditRecipePage({
 }: {
   params: { recipe_id: string };
 }) {
-  const [isLoading, setIsLoading] = useState(true);
+  // Get url params
+  const searchParams = useSearchParams();
+  const newRecipe = searchParams.get("nou");
+
+  // States for loading, error and success messages
+  const [isLoading, setIsLoading] = useState(!newRecipe);
+  const [error, setError] = useState<string | undefined>("");
+  const { toast } = useToast();
+
+  // States for showing or hiding recommendations and origin
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [showOrigin, setShowOrigin] = useState(false);
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
+
+  // Transition to disable inputs while submitting
   const [isPending, startTransition] = useTransition();
-  const [title, setTitle] = useState("");
-  const { toast } = useToast();
+
+  // Router to redirect after saving the recipe
   const router = useRouter();
+
+  // Image URL state
   const [image, setImage] = useState<string | null>(null);
 
+  // Form handling
   const form = useForm<FormData>({
     resolver: zodResolver(RecipeSchema),
   });
 
+  // Form watch to get the title
+  const title = form.watch("title");
+
+  // Field arrays for ingredients and steps
   const {
     fields: ingredientFields,
     append: appendIngredient,
@@ -64,7 +80,6 @@ export default function EditRecipePage({
     control: form.control,
     name: "ingredients",
   });
-
   const {
     fields: stepFields,
     append: appendStep,
@@ -74,10 +89,13 @@ export default function EditRecipePage({
     name: "steps",
   });
 
+  // On submit function to save the recipe
   const onSubmit = async (values: z.infer<typeof RecipeSchema>) => {
     startTransition(() => {
+      // Reset the error message
       setError("");
-      setSuccess("");
+
+      // Save the recipe
       saveRecipe(values, params.recipe_id).then((response) => {
         if ("error" in response) {
           setError(response.error);
@@ -87,15 +105,17 @@ export default function EditRecipePage({
           variant: "success",
           description: response.success,
         });
+
+        // Redirect to the recipe page
         router.push(`/receptes/${params.recipe_id}`);
       });
     });
   };
 
+  // On submit function to save the recipe as draft
   const handleDraftSave = async () => {
     startTransition(() => {
       setError("");
-      setSuccess("");
       const values = form.getValues();
       saveDraftRecipe(values, params.recipe_id).then((response) => {
         if ("error" in response) {
@@ -106,17 +126,24 @@ export default function EditRecipePage({
           variant: "success",
           description: response.success,
         });
-        router.push(`/receptes/${params.recipe_id}`);
       });
     });
   };
 
+  // Get the recipe data to edit
   useEffect(() => {
+    // If it's a new recipe, return
+    if (newRecipe) return;
+
+    // Get the recipe data
     getRecipeToEdit(params.recipe_id).then((recipeData) => {
+      // If there's an error, set the error message
       if ("error" in recipeData) {
         setError(recipeData.error);
         return;
       }
+
+      // Set the recipe data to the form
       const {
         title,
         ingredients,
@@ -127,9 +154,7 @@ export default function EditRecipePage({
         prep_time,
         total_time,
       } = recipeData;
-
       form.setValue("title", title!);
-      setTitle(title!);
       form.setValue("prep_time", prep_time!);
       form.setValue("total_time", total_time!);
       if (recommendations) {
@@ -145,7 +170,6 @@ export default function EditRecipePage({
         visibility as "PUBLIC" | "FAMILY" | "PRIVATE"
       );
       setImage(recipeData.image);
-      // Transforma los ingredientes y los pasos a la forma que necesita el formulario
       if (ingredients.length > 0) {
         ingredients.forEach((ingredient) => {
           appendIngredient({ value: ingredient });
@@ -156,13 +180,17 @@ export default function EditRecipePage({
           appendStep({ value: step });
         });
       }
+
+      // Stop the loading state
       setIsLoading(false);
     });
   }, [params.recipe_id, form]);
 
+  // Loading skeleton
   if (isLoading) {
-    return <div>Carregant...</div>;
+    return <EditPageSkeleton />;
   }
+
   return (
     <div className="container max-w-[750px]">
       <h1 className="text-4xl font-bold my-10">
@@ -183,14 +211,7 @@ export default function EditRecipePage({
               <FormItem>
                 <FormLabel>Nom de la recepta</FormLabel>
                 <FormControl>
-                  <Input
-                    disabled={isPending}
-                    {...field}
-                    onChange={(e) => {
-                      field.onChange(e);
-                      setTitle(e.target.value);
-                    }}
-                  />
+                  <Input disabled={isPending} {...field} />
                 </FormControl>
               </FormItem>
             )}
@@ -430,7 +451,6 @@ export default function EditRecipePage({
             )}
           />
           <FormError message={error} />
-          <FormSuccess message={success} />
           {/* Botons de guardar */}
           <div className="flex flex-col gap-4 items-start md:flex-row">
             <Button disabled={isPending} type="submit" className="gap-2">
