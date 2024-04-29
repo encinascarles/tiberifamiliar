@@ -5,6 +5,7 @@ import FamilyCard from "./FamilyCard";
 import NewFamilyCard from "./NewFamilyCard";
 
 const UserFamiliesPage = async () => {
+  // Get the user's families
   const families = await getUserFamilies();
   if ("error" in families) throw new Error(families.error);
 

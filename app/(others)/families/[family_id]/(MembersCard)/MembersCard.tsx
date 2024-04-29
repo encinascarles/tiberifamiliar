@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import MemberScroll from "./MemberScroll";
 import { InviteUserButton } from "../InviteUserButton";
+import MemberScroll from "./MemberScroll";
 
 interface UserScrollProps {
   familyId: string;

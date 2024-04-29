@@ -13,8 +13,8 @@ import {
   UserMinus,
 } from "lucide-react";
 import Link from "next/link";
-import { Avatar, AvatarImage } from "../../../../../components/ui/avatar";
-import { Button } from "../../../../../components/ui/button";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { member } from "@/types";
 
 interface MemberItemProps {
@@ -32,19 +32,19 @@ const MemberItem: React.FC<MemberItemProps> = ({
   handleKickUser,
 }) => {
   return (
-    <div className="flex gap-4 items-center hover:bg-accent rounded-md h-full justify-between">
+    <div className="flex gap-4 items-center hover:bg-accent rounded-md h-full justify-between pr-2 pl-4 py-2">
       <Link
         href={`/users/${member.id}`}
-        className="flex gap-4 items-center cursor-pointer h-full px-4 py-2"
+        className="flex gap-4 items-center cursor-pointer flex-grow"
       >
-        <Avatar className="cursor-pointer h-14 w-14">
+        <Avatar className="cursor-pointer h-14 w-14 flex-shrink-0">
           <AvatarImage
             src={member.image ? member.image : "/default_user.jpg"}
           />
         </Avatar>
-        <div className="flex flex-col">
-          <p className="font-semibold truncate w-full">{member.name}</p>
-        </div>
+        <p className="font-semibold  line-clamp-2 overflow-hidden">
+          {member.name}
+        </p>
       </Link>
       {admin && !member.myself && (
         <DropdownMenu>

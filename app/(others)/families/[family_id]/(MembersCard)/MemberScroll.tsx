@@ -11,6 +11,8 @@ import { member } from "@/types";
 import { useEffect, useState } from "react";
 import { ScrollArea } from "../../../../../components/ui/scroll-area";
 import MemberItem from "./MemberItem";
+import { Skeleton } from "@/components/ui/skeleton";
+import MemberItemSkeleton from "./MemberItemSkeleton";
 
 interface MemberScrollProps {
   familyId: string;
@@ -19,6 +21,7 @@ interface MemberScrollProps {
 const MemberScroll: React.FC<MemberScrollProps> = ({ familyId }) => {
   const [members, setMembers] = useState<member[]>([]);
   const [admin, setAdmin] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const { toast } = useToast();
 
   const getMembers = async () => {
@@ -33,6 +36,7 @@ const MemberScroll: React.FC<MemberScrollProps> = ({ familyId }) => {
     }
     setMembers(response.members);
     setAdmin(response.admin);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -94,6 +98,13 @@ const MemberScroll: React.FC<MemberScrollProps> = ({ familyId }) => {
 
   return (
     <ScrollArea className="max-h-[24rem]">
+      {loading && (
+        <>
+          <MemberItemSkeleton />
+          <MemberItemSkeleton />
+          <MemberItemSkeleton />
+        </>
+      )}
       {members &&
         members.map((member, i) => (
           <MemberItem

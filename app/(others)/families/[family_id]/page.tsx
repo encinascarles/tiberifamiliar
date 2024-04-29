@@ -12,14 +12,16 @@ import {
 } from "@/components/ui/card";
 import FamilyRecipesGrid from "./FamilyRecipesGrid";
 import MembersCard from "./(MembersCard)/MembersCard";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface FamilyPageProps {
   params: { family_id: string };
 }
 
 const FamilyPage: React.FC<FamilyPageProps> = async ({ params }) => {
+  // Fetch family data
   const family = await getFamily(params.family_id);
-  if ("error" in family) return null;
+  if ("error" in family) throw new Error(family.error);
 
   return (
     <div className="px-4 sm:px-8 container">
@@ -32,10 +34,11 @@ const FamilyPage: React.FC<FamilyPageProps> = async ({ params }) => {
                 fill
                 alt="family image"
                 objectFit="cover"
-                className="rounded-t-lg"
+                className="rounded-t-lg z-10"
                 sizes="(max-width: 1024px) 70vw, 100vw"
                 quality={100}
               />
+              <Skeleton className="h-full w-full rounded-b-none rounded-t-lg z-0" />
             </div>
             <CardFooter className="pt-4 flex flex-col sm:flex-row justify-between gap-4 sm:gap-2 items-start">
               <h1 className="text-2xl md:text-3xl font-semibold truncate w-full">
