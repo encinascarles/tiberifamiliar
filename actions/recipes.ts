@@ -11,7 +11,7 @@ import { MAX_RECIPE_IMAGE_UPLOAD_SIZE } from "@/config";
 
 //--------------- GLOBAL TYPES --------------:
 
-type recipesResponse = recipeAndAuthor[] | error;
+export type recipesResponse = recipeAndAuthor[] | error;
 
 //------------------ UTILS ------------------:
 

@@ -1,6 +1,5 @@
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { currentUser } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { ChefHat, CookingPot } from "lucide-react";
 import Image from "next/image";
@@ -27,8 +26,6 @@ const RecipeCard = async ({
   personal?: boolean;
   draft?: boolean;
 }) => {
-  const user = await currentUser();
-  console.log(image);
   return (
     <Card className="w-[400] h-[400]">
       <Link
@@ -45,7 +42,7 @@ const RecipeCard = async ({
         </div>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            {title}
+            <span className="truncate w-full">{title}</span>
             {!personal && (
               <Avatar className="cursor-pointer h-12 w-12">
                 <AvatarImage
@@ -59,23 +56,28 @@ const RecipeCard = async ({
       <CardContent>
         <div
           className={cn(
-            "flex items-center",
+            "flex items-center w-full",
             personal ? "justify-start" : "justify-between"
           )}
         >
           {!personal && (
-            <Link href="perfil/_userid_n" passHref>
-              <span className="hover:text-orange-500">{user_name}</span>
-            </Link>
+            <span className="hover:text-orange-500 truncate">
+              <Link href="perfil/_userid_n" className="w-full" passHref>
+                {user_name}
+              </Link>
+            </span>
           )}
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-shrink-0">
             <div className="flex items-center">
-              <ChefHat className="h-5" />
-              <p>{prep_time} min</p>
+              <ChefHat className="h-7 text-orange-500" />
+              <p className="font-bold tracking-tighter">{prep_time + "'"}</p>
             </div>
             <div className="flex items-center">
-              <CookingPot className="h-5" />
-              <p>{total_time} min</p>
+              <CookingPot className="h-6 text-orange-500" />
+              <p className="font-bold tracking-tighter">
+                {total_time}
+                <span className="font-extrabold">{"'"}</span>
+              </p>
             </div>
           </div>
         </div>

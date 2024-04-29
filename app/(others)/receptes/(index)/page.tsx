@@ -1,26 +1,35 @@
+import {
+  getFamiliesRecipes,
+  getPersonalRecipes,
+  getPublicRecipes,
+} from "@/actions/recipes";
 import RecipesCarousel from "./RecipesCarousel";
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Fetch all recipes
+  const [personalRecipes, familiesRecipes, publicRecipes] = await Promise.all([
+    getPersonalRecipes(),
+    getFamiliesRecipes(),
+    getPublicRecipes(),
+  ]);
+
+  // Check if there was an error fetching the recipes
+  if (
+    "error" in personalRecipes ||
+    "error" in familiesRecipes ||
+    "error" in publicRecipes
+  )
+    throw new Error("Error carregant les receptes");
+
   return (
     <div className="md:container">
-      <div className="flex justify-start items-center gap-6">
-        <h1 className="ml-8 2xl:ml-0 text-4xl font-bold my-10 mr-10">
-          Receptes Personals
-        </h1>
-      </div>
-      <RecipesCarousel type="personal" />
-      <div className="flex justify-start items-center gap-6">
-        <h1 className="ml-8 2xl:ml-0 text-4xl font-bold my-10 mr-10">
-          Receptes Familiars
-        </h1>
-      </div>
-      <RecipesCarousel type="families" />
-      <div className="flex justify-start items-center gap-6">
-        <h1 className="ml-8 2xl:ml-0 text-4xl font-bold my-10 mr-10">
-          Receptes Publiques
-        </h1>
-      </div>
-      <RecipesCarousel type="public" />
+      <RecipesCarousel
+        recipes={personalRecipes}
+        title="Receptes Personals"
+        personal
+      />
+      <RecipesCarousel recipes={familiesRecipes} title="Receptes Familiars" />
+      <RecipesCarousel recipes={publicRecipes} title="Receptes Publiques" />
     </div>
   );
 }
