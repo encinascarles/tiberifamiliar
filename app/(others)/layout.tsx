@@ -13,11 +13,9 @@ export default async function MainLayout({
   return (
     <>
       <SessionProvider session={session}>
-        <div className="flex flex-col justify-between h-full">
-          <div>
-            <Header />
-            <main>{children}</main>
-          </div>
+        <div className="flex flex-col min-h-screen">
+          <Header />
+          <main className="flex-grow flex flex-col">{children}</main>
           <Footer />
         </div>
       </SessionProvider>

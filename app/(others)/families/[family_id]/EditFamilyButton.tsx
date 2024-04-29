@@ -71,7 +71,7 @@ export function EditFamilyButton({
     <Dialog>
       <DialogTrigger asChild>
         <Button className="gap-2">
-          <Pencil className="w-5 h-5" />
+          <Pencil size={20} />
           Edita la familia
         </Button>
       </DialogTrigger>

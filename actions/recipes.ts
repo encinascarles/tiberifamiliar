@@ -682,7 +682,7 @@ export const createEmptyRecipe =
   };
 
 // - Provide a signed URL for the client to upload a recipe image and update the recipe with the new image
-type getRecipeSignedImageURLResponse =
+export type getRecipeSignedImageURLResponse =
   | { uploadUrl: string; image: string }
   | error;
 export async function getRecipeSignedImageURL(

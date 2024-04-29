@@ -8,7 +8,7 @@ export default function AuthLayout({
 }) {
   return (
     <div className="w-screen sm:container h-svh min-h-[600px] flex items-center justify-center">
-      <Card className="margin-auto relative flex h-[80vh] min-h-[600px] w-full border-0 sm:border shadow-none sm:shadow-sm items-center">
+      <Card className=" relative flex h-[80vh] min-h-[600px] w-full border-0 sm:border shadow-none sm:shadow-sm items-center">
         <div className="hidden lg:block h-full w-6/12">
           <div className="flex rounded-l-lg h-full bg-orange-600 p-14 text-white flex-col justify-between tracking-wide">
             <Link href="/">

@@ -1,7 +1,7 @@
 "use server";
 import { getFamily } from "@/actions/families";
-import { EditFamilyButton } from "@/app/(others)/families/[family_id]/EditFamilyButton";
-import { LeaveFamilyButton } from "@/app/(others)/families/[family_id]/LeaveFamilyButton";
+import { EditFamilyButton } from "./EditFamilyButton";
+import { LeaveFamilyButton } from "./LeaveFamilyButton";
 import Image from "next/image";
 import {
   Card,
@@ -9,7 +9,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "../../../../components/ui/card";
+} from "@/components/ui/card";
 import FamilyRecipesGrid from "./FamilyRecipesGrid";
 import MembersCard from "./(MembersCard)/MembersCard";
 
@@ -22,7 +22,7 @@ const FamilyPage: React.FC<FamilyPageProps> = async ({ params }) => {
   if ("error" in family) return null;
 
   return (
-    <div className="container">
+    <div className="px-4 sm:px-8 container">
       <div className="flex flex-col gap-4">
         <div className="flex flex-col lg:flex-row justify-between gap-4 mt-4 items-start">
           <Card className="w-full lg:w-8/12">
@@ -33,11 +33,15 @@ const FamilyPage: React.FC<FamilyPageProps> = async ({ params }) => {
                 alt="family image"
                 objectFit="cover"
                 className="rounded-t-lg"
+                sizes="(max-width: 1024px) 70vw, 100vw"
+                quality={100}
               />
             </div>
-            <CardFooter className="pt-4 flex justify-between">
-              <h1 className="text-3xl font-semibold">{family.name}</h1>
-              <div className="space-x-2">
+            <CardFooter className="pt-4 flex flex-col sm:flex-row justify-between gap-4 sm:gap-2 items-start">
+              <h1 className="text-2xl md:text-3xl font-semibold truncate w-full">
+                {family.name}
+              </h1>
+              <div className="gap-2 flex flex-row">
                 <LeaveFamilyButton familyId={family.id} />
                 {family.admin && (
                   <EditFamilyButton
@@ -60,8 +64,14 @@ const FamilyPage: React.FC<FamilyPageProps> = async ({ params }) => {
             <p>{family.description}</p>
           </CardContent>
         </Card>
-
-        <FamilyRecipesGrid familyId={family.id} />
+        <Card>
+          <CardHeader>
+            <CardTitle>Receptes</CardTitle>
+          </CardHeader>
+          <CardContent className="px-4 md:px-6">
+            <FamilyRecipesGrid familyId={family.id} />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

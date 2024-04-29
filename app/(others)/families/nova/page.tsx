@@ -57,7 +57,7 @@ export default function NewFamilyPage() {
   };
 
   return (
-    <div className="container">
+    <div className="container max-w-[750px]">
       <h1 className="text-4xl font-bold my-10">Nova Familia</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">

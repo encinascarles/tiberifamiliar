@@ -60,8 +60,8 @@ export function InviteUserButton({ familyId }: { familyId: string }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="mt-4 mx-4 gap-2">
-          <UserPlus className="w-5 h-5" /> Convida un nou membre
+        <Button className="mt-4 gap-2">
+          <UserPlus size={20} /> Convida un nou membre
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

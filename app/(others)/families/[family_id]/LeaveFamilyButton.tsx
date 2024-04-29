@@ -37,7 +37,7 @@ export function LeaveFamilyButton({ familyId }: { familyId: string }) {
       onClick={() => handleClick()}
       disabled={isPending}
     >
-      <LogOut className="w-5 h-5" />
+      <LogOut size={20} />
       Surt
     </Button>
   );

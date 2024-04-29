@@ -21,6 +21,7 @@ const config = {
     extend: {
       screens: {
         headerbp: "915px",
+        xs: "500px",
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],

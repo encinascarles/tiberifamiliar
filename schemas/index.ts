@@ -93,7 +93,10 @@ export const DraftRecipeSchema = z.object({
 });
 
 export const FamilySchema = z.object({
-  name: z.string().min(1, "El nom no pot estar buit"),
+  name: z
+    .string()
+    .min(1, "El nom no pot estar buit")
+    .max(20, "El nom és massa llarg"),
   description: z.string().min(1, "La descripció no pot estar buida"),
 });
 

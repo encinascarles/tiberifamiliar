@@ -1,94 +1,108 @@
-import { deleteRecipeImage, getRecipeSignedImageURL } from "@/actions/recipes";
+"use client";
+
+import { getRecipeSignedImageURLResponse } from "@/actions/recipes";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { computeSHA256 } from "@/lib/utils";
+import { actionResponse } from "@/types";
 import { ImagePlus, LoaderCircle, SquarePlus, TrashIcon } from "lucide-react";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 
-const computeSHA256 = async (file: File) => {
-  const buffer = await file.arrayBuffer();
-  const hashBuffer = await crypto.subtle.digest("SHA-256", buffer);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
-  return hashHex;
-};
-
-const maxFileSize = 5; // 3MB
-
 interface ImageDropzoneProps {
+  text?: string;
   image?: string | null;
-  recipeId: string;
+  maxFileSize?: number;
+  getUploadUrl: (
+    arg0: string,
+    arg1: number,
+    arg3: string
+  ) => Promise<getRecipeSignedImageURLResponse>;
+  deleteImage: (arg0: string) => Promise<actionResponse>;
 }
 
-export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
+const ImageDropZone: React.FC<ImageDropzoneProps> = ({
+  text,
   image,
-  recipeId,
+  maxFileSize,
+  getUploadUrl,
+  deleteImage,
 }) => {
+  // Reference to the file input element to pass in clicks
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const [error, setError] = useState<string | null>(null);
+
+  // State to manage drag and drop events
   const [isDragOver, setIsDragOver] = useState(false);
+
+  // State to manage the image to be displayed
   const [imageSrc, setImageSrc] = useState<string | null>(image!!);
+
+  // State to manage errors and loading state
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Drag and drop event handlers
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragOver(true);
   };
-
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragOver(false);
   };
-
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
+    setIsDragOver(true);
     const { files } = e.dataTransfer;
     handleFile(files[0]);
   };
 
+  // Click event handler
   const handleDropzoneClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
 
+  // Handle file input change
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
     if (files) {
       handleFile(files[0]);
     }
   };
-
   const handleFile = async (file: File) => {
+    // Check if user provided an image (necessary when you drop a file in the dropzone without clicking the input)
     if (!file.type.startsWith(`image/`)) {
       setError(`Format d'imatge no vàlid`);
       return;
     }
 
+    // Check if the image is too big
     const fileSizeInKB = Math.round(file.size / 1024);
     if (maxFileSize && fileSizeInKB > maxFileSize * 1024) {
       setError(`La imatge ha d'ocupar menys de ${maxFileSize} MB`);
       return;
     }
 
+    // Reset error and loading state
     setError(null);
     setIsLoading(true);
+
+    // Compute checksum and get signed URL
     const checksum = await computeSHA256(file);
-    const signedURL = await getRecipeSignedImageURL(
-      file.type,
-      file.size,
-      checksum,
-      recipeId
-    );
+    const signedURL = await getUploadUrl(file.type, file.size, checksum);
+
+    // Check if there was an error getting the signed URL
     if ("error" in signedURL) {
       setError("Error pujant la Imatge");
       return;
     }
+
+    // Upload image to S3
     try {
       await fetch(signedURL.uploadUrl, {
         method: "PUT",
@@ -101,39 +115,49 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
       setError("Error pujant la imatge");
       return;
     }
+
+    // Set image source
     setImageSrc(signedURL.image);
+
     setIsLoading(false);
   };
 
+  // Handle delete image
   const handleDelete = async () => {
+    // Only delete if there is an image
     if (imageSrc) {
-      deleteRecipeImage(imageSrc).then(() => {});
       setImageSrc(null);
+      await deleteImage(imageSrc);
     }
   };
 
   return (
     <>
-      {isLoading ? (
-        <Card className="w-full aspect-[4/3] flex items-center justify-center">
-          <LoaderCircle className="animate-spin h-8 w-8 text-primary" />
-        </Card>
-      ) : imageSrc ? (
+      {imageSrc || isLoading ? (
         <Card className="w-full aspect-[4/3] relative">
-          <Image
-            src={imageSrc}
-            alt="Imatge del plat"
-            fill
-            className="object-cover w-full h-full rounded-lg"
-          />
-          <Button
-            className="absolute bottom-2 right-2 bg-black/30 hover:bg-black/50"
-            size="icon"
-            variant="ghost"
-            onClick={() => handleDelete()}
-          >
-            <TrashIcon className="text-white" />{" "}
-          </Button>
+          {imageSrc && (
+            <>
+              {" "}
+              <Image
+                src={imageSrc}
+                alt="Imatge del plat"
+                fill
+                className="object-cover w-full h-full rounded-lg z-10"
+              />
+              <Button
+                className="absolute bottom-2 right-2 bg-black/30 hover:bg-black/50 z-20"
+                size="icon"
+                variant="ghost"
+                onClick={() => handleDelete()}
+              >
+                {" "}
+                <TrashIcon className="text-white" />{" "}
+              </Button>
+            </>
+          )}
+          <div className="w-full aspect-[4/3] flex items-center justify-center z-0">
+            <LoaderCircle className="animate-spin h-8 w-8 text-primary" />
+          </div>
         </Card>
       ) : (
         <Card
@@ -156,7 +180,7 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
                   </>
                 ) : (
                   <>
-                    <ImagePlus /> Adjunta una foto del plat
+                    <ImagePlus /> {text ? text : "Adjunta una foto"}
                   </>
                 )}
               </span>
@@ -175,3 +199,5 @@ export const ImageDropzone: React.FC<ImageDropzoneProps> = ({
     </>
   );
 };
+
+export default ImageDropZone;

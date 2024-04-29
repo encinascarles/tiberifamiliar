@@ -4,7 +4,7 @@ import {
   saveDraftRecipe,
   saveRecipe,
 } from "@/actions/recipes";
-import { ImageDropzone } from "@/components/customUi/Dropzone";
+import { RecipeImageDropZone } from "@/app/(others)/receptes/[recipe_id]/edita/RecipeImageDropzone";
 import { FormError } from "@/components/formMessages/FormError";
 import { FormSuccess } from "@/components/formMessages/FormSuccess";
 import { Button } from "@/components/ui/button";
@@ -168,7 +168,7 @@ export default function EditRecipePage({
       <h1 className="text-4xl font-bold my-10">
         {title ? title : <>Nova Recepta</>}
       </h1>
-      <ImageDropzone recipeId={params.recipe_id} image={image} />
+      <RecipeImageDropZone recipeId={params.recipe_id} image={image} />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-8">
           {/* Nom de la recepta */}
