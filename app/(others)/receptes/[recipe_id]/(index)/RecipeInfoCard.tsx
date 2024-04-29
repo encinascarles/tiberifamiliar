@@ -8,7 +8,7 @@ interface RecipeInfoCardProps {
 
 const RecipeInfoCard: React.FC<RecipeInfoCardProps> = ({ recipe }) => {
   return (
-    <Card className="mt-10">
+    <Card>
       <CardHeader>
         <CardTitle>Ingredients</CardTitle>
       </CardHeader>

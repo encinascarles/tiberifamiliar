@@ -6,11 +6,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 interface RecipeSideInfoCardProps {
   recipe: recipeAndAuthor;
+  isOverflowing: boolean;
 }
 
-const RecipeImageCard: React.FC<RecipeSideInfoCardProps> = ({ recipe }) => {
+const RecipeImageCard: React.FC<RecipeSideInfoCardProps> = ({
+  recipe,
+  isOverflowing,
+}) => {
   return (
-    <Card className="w-full lg:w-8/12">
+    <Card className={`w-full ${!isOverflowing && "lg:w-8/12"}`}>
       <div className="aspect-[4/3] relative">
         <Image
           src={recipe.image ? recipe.image : "/demo_images/recipe_image.jpg"}

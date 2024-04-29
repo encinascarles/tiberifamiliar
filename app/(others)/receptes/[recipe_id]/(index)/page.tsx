@@ -1,7 +1,6 @@
 import { getRecipe } from "@/actions/recipes";
-import RecipeImageCard from "./RecipeImageCard";
 import RecipeInfoCard from "./RecipeInfoCard";
-import RecipeSideInfoCard from "./RecipeSideInfoCard";
+import RecipeMainCards from "./RecipeMainCards";
 
 export default async function ShowRecipePage({
   params,
@@ -12,12 +11,9 @@ export default async function ShowRecipePage({
   if ("error" in recipe) return;
 
   return (
-    <div className="container">
+    <div className="container mt-4">
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col lg:flex-row justify-between gap-4 mt-4 items-start">
-          <RecipeImageCard recipe={recipe} />
-          <RecipeSideInfoCard recipe={recipe} />
-        </div>
+        <RecipeMainCards recipe={recipe} />
         <RecipeInfoCard recipe={recipe} />
       </div>
     </div>
