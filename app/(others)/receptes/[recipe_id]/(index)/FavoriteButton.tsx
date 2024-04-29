@@ -3,7 +3,7 @@ import { isFavoriteRecipe, toggleFavoriteRecipe } from "@/actions/recipes";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Heart } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface FavoriteButtonProps {
   recipeId: string;
@@ -14,17 +14,17 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ recipeId }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { toast } = useToast();
 
-  const fetchIsFavorite = async () => {
+  const fetchIsFavorite = useCallback(async () => {
     setIsLoading(true);
     const response = await isFavoriteRecipe(recipeId);
     if ("error" in response) return;
     setIsFavorite(response.favorite);
     setIsLoading(false);
-  };
+  }, [recipeId]);
 
   useEffect(() => {
     fetchIsFavorite();
-  }, []);
+  }, [fetchIsFavorite]);
 
   const handleClick = async () => {
     // Add or remove from favorites

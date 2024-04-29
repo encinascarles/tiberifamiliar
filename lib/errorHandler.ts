@@ -1,4 +1,4 @@
-export default (err: Error) => {
+const errorHandler = (err: Error) => {
   if (err.message === "NEXT_REDIRECT") {
     throw err;
   }
@@ -12,3 +12,5 @@ export default (err: Error) => {
     error: "S'ha produït un error. Si us plau, torna-ho a provar més tard.",
   };
 };
+
+export default errorHandler;

@@ -3,14 +3,14 @@ import {
   getPersonalRecipes,
   getPublicRecipes,
 } from "@/actions/recipes";
-import RecipeCard from "../../../../components/RecipeCard";
+import RecipeCard from "@/components/RecipeCard";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "../../../../components/ui/carousel";
+} from "@/components/ui/carousel";
 
 export default async function RecipesCarousel({
   type,

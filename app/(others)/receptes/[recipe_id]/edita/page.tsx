@@ -29,7 +29,7 @@ import { RecipeSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Minus, PencilRuler, Plus, Save, Trash } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { use, useCallback, useEffect, useState, useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import EditPageSkeleton from "./EditPageSkeleton";
@@ -130,61 +130,60 @@ export default function EditRecipePage({
     });
   };
 
-  // Get the recipe data to edit
-  useEffect(() => {
+  const getRecipe = useCallback(async () => {
     // If it's a new recipe, return
     if (newRecipe) return;
 
     // Get the recipe data
-    getRecipeToEdit(params.recipe_id).then((recipeData) => {
-      // If there's an error, set the error message
-      if ("error" in recipeData) {
-        setError(recipeData.error);
-        return;
-      }
+    const recipeData = await getRecipeToEdit(params.recipe_id);
+    if ("error" in recipeData) {
+      setError(recipeData.error);
+      return;
+    }
 
-      // Set the recipe data to the form
-      const {
-        title,
-        ingredients,
-        steps,
-        visibility,
-        recommendations,
-        origin,
-        prep_time,
-        total_time,
-      } = recipeData;
-      form.setValue("title", title!);
-      form.setValue("prep_time", prep_time!);
-      form.setValue("total_time", total_time!);
-      if (recommendations) {
-        setShowRecommendations(true);
-        form.setValue("recommendations", recommendations);
-      }
-      if (origin) {
-        setShowOrigin(true);
-        form.setValue("origin", origin);
-      }
-      form.setValue(
-        "visibility",
-        visibility as "PUBLIC" | "FAMILY" | "PRIVATE"
-      );
-      setImage(recipeData.image);
-      if (ingredients.length > 0) {
-        ingredients.forEach((ingredient) => {
-          appendIngredient({ value: ingredient });
-        });
-      }
-      if (steps.length > 0) {
-        steps.forEach((step) => {
-          appendStep({ value: step });
-        });
-      }
+    // Set the recipe data to the form
+    const {
+      title,
+      ingredients,
+      steps,
+      visibility,
+      recommendations,
+      origin,
+      prep_time,
+      total_time,
+    } = recipeData;
+    form.setValue("title", title!);
+    form.setValue("prep_time", prep_time!);
+    form.setValue("total_time", total_time!);
+    if (recommendations) {
+      setShowRecommendations(true);
+      form.setValue("recommendations", recommendations);
+    }
+    if (origin) {
+      setShowOrigin(true);
+      form.setValue("origin", origin);
+    }
+    form.setValue("visibility", visibility as "PUBLIC" | "FAMILY" | "PRIVATE");
+    setImage(recipeData.image);
+    if (ingredients.length > 0) {
+      ingredients.forEach((ingredient) => {
+        appendIngredient({ value: ingredient });
+      });
+    }
+    if (steps.length > 0) {
+      steps.forEach((step) => {
+        appendStep({ value: step });
+      });
+    }
 
-      // Stop the loading state
-      setIsLoading(false);
-    });
-  }, [params.recipe_id, form]);
+    // Stop the loading state
+    setIsLoading(false);
+  }, [appendIngredient, appendStep, newRecipe, params.recipe_id, form]);
+
+  // Get the recipe data to edit
+  useEffect(() => {
+    getRecipe();
+  }, [getRecipe]);
 
   // Loading skeleton
   if (isLoading) {

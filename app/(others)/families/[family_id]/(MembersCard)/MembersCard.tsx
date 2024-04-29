@@ -22,7 +22,7 @@ const MembersCard: React.FC<UserScrollProps> = async ({ familyId, admin }) => {
         <div className="flex flex-col">
           <MemberScroll
             familyId={familyId}
-            getMembersResponse={membersResponse}
+            MembersResponse={membersResponse}
             admin={admin}
           />
           {admin && <InviteUserButton familyId={familyId} />}

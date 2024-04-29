@@ -43,7 +43,7 @@ const NewVerificationClient = () => {
       });
       router.push("/login");
     });
-  }, [token, error]);
+  }, [token, router, toast]);
 
   // Call the submission handler on mount
   useEffect(() => {

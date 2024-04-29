@@ -14,13 +14,13 @@ import MemberItem from "./MemberItem";
 
 interface MemberScrollProps {
   familyId: string;
-  getMembersResponse: getFamilyMembersResponse;
+  MembersResponse: getFamilyMembersResponse;
   admin: boolean;
 }
 
 const MemberScroll: React.FC<MemberScrollProps> = ({
   familyId,
-  getMembersResponse,
+  MembersResponse: MembersResponse,
   admin,
 }) => {
   // State for members
@@ -31,16 +31,16 @@ const MemberScroll: React.FC<MemberScrollProps> = ({
 
   // Update members when getMembersResponse changes
   useEffect(() => {
-    if ("error" in getMembersResponse) {
+    if ("error" in MembersResponse) {
       toast({
         title: "Error",
-        description: getMembersResponse.error,
+        description: MembersResponse.error,
         variant: "destructive",
       });
     } else {
-      setMembers(getMembersResponse.members);
+      setMembers(MembersResponse.members);
     }
-  }, [getMembersResponse]);
+  }, [MembersResponse, toast]);
 
   // Promote user handler
   const handlePromoteUser = async (userId: string) => {
@@ -138,6 +138,7 @@ const MemberScroll: React.FC<MemberScrollProps> = ({
       {members &&
         members.map((member, i) => (
           <MemberItem
+            key={i}
             member={member}
             admin={admin}
             handlePromoteUser={handlePromoteUser}
