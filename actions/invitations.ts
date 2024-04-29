@@ -3,6 +3,7 @@ import { safeGetSessionUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import errorHandler from "@/lib/errorHandler";
 import { actionResponse, error, invitation } from "@/types";
+import { revalidatePath } from "next/cache";
 
 //------------------ UTILS ------------------:
 
@@ -84,6 +85,8 @@ export const acceptInvitation = async (
       },
     });
 
+    // Revalidate family page
+    revalidatePath(`/families/${invitation.familyId}`, "page");
     return { success: "Invitació acceptada!" };
   } catch (e: any) {
     return errorHandler(e);

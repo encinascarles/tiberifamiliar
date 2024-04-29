@@ -4,7 +4,7 @@ import { MAX_FAMILY_IMAGE_UPLOAD_SIZE } from "@/config";
 import React from "react";
 
 interface ImageDropzoneProps {
-  imageUrl: string | undefined;
+  imageUrl: string | null | undefined;
   setImageUrl: (arg0: string) => void;
 }
 
@@ -14,7 +14,7 @@ const FamilyImageDropZone: React.FC<ImageDropzoneProps> = ({
 }) => {
   return (
     <ImageDropZone
-      // image={imageUrl}
+      image={imageUrl}
       setImageUrl={setImageUrl}
       text="Adjunta una foto de la familia"
       maxFileSize={MAX_FAMILY_IMAGE_UPLOAD_SIZE}

@@ -6,14 +6,15 @@ import errorHandler from "@/lib/errorHandler";
 import { deleteFile, getUploadFileUrl } from "@/lib/s3";
 import { FamilySchema, InviteUserSchema } from "@/schemas";
 import { actionResponse, error, family, member, success } from "@/types";
+import { revalidatePath } from "next/cache";
 import * as z from "zod";
 
 //------------------ UTILS ------------------:
 
-// - Check if the user is a member of the family and obtain the user
+// - Check if the user is a member of the family and obtain the user and membership
 export const checkUserFamilyMember = async (
   familyId: string,
-  checkAdmin: boolean = true
+  checkAdmin: boolean = false
 ) => {
   // Get current user from the session
   const user = await safeGetSessionUser();
@@ -104,7 +105,9 @@ export const getFamily = async (
 };
 
 // - Get family members
-type getFamilyMembersResponse = error | { members: member[]; admin: boolean };
+export type getFamilyMembersResponse =
+  | error
+  | { members: member[]; admin: boolean };
 export const getFamilyMembers = async (
   familyId: string
 ): Promise<getFamilyMembersResponse> => {
@@ -285,7 +288,7 @@ export const editFamily = async (
     // Validate fields
     const validatedFields = FamilySchema.safeParse(values);
     if (!validatedFields.success) throw new Error("show: Camps invàlids!");
-    const { name, description } = validatedFields.data;
+    const { name, description, image } = validatedFields.data;
 
     //Check if the user is an admin of the family
     await checkUserFamilyMember(familyId, true);
@@ -298,9 +301,11 @@ export const editFamily = async (
       data: {
         name,
         description,
+        image,
       },
     });
 
+    revalidatePath(`/families/${familyId}`, "page");
     return { success: "Familia actualitzada amb èxit!" };
   } catch (e: any) {
     return errorHandler(e);

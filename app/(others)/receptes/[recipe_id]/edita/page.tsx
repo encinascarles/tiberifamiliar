@@ -168,9 +168,13 @@ export default function EditRecipePage({
       <h1 className="text-4xl font-bold my-10">
         {title ? title : <>Nova Recepta</>}
       </h1>
-      <RecipeImageDropZone recipeId={params.recipe_id} image={image} />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 mt-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          {/* Imatge de la recepta */}
+          <div className="space-y-2">
+            <p className="text-sm font-medium leading-none">Imatge</p>
+            <RecipeImageDropZone recipeId={params.recipe_id} image={image} />
+          </div>
           {/* Nom de la recepta */}
           <FormField
             control={form.control}

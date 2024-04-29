@@ -2,7 +2,7 @@
 
 import {
   demoteUser,
-  getFamilyMembers,
+  getFamilyMembersResponse,
   kickUser,
   promoteUser,
 } from "@/actions/families";
@@ -11,41 +11,56 @@ import { member } from "@/types";
 import { useEffect, useState } from "react";
 import { ScrollArea } from "../../../../../components/ui/scroll-area";
 import MemberItem from "./MemberItem";
-import { Skeleton } from "@/components/ui/skeleton";
-import MemberItemSkeleton from "./MemberItemSkeleton";
 
 interface MemberScrollProps {
   familyId: string;
+  getMembersResponse: getFamilyMembersResponse;
+  admin: boolean;
 }
 
-const MemberScroll: React.FC<MemberScrollProps> = ({ familyId }) => {
+const MemberScroll: React.FC<MemberScrollProps> = ({
+  familyId,
+  getMembersResponse,
+  admin,
+}) => {
+  // State for members
   const [members, setMembers] = useState<member[]>([]);
-  const [admin, setAdmin] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
+
+  // Toast hook
   const { toast } = useToast();
 
-  const getMembers = async () => {
-    const response = await getFamilyMembers(familyId);
-    if ("error" in response) {
-      toast({
-        title: "Error",
-        description: response.error,
-        variant: "destructive",
-      });
-      return;
-    }
-    setMembers(response.members);
-    setAdmin(response.admin);
-    setLoading(false);
-  };
-
+  // Update members when getMembersResponse changes
   useEffect(() => {
-    getMembers();
-  }, []);
+    if ("error" in getMembersResponse) {
+      toast({
+        title: "Error",
+        description: getMembersResponse.error,
+        variant: "destructive",
+      });
+    } else {
+      setMembers(getMembersResponse.members);
+    }
+  }, [getMembersResponse]);
 
+  // Promote user handler
   const handlePromoteUser = async (userId: string) => {
+    // Be optimistic
+    const pastMembers = members;
+    setMembers(
+      members.map((member) => {
+        if (member.id === userId) {
+          member.role = "ADMIN";
+        }
+        return member;
+      })
+    );
+
+    // Promote user
     const response = await promoteUser(userId, familyId);
+
+    // If error, revert changes and show error toast
     if ("error" in response) {
+      setMembers(pastMembers);
       toast({
         title: "Error",
         description: response.error,
@@ -53,7 +68,6 @@ const MemberScroll: React.FC<MemberScrollProps> = ({ familyId }) => {
       });
       return;
     }
-    getMembers();
     toast({
       title: "Usuari promocionat",
       description: response.success,
@@ -61,9 +75,25 @@ const MemberScroll: React.FC<MemberScrollProps> = ({ familyId }) => {
     });
   };
 
+  // Demote user handler
   const handleDemoteUser = async (userId: string) => {
+    // Be optimistic
+    const pastMembers = members;
+    setMembers(
+      members.map((member) => {
+        if (member.id === userId) {
+          member.role = "MEMBER";
+        }
+        return member;
+      })
+    );
+
+    // Demote user
     const response = await demoteUser(userId, familyId);
+
+    // If error, revert changes and show error toast
     if ("error" in response) {
+      setMembers(pastMembers);
       toast({
         title: "Error",
         description: response.error,
@@ -71,7 +101,6 @@ const MemberScroll: React.FC<MemberScrollProps> = ({ familyId }) => {
       });
       return;
     }
-    getMembers();
     toast({
       title: "Usuari descartat",
       description: response.success,
@@ -79,16 +108,24 @@ const MemberScroll: React.FC<MemberScrollProps> = ({ familyId }) => {
     });
   };
 
+  // Kick user handler
   const handleKickUser = async (userId: string) => {
+    // Be optimistic
+    const pastMembers = members;
+    setMembers(members.filter((member) => member.id !== userId));
+
+    // Kick user
     const response = await kickUser(userId, familyId);
+
+    // If error, revert changes and show error toast
     if ("error" in response) {
+      setMembers(pastMembers);
       return toast({
         title: "Error",
         description: response.error,
         variant: "destructive",
       });
     }
-    getMembers();
     toast({
       title: "Usuari expulsat",
       description: response.success,
@@ -98,13 +135,6 @@ const MemberScroll: React.FC<MemberScrollProps> = ({ familyId }) => {
 
   return (
     <ScrollArea className="max-h-[24rem]">
-      {loading && (
-        <>
-          <MemberItemSkeleton />
-          <MemberItemSkeleton />
-          <MemberItemSkeleton />
-        </>
-      )}
       {members &&
         members.map((member, i) => (
           <MemberItem

@@ -90,11 +90,7 @@ export const RegisterForm = () => {
           </FormItem>
         )}
       />
-      <Button
-        className="w-full mt-2"
-        type="button"
-        onClick={() => setShowDialog(true)}
-      >
+      <Button className="w-full mt-2" type="button" onClick={openDialog}>
         Registra&apos;t amb correu electrònic
       </Button>
       <Dialog

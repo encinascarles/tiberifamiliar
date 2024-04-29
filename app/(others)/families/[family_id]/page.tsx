@@ -13,6 +13,7 @@ import {
 import FamilyRecipesGrid from "./FamilyRecipesGrid";
 import MembersCard from "./(MembersCard)/MembersCard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Suspense } from "react";
 
 interface FamilyPageProps {
   params: { family_id: string };
@@ -51,12 +52,15 @@ const FamilyPage: React.FC<FamilyPageProps> = async ({ params }) => {
                     familyId={params.family_id}
                     name={family.name as string}
                     description={family.description as string}
+                    image={family.image}
                   />
                 )}
               </div>
             </CardFooter>
           </Card>
-          <MembersCard familyId={family.id} admin={family.admin} />
+          <Suspense fallback={<Skeleton className="w-full lg:w-4/12 h-48" />}>
+            <MembersCard familyId={family.id} admin={family.admin} />
+          </Suspense>
         </div>
 
         <Card>
