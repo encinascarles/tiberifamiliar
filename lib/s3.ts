@@ -8,8 +8,6 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 import crypto from "crypto";
 
-export const MAX_UPLOAD_SIZE = 1024 * 1024 * 5; // 3MB
-
 const generateFileName = (bytes = 32) =>
   crypto.randomBytes(bytes).toString("hex");
 

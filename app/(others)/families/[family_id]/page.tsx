@@ -28,7 +28,7 @@ const FamilyPage: React.FC<FamilyPageProps> = async ({ params }) => {
           <Card className="w-full lg:w-8/12">
             <div className="aspect-[4/3] relative">
               <Image
-                src="/demo_images/family.png"
+                src={family.image ? family.image : "/demo_images/family.png"}
                 fill
                 alt="family image"
                 objectFit="cover"

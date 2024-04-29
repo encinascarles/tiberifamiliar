@@ -12,6 +12,7 @@ import React, { useRef, useState } from "react";
 interface ImageDropzoneProps {
   text?: string;
   image?: string | null;
+  setImageUrl?: (arg0: string) => void;
   maxFileSize?: number;
   getUploadUrl: (
     arg0: string,
@@ -24,6 +25,7 @@ interface ImageDropzoneProps {
 const ImageDropZone: React.FC<ImageDropzoneProps> = ({
   text,
   image,
+  setImageUrl,
   maxFileSize,
   getUploadUrl,
   deleteImage,
@@ -98,6 +100,7 @@ const ImageDropZone: React.FC<ImageDropzoneProps> = ({
 
     // Check if there was an error getting the signed URL
     if ("error" in signedURL) {
+      setIsLoading(false);
       setError("Error pujant la Imatge");
       return;
     }
@@ -112,12 +115,14 @@ const ImageDropZone: React.FC<ImageDropzoneProps> = ({
         },
       });
     } catch {
+      setIsLoading(false);
       setError("Error pujant la imatge");
       return;
     }
 
     // Set image source
     setImageSrc(signedURL.image);
+    if (setImageUrl) setImageUrl(signedURL.image);
 
     setIsLoading(false);
   };

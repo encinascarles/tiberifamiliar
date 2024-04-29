@@ -1,0 +1,2 @@
+export const MAX_RECIPE_IMAGE_UPLOAD_SIZE = 5; // MB
+export const MAX_FAMILY_IMAGE_UPLOAD_SIZE = 5; // MB

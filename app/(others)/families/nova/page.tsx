@@ -20,12 +20,15 @@ import {
 import { Input } from "../../../../components/ui/input";
 import { Textarea } from "../../../../components/ui/textarea";
 import { FamilySchema } from "../../../../schemas";
+import FamilyImageDropZone from "./FamilyImageDropzone";
+import { RecipeImageDropZone } from "../../receptes/[recipe_id]/edita/RecipeImageDropzone";
 
 type FormData = z.infer<typeof FamilySchema>;
 
 export default function NewFamilyPage() {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
+  const [imageUrl, setImageUrl] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
   const router = useRouter();
@@ -42,6 +45,8 @@ export default function NewFamilyPage() {
     setError("");
     setSuccess("");
     startTransition(() => {
+      // Add the image URL to the values
+      values.image = imageUrl;
       createFamily(values).then((response) => {
         if ("error" in response) {
           setError(response.error);
@@ -59,6 +64,8 @@ export default function NewFamilyPage() {
   return (
     <div className="container max-w-[750px]">
       <h1 className="text-4xl font-bold my-10">Nova Familia</h1>
+      <FamilyImageDropZone imageUrl={imageUrl} setImageUrl={setImageUrl} />
+      {/* <RecipeImageDropZone recipeId="clvl37vwk0001eektf4yrzkfk" /> */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           {/* Nom de la familia */}

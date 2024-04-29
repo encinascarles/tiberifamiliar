@@ -98,6 +98,7 @@ export const FamilySchema = z.object({
     .min(1, "El nom no pot estar buit")
     .max(20, "El nom és massa llarg"),
   description: z.string().min(1, "La descripció no pot estar buida"),
+  image: z.string().optional(),
 });
 
 export const InviteUserSchema = z.object({

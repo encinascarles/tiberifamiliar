@@ -1,7 +1,9 @@
 "use server";
+import { MAX_FAMILY_IMAGE_UPLOAD_SIZE } from "@/config";
 import { safeGetSessionUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import errorHandler from "@/lib/errorHandler";
+import { deleteFile, getUploadFileUrl } from "@/lib/s3";
 import { FamilySchema, InviteUserSchema } from "@/schemas";
 import { actionResponse, error, family, member, success } from "@/types";
 import * as z from "zod";
@@ -46,7 +48,7 @@ export const createFamily = async (
     if (!validatedFields.success) throw new Error("show: Camps invàlids!");
 
     // Get fields
-    const { name, description } = validatedFields.data;
+    const { name, description, image } = validatedFields.data;
 
     // Get current user
     const user = await safeGetSessionUser();
@@ -56,6 +58,7 @@ export const createFamily = async (
       data: {
         name,
         description,
+        image,
         members: {
           create: {
             userId: user.id as string,
@@ -410,3 +413,89 @@ export const getUserFamilies = async (): Promise<getUserFamiliesResponse> => {
     return errorHandler(e);
   }
 };
+
+// - Provide a signed URL for the client to upload a family
+export type getFamilySignedImageURLResponse =
+  | { uploadUrl: string; image: string }
+  | error;
+export async function getFamilySignedImageURL(
+  type: string,
+  size: number,
+  checksum: string
+): Promise<getFamilySignedImageURLResponse> {
+  try {
+    // Check if the file is an image
+    if (!type.startsWith("image/")) {
+      throw new Error("show: Extensió de l'arxiu invalida");
+    }
+
+    // Check if the file is too big
+    if (size > MAX_FAMILY_IMAGE_UPLOAD_SIZE * 1024 * 1024) {
+      throw new Error(
+        `show: La imatge ha d'ocupar menys de ${MAX_FAMILY_IMAGE_UPLOAD_SIZE}MB`
+      );
+    }
+
+    // Check if the user is logged in
+    await safeGetSessionUser();
+
+    // Get signed URL
+    const { signedURL, fileURL } = await getUploadFileUrl({
+      type,
+      size,
+      checksum,
+      metadata: "familyImage",
+    });
+
+    return { uploadUrl: signedURL, image: fileURL };
+  } catch (e: any) {
+    return errorHandler(e);
+  }
+}
+
+// - Delete family image
+// TYPE: actionResponse = error | success;
+export async function deleteFamilyImage(url: string): Promise<actionResponse> {
+  try {
+    // Get user
+    const user = await safeGetSessionUser();
+
+    await db.$transaction(async () => {
+      // Make sure the user owns the image
+      const family = await db.family.findFirst({
+        where: { image: url },
+        include: {
+          members: {
+            where: {
+              userId: user.id,
+              role: "ADMIN",
+            },
+          },
+        },
+      });
+
+      // If it's not associated with a family, delete the image
+      if (!family) {
+        await deleteFile(url);
+        return;
+      }
+
+      if (family.members.length === 0)
+        throw new Error("show: No autoritzat per eliminar la imatge");
+
+      // Delete the image from the database
+      await db.family.update({
+        where: { id: family.id },
+        data: {
+          image: null,
+        },
+      });
+
+      // Delete the image from the S3 bucket
+      await deleteFile(url);
+    });
+    return { success: "Imatge eliminada amb èxit" };
+  } catch (e: any) {
+    return errorHandler(e);
+  }
+}

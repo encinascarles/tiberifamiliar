@@ -2,11 +2,12 @@
 import { safeGetSessionUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import errorHandler from "@/lib/errorHandler";
-import { MAX_UPLOAD_SIZE, deleteFile, getUploadFileUrl } from "@/lib/s3";
+import { deleteFile, getUploadFileUrl } from "@/lib/s3";
 import { DraftRecipeSchema, RecipeSchema } from "@/schemas";
 import { actionResponse, draftRecipe, error, recipeAndAuthor } from "@/types";
 import * as z from "zod";
 import { checkUserFamilyMember } from "./families";
+import { MAX_RECIPE_IMAGE_UPLOAD_SIZE } from "@/config";
 
 //--------------- GLOBAL TYPES --------------:
 
@@ -698,7 +699,7 @@ export async function getRecipeSignedImageURL(
     }
 
     // Check if the file is too big
-    if (size > MAX_UPLOAD_SIZE) {
+    if (size > MAX_RECIPE_IMAGE_UPLOAD_SIZE * 1024 * 1024) {
       throw new Error("show: La imatge ha d'ocupar menys de 3MB");
     }
 
