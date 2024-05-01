@@ -1,20 +1,25 @@
-"use client";
-
-import { LogOut } from "lucide-react";
+import { deleteRecipe } from "@/actions/recipes";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { useTransition } from "react";
-import { leaveFamily } from "@/actions/families";
+import { cn } from "@/lib/utils";
+import { recipeAndAuthor } from "@/types";
+import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 
-export function LeaveFamilyButton({ familyId }: { familyId: string }) {
+interface DeleteButtonProps {
+  recipe: recipeAndAuthor;
+  className?: string;
+}
+
+const DeleteButton: React.FC<DeleteButtonProps> = ({ recipe, className }) => {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const handleClick = () => {
     startTransition(() => {
-      leaveFamily(familyId).then((response) => {
+      deleteRecipe(recipe.id).then((response) => {
         if ("error" in response) {
           toast({
             variant: "destructive",
@@ -26,19 +31,22 @@ export function LeaveFamilyButton({ familyId }: { familyId: string }) {
           variant: "success",
           description: response.success,
         });
-        router.push(`/families/`);
+        router.push(`/receptes/personals`);
       });
     });
   };
 
   return (
     <Button
-      className="gap-2"
-      onClick={() => handleClick()}
+      className={cn("gap-2", className)}
+      variant="secondary"
+      onClick={handleClick}
       disabled={isPending}
     >
-      <LogOut size={20} />
-      Surt
+      <Trash2 size={20} />
+      Eliminar
     </Button>
   );
-}
+};
+
+export default DeleteButton;

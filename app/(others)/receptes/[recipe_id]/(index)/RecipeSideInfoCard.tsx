@@ -9,7 +9,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { recipeAndAuthor } from "@/types";
-import { BookmarkPlus, Pencil, Printer, Share2, Trash2 } from "lucide-react";
+import {
+  BookmarkPlus,
+  Delete,
+  Pencil,
+  Printer,
+  Share2,
+  Trash2,
+} from "lucide-react";
+import DeleteButton from "./DeleteButton";
 
 interface RecipeSideInfoCardProps {
   recipe: recipeAndAuthor;
@@ -35,10 +43,7 @@ const RecipeSideInfoCard: React.FC<RecipeSideInfoCardProps> = ({ recipe }) => {
               <Pencil size={20} />
               Editar
             </Button>
-            <Button className="gap-2 flex-grow" variant="secondary">
-              <Trash2 size={20} />
-              Eliminar
-            </Button>
+            <DeleteButton recipe={recipe} className="flex-grow" />
           </div>
         </div>
         <div className="space-y-2">

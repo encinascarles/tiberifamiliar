@@ -8,6 +8,7 @@ import { actionResponse, draftRecipe, error, recipeAndAuthor } from "@/types";
 import * as z from "zod";
 import { checkUserFamilyMember } from "./families";
 import { MAX_RECIPE_IMAGE_UPLOAD_SIZE } from "@/config";
+import { revalidatePath } from "next/cache";
 
 //--------------- GLOBAL TYPES --------------:
 
@@ -773,3 +774,28 @@ export async function deleteRecipeImage(url: string): Promise<actionResponse> {
     return errorHandler(e);
   }
 }
+
+// - Delete recipe
+// TYPE: actionResponse = error | success;
+export const deleteRecipe = async (
+  recipeId: string
+): Promise<actionResponse> => {
+  try {
+    // Get current user
+    const user = await safeGetSessionUser();
+
+    // Delete the recipe
+    await db.recipe.delete({
+      where: {
+        id: recipeId,
+        authorId: user.id,
+      },
+    });
+
+    // Revalidate the recipes page and the users personal recipes page
+
+    return { success: "Recepta eliminada amb èxit!" };
+  } catch (e: any) {
+    return errorHandler(e);
+  }
+};
