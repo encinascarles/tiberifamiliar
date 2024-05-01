@@ -13,6 +13,7 @@ import { recipeAndAuthor } from "@/types";
 import { BookmarkPlus, Pencil, Printer, Share2 } from "lucide-react";
 import Link from "next/link";
 import DeleteButton from "./DeleteButton";
+import ShareButton from "./ShareButton";
 
 interface RecipeSideInfoCardProps {
   recipe: recipeAndAuthor;
@@ -60,10 +61,7 @@ const RecipeSideInfoCard: React.FC<RecipeSideInfoCardProps> = ({ recipe }) => {
               Guardar a preferides
             </Button>
             <div className="flex items-center justify-stretch gap-4 ">
-              <Button variant="secondary" className="gap-2 flex-grow">
-                <Share2 size={20} />
-                Compartir
-              </Button>
+              <ShareButton />
               <Button
                 variant="secondary"
                 className="gap-2 flex-grow"
