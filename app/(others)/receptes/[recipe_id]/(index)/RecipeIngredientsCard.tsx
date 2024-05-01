@@ -53,7 +53,7 @@ const RecipeIngredientsCard: React.FC<RecipeIngredientsCardProps> = ({
     const words = ingredient
       .split(/(\d+[\.,]?\d*)/)
       .filter(Boolean)
-      .map((word) => {
+      .map((word, index) => {
         if (!isNaN(Number(word.replace(",", ".")))) {
           const result =
             (Number(word.replace(",", ".")) * Number(servings)) /
@@ -62,7 +62,7 @@ const RecipeIngredientsCard: React.FC<RecipeIngredientsCardProps> = ({
             ? result.toString()
             : result.toFixed(1).replace(".", ",");
           return (
-            <span className="text-orange-500 font-semibold">
+            <span key={index} className="text-orange-500 font-semibold">
               {formattedResult}
             </span>
           );

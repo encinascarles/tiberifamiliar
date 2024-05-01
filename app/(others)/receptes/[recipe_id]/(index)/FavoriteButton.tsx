@@ -17,7 +17,7 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({ recipe }) => {
 
   useLayoutEffect(() => {
     setIsFavorite(recipe.favorite);
-  }, [recipe.favorite]);
+  }, [setIsFavorite, recipe.favorite]);
 
   const handleClick = async () => {
     // Add or remove from favorites

@@ -196,7 +196,15 @@ export default function EditRecipePage({
     }
     // Stop the loading state
     setIsLoading(false);
-  }, [appendIngredient, appendStep, newRecipe, params.recipe_id, form]);
+  }, [
+    appendIngredient,
+    appendStep,
+    newRecipe,
+    params.recipe_id,
+    form,
+    removeIngredient,
+    removeStep,
+  ]);
 
   // Get the recipe data to edit
   useEffect(() => {
