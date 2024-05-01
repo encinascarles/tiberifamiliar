@@ -1,9 +1,8 @@
 import { Card, CardFooter } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { recipeAndAuthor } from "@/types";
-import Image from "next/image";
-import FavoriteButton from "./FavoriteButton";
 import { Bookmark } from "lucide-react";
+import Image from "next/image";
 
 interface RecipeSideInfoCardProps {
   recipe: recipeAndAuthor;

@@ -1,6 +1,10 @@
 import { getRecipe } from "@/actions/recipes";
-import RecipeInfoCard from "./RecipeInfoCard";
-import RecipeMainCards from "./RecipeMainCards";
+import RecipeImageCard from "./RecipeImageCard";
+import RecipeIngredientsCard from "./RecipeIngredientsCard";
+import RecipeOriginCard from "./RecipeOriginCard";
+import RecipeRecommendationsCard from "./RecipeRecommendationsCard";
+import RecipeSideInfoCard from "./RecipeSideInfoCard";
+import RecipeStepsCard from "./RecipeStepsCard";
 
 export default async function ShowRecipePage({
   params,
@@ -13,8 +17,16 @@ export default async function ShowRecipePage({
   return (
     <div className="container mt-4">
       <div className="flex flex-col gap-4">
-        <RecipeMainCards recipe={recipe} />
-        <RecipeInfoCard recipe={recipe} />
+        <div className="flex flex-col lg:flex-row lg:items-stretch justify-between gap-4 mt-4 ">
+          <RecipeImageCard recipe={recipe} />
+          <RecipeSideInfoCard recipe={recipe} />
+        </div>
+        {recipe.origin && <RecipeOriginCard recipe={recipe} />}
+        <RecipeIngredientsCard recipe={recipe} />
+        {recipe.recommendations && (
+          <RecipeRecommendationsCard recipe={recipe} />
+        )}
+        <RecipeStepsCard recipe={recipe} />
       </div>
     </div>
   );

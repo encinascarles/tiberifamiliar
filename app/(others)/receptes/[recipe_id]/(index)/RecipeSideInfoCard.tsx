@@ -9,8 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { recipeAndAuthor } from "@/types";
-import { BookmarkPlus, Heart, Printer, Share2 } from "lucide-react";
-import { useLayoutEffect, useRef } from "react";
+import { BookmarkPlus, Pencil, Printer, Share2, Trash2 } from "lucide-react";
 
 interface RecipeSideInfoCardProps {
   recipe: recipeAndAuthor;
@@ -31,6 +30,16 @@ const RecipeSideInfoCard: React.FC<RecipeSideInfoCardProps> = ({ recipe }) => {
           <p className="text-lg">
             <b className="font-semibold">Temps Total:</b> {recipe.total_time}min
           </p>
+          <div className="flex items-center justify-stretch gap-4 pt-2 pb-6">
+            <Button className="gap-2 flex-grow">
+              <Pencil size={20} />
+              Editar
+            </Button>
+            <Button className="gap-2 flex-grow" variant="secondary">
+              <Trash2 size={20} />
+              Eliminar
+            </Button>
+          </div>
         </div>
         <div className="space-y-2">
           {/* <div className="w-full border-b-2"></div> */}
