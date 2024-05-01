@@ -6,6 +6,17 @@ import { recipeAndAuthor } from "@/types";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface DeleteButtonProps {
   recipe: recipeAndAuthor;
@@ -37,15 +48,32 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({ recipe, className }) => {
   };
 
   return (
-    <Button
-      className={cn("gap-2", className)}
-      variant="secondary"
-      onClick={handleClick}
-      disabled={isPending}
-    >
-      <Trash2 size={20} />
-      Eliminar
-    </Button>
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button
+          className={cn("gap-2", className)}
+          variant="secondary"
+          disabled={isPending}
+        >
+          <Trash2 size={20} />
+          Eliminar
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            Estàs segur que vols eliminar la recepta?
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            Aquesta acció borrará la recepta de forma permanent.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel·la</AlertDialogCancel>
+          <AlertDialogAction onClick={handleClick}>Continua</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 
