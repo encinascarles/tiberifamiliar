@@ -1,20 +1,16 @@
 import { Card, CardFooter } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { recipeAndAuthor } from "@/types";
 import Image from "next/image";
 import FavoriteButton from "./FavoriteButton";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface RecipeSideInfoCardProps {
   recipe: recipeAndAuthor;
-  isOverflowing: boolean;
 }
 
-const RecipeImageCard: React.FC<RecipeSideInfoCardProps> = ({
-  recipe,
-  isOverflowing,
-}) => {
+const RecipeImageCard: React.FC<RecipeSideInfoCardProps> = ({ recipe }) => {
   return (
-    <Card className={`w-full ${!isOverflowing && "lg:w-8/12"}`}>
+    <Card className="w-full">
       <div className="aspect-[4/3] relative">
         <Image
           src={recipe.image ? recipe.image : "/demo_images/recipe_image.jpg"}

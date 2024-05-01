@@ -6,39 +6,11 @@ import { useLayoutEffect, useRef } from "react";
 
 interface RecipeSideInfoCardProps {
   recipe: recipeAndAuthor;
-  isOverflowing: boolean;
-  setIsOverflowing: (isOverflowing: boolean) => void;
 }
 
-const RecipeSideInfoCard: React.FC<RecipeSideInfoCardProps> = ({
-  recipe,
-  isOverflowing,
-  setIsOverflowing,
-}) => {
-  // Create a reference to the recommendations and origin elements
-  const recommendationsRef = useRef<HTMLHeadingElement | null>(null);
-  const originRef = useRef<HTMLHeadingElement | null>(null);
-
-  // Check if the recommendations or origin elements are overflowing at mount (when finished rendering)
-  useLayoutEffect(() => {
-    const recommendationsElement = recommendationsRef.current;
-    const originElement = originRef.current;
-    if (
-      recommendationsElement &&
-      recommendationsElement.scrollHeight > recommendationsElement.clientHeight
-    ) {
-      setIsOverflowing(true);
-    }
-    if (
-      originElement &&
-      originElement.scrollHeight > originElement.clientHeight
-    ) {
-      setIsOverflowing(true);
-    }
-  }, [recipe, setIsOverflowing]);
-
+const RecipeSideInfoCard: React.FC<RecipeSideInfoCardProps> = ({ recipe }) => {
   return (
-    <Card className={`w-full ${!isOverflowing && "lg:w-4/12"}`}>
+    <Card className="w-full ">
       <div className="p-4 flex flex-col gap-4">
         <p className="text-lg">
           <b>Temps de Preparació:</b> {recipe.prep_time}min
@@ -46,7 +18,7 @@ const RecipeSideInfoCard: React.FC<RecipeSideInfoCardProps> = ({
         <p className="text-lg">
           <b>Temps de Total:</b> {recipe.total_time}min
         </p>
-        {recipe.recommendations && (
+        {/* {recipe.recommendations && (
           <p
             ref={recommendationsRef}
             className={`text-lg ${
@@ -77,7 +49,7 @@ const RecipeSideInfoCard: React.FC<RecipeSideInfoCardProps> = ({
               </span>
             ))}
           </p>
-        )}
+        )} */}
         <div className="flex gap-4 items-center w-full justify-center border-t-2 pt-4">
           <Avatar className="cursor-pointer h-12 w-12">
             <AvatarImage
