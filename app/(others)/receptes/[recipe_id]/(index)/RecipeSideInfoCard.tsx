@@ -64,7 +64,11 @@ const RecipeSideInfoCard: React.FC<RecipeSideInfoCardProps> = ({ recipe }) => {
                 <Share2 size={20} />
                 Compartir
               </Button>
-              <Button variant="secondary" className="gap-2 flex-grow">
+              <Button
+                variant="secondary"
+                className="gap-2 flex-grow"
+                onClick={() => window.print()}
+              >
                 <Printer size={20} />
                 Imprimir
               </Button>
