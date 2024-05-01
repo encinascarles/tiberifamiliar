@@ -51,10 +51,12 @@ const RecipeSideInfoCard: React.FC<RecipeSideInfoCardProps> = ({ recipe }) => {
         <div className="space-y-2">
           {/* <div className="w-full border-b-2"></div> */}
           <p className="text-lg  text-neutral-500 font-light">
-            <b className="font-medium">Creada:</b> 16/09/2021
+            <b className="font-medium">Creada:</b>{" "}
+            {recipe.created_at?.toLocaleDateString("es-ES")}
           </p>
           <p className="text-lg  text-neutral-500 font-light">
-            <b className="font-medium">Modificada:</b> 16/09/2021
+            <b className="font-medium">Modificada:</b>{" "}
+            {recipe.updated_at?.toLocaleDateString("es-ES")}
           </p>
           <div className="pt-4 space-y-4">
             <FavoriteButton recipe={recipe} />

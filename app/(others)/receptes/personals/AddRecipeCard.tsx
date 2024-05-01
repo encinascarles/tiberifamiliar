@@ -1,7 +1,6 @@
-import { Card } from "../../../../components/ui/card";
 import { Plus } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import { Card } from "../../../../components/ui/card";
 
 const AddRecipeCard = () => (
   <Link href="/receptes/nova">

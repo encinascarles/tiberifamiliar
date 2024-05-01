@@ -89,6 +89,9 @@ model Recipe {
   author      User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   favoritedBy User[] @relation("favorites")
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
   @@unique([authorId, title])
 }
 

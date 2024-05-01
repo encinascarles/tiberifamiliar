@@ -5,7 +5,13 @@ import { db } from "@/lib/db";
 import errorHandler from "@/lib/errorHandler";
 import { deleteFile, getUploadFileUrl } from "@/lib/s3";
 import { DraftRecipeSchema, RecipeSchema } from "@/schemas";
-import { actionResponse, draftRecipe, error, recipeAndAuthor } from "@/types";
+import {
+  actionResponse,
+  draftRecipe,
+  error,
+  recipe,
+  recipeAndAuthor,
+} from "@/types";
 import * as z from "zod";
 import { checkUserFamilyMember } from "./families";
 import { revalidatePath } from "next/cache";
@@ -117,6 +123,7 @@ export const saveRecipe = async (
         draft: false,
       },
     });
+    revalidatePath("/receptes/${recipeId}");
     return { success: "Recepta guardada amb èxit!" };
   } catch (e: any) {
     return errorHandler(e);
@@ -183,6 +190,7 @@ export const saveDraftRecipe = async (
         draft: true,
       },
     });
+    revalidatePath("/receptes/${recipeId}");
     return { success: "Recepta guardada amb èxit!" };
   } catch (e: any) {
     return errorHandler(e);
@@ -564,6 +572,8 @@ export const getRecipe = async (id: string): Promise<recipeResponse> => {
       author_image: recipe.author.image,
       author_id: recipe.authorId,
       favorite: recipe.favoritedBy.some((f) => f.id === user.id),
+      created_at: recipe.createdAt,
+      updated_at: recipe.updatedAt,
     };
 
     // Accept if user is the author

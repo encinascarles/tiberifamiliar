@@ -44,6 +44,8 @@ export interface recipe {
   origin: string | null;
   visibility: string;
   image: string | null;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 export interface draftRecipe {
