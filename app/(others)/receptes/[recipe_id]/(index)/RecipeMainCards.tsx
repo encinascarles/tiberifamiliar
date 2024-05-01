@@ -7,7 +7,7 @@ interface RecipeMainCardsProps {
 }
 const RecipeMainCards: React.FC<RecipeMainCardsProps> = ({ recipe }) => {
   return (
-    <div className="flex flex-col justify-between gap-4 mt-4 items-start">
+    <div className="flex flex-col lg:flex-row lg:items-stretch justify-between gap-4 mt-4 ">
       <RecipeImageCard recipe={recipe} />
       <RecipeSideInfoCard recipe={recipe} />
     </div>

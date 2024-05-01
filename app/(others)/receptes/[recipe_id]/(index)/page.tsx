@@ -11,7 +11,7 @@ export default async function ShowRecipePage({
   if ("error" in recipe) return;
 
   return (
-    <div className="container mt-4 max-w-[800px]">
+    <div className="container mt-4">
       <div className="flex flex-col gap-4">
         <RecipeMainCards recipe={recipe} />
         <RecipeInfoCard recipe={recipe} />
