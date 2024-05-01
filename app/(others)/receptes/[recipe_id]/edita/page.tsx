@@ -66,6 +66,11 @@ export default function EditRecipePage({
   // Form handling
   const form = useForm<FormData>({
     resolver: zodResolver(RecipeSchema),
+    defaultValues: {
+      ingredients: [{ value: "" }],
+      steps: [{ value: "" }],
+      visibility: "PUBLIC",
+    },
   });
 
   // Form watch to get the title
@@ -369,7 +374,10 @@ export default function EditRecipePage({
                       <Button
                         disabled={isPending}
                         type="button"
-                        onClick={() => setShowRecommendations(false)}
+                        onClick={() => {
+                          setShowRecommendations(false);
+                          form.setValue("recommendations", "");
+                        }}
                         className="ml-2"
                       >
                         <Minus />
@@ -392,7 +400,10 @@ export default function EditRecipePage({
                 variant="outline"
                 type="button"
                 className="mt-2 w-full"
-                onClick={() => setShowOrigin(true)}
+                onClick={() => {
+                  setShowOrigin(true);
+                  form.setValue("origin", "");
+                }}
               >
                 <Plus />
               </Button>
