@@ -1,5 +1,7 @@
+"use client";
 import { Card, CardFooter } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useIsFavorite } from "@/stores/useIsFavorite";
 import { recipeAndAuthor } from "@/types";
 import { Bookmark } from "lucide-react";
 import Image from "next/image";
@@ -9,6 +11,7 @@ interface RecipeSideInfoCardProps {
 }
 
 const RecipeImageCard: React.FC<RecipeSideInfoCardProps> = ({ recipe }) => {
+  const { isFavorite } = useIsFavorite();
   return (
     <Card className="w-full lg:w-8/12">
       <div className="aspect-[4/3] relative overflow-hidden">
@@ -19,11 +22,13 @@ const RecipeImageCard: React.FC<RecipeSideInfoCardProps> = ({ recipe }) => {
           objectFit="cover"
           className="rounded-t-lg z-10"
         />
-        <Bookmark
-          size={90}
-          className="absolute -top-5 right-4 z-20 text-orange-500"
-          fill="currentColor"
-        />
+        {isFavorite && (
+          <Bookmark
+            size={90}
+            className="absolute -top-5 right-4 z-20 text-orange-500"
+            fill="currentColor"
+          />
+        )}
         <Skeleton className="h-full w-full rounded-b-none rounded-t-lg z-0" />
       </div>
       <CardFooter className="pt-4">

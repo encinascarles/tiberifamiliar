@@ -1,5 +1,6 @@
 "use server";
-import { safeGetSessionUser } from "@/lib/auth";
+import { MAX_RECIPE_IMAGE_UPLOAD_SIZE } from "@/config";
+import { currentUser, safeGetSessionUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import errorHandler from "@/lib/errorHandler";
 import { deleteFile, getUploadFileUrl } from "@/lib/s3";
@@ -7,9 +8,7 @@ import { DraftRecipeSchema, RecipeSchema } from "@/schemas";
 import { actionResponse, draftRecipe, error, recipeAndAuthor } from "@/types";
 import * as z from "zod";
 import { checkUserFamilyMember } from "./families";
-import { MAX_RECIPE_IMAGE_UPLOAD_SIZE } from "@/config";
 import { revalidatePath } from "next/cache";
-import { auth } from "@/auth";
 
 //--------------- GLOBAL TYPES --------------:
 
@@ -18,7 +17,10 @@ export type recipesResponse = recipeAndAuthor[] | error;
 //------------------ UTILS ------------------:
 
 // - Get all user contacts (family members)
-type getUserFamilyMembersResponse = string[];
+type getUserFamilyMembersResponse = {
+  users: string[];
+  userId: string | undefined;
+};
 const getUserFamiliesMembers =
   async (): Promise<getUserFamilyMembersResponse> => {
     // Get current user
@@ -49,7 +51,7 @@ const getUserFamiliesMembers =
     const uniqueContacts = Array.from(new Set(contacts));
 
     // Return array of unique Ids
-    return uniqueContacts;
+    return { users: uniqueContacts, userId: user.id };
   };
 
 //------------------ ACTIONS ------------------:
@@ -191,6 +193,9 @@ export const saveDraftRecipe = async (
 // TYPE: recipesResponse = recipeAndAuthor[] | error;
 export const getPublicRecipes = async (): Promise<recipesResponse> => {
   try {
+    // Get current user if exists
+    const user = await currentUser();
+
     // Get all public recipes
     const recipes = await db.recipe.findMany({
       where: {
@@ -202,6 +207,11 @@ export const getPublicRecipes = async (): Promise<recipesResponse> => {
           select: {
             name: true,
             image: true,
+          },
+        },
+        favoritedBy: {
+          select: {
+            id: true,
           },
         },
       },
@@ -222,6 +232,7 @@ export const getPublicRecipes = async (): Promise<recipesResponse> => {
       author_name: recipe.author.name,
       author_image: recipe.author.image,
       author_id: recipe.authorId,
+      favorite: user ? recipe.favoritedBy.some((f) => f.id === user.id) : false,
     }));
 
     return recipesToSend;
@@ -250,6 +261,11 @@ export const getPersonalRecipes = async (): Promise<recipesResponse> => {
             image: true,
           },
         },
+        favoritedBy: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
 
@@ -268,6 +284,7 @@ export const getPersonalRecipes = async (): Promise<recipesResponse> => {
       author_name: recipe.author.name,
       author_image: recipe.author.image,
       author_id: recipe.authorId,
+      favorite: recipe.favoritedBy.some((f) => f.id === user.id),
     }));
     return recipesToSend;
   } catch (e: any) {
@@ -280,7 +297,7 @@ export const getPersonalRecipes = async (): Promise<recipesResponse> => {
 export const getFamiliesRecipes = async (): Promise<recipesResponse> => {
   try {
     // Get all family members
-    const users = await getUserFamiliesMembers();
+    const { users, userId } = await getUserFamiliesMembers();
 
     // Get all public or family recipes from the family members
     const recipes = await db.recipe.findMany({
@@ -298,6 +315,11 @@ export const getFamiliesRecipes = async (): Promise<recipesResponse> => {
           select: {
             name: true,
             image: true,
+          },
+        },
+        favoritedBy: {
+          select: {
+            id: true,
           },
         },
       },
@@ -318,6 +340,7 @@ export const getFamiliesRecipes = async (): Promise<recipesResponse> => {
       author_name: recipe.author.name,
       author_image: recipe.author.image,
       author_id: recipe.authorId,
+      favorite: recipe.favoritedBy.some((f) => f.id === userId),
     }));
     return recipesToSend;
   } catch (e: any) {
@@ -365,6 +388,11 @@ export const getFamilyRecipes = async (
             image: true,
           },
         },
+        favoritedBy: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
 
@@ -383,6 +411,7 @@ export const getFamilyRecipes = async (
       author_name: recipe.author.name,
       author_image: recipe.author.image,
       author_id: recipe.authorId,
+      favorite: recipe.favoritedBy.some((f) => f.id === user.id),
     }));
     return recipesToSend;
   } catch (e: any) {
@@ -435,6 +464,7 @@ export const getFavoriteRecipes = async (): Promise<recipesResponse> => {
       author_name: recipe.author.name,
       author_image: recipe.author.image,
       author_id: recipe.authorId,
+      favorite: true,
     }));
     return recipesToSend;
   } catch (e: any) {
@@ -480,6 +510,7 @@ export const getDraftRecipes = async (): Promise<recipesResponse> => {
       author_name: recipe.author.name,
       author_image: recipe.author.image,
       author_id: recipe.authorId,
+      favorite: false,
     }));
     return recipesToSend;
   } catch (e: any) {
@@ -508,6 +539,11 @@ export const getRecipe = async (id: string): Promise<recipeResponse> => {
             image: true,
           },
         },
+        favoritedBy: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
     if (!recipe) throw new Error("show: Recepta no trobada!");
@@ -527,6 +563,7 @@ export const getRecipe = async (id: string): Promise<recipeResponse> => {
       author_name: recipe.author.name,
       author_image: recipe.author.image,
       author_id: recipe.authorId,
+      favorite: recipe.favoritedBy.some((f) => f.id === user.id),
     };
 
     // Accept if user is the author
@@ -539,8 +576,8 @@ export const getRecipe = async (id: string): Promise<recipeResponse> => {
     if (recipe.visibility === "PRIVATE")
       throw new Error("show: Recepta privada!");
     // Accept if recipe is FAMILY and user is a member of a common family
-    const contacts = await getUserFamiliesMembers();
-    if (contacts.includes(recipe.author.id)) return recipesToSend;
+    const { users } = await getUserFamiliesMembers();
+    if (users.includes(recipe.author.id)) return recipesToSend;
     throw new Error("show: Recepta privada!");
   } catch (e: any) {
     return errorHandler(e);
@@ -588,31 +625,31 @@ export const getRecipeToEdit = async (
 };
 
 // - Check if recipe is in favorites
-type isFavoriteResponse = { favorite: boolean } | error;
-export const isFavoriteRecipe = async (
-  recipeId: string
-): Promise<isFavoriteResponse> => {
-  try {
-    // Get current user
-    const user = await safeGetSessionUser();
+// type isFavoriteResponse = { favorite: boolean } | error;
+// export const isFavoriteRecipe = async (
+//   recipeId: string
+// ): Promise<isFavoriteResponse> => {
+//   try {
+//     // Get current user
+//     const user = await safeGetSessionUser();
 
-    // Check if the recipe is a favorite
-    const favorite = await db.user.findFirst({
-      where: {
-        id: user.id,
-        favoriteRecipes: {
-          some: {
-            id: recipeId,
-          },
-        },
-      },
-    });
-    if (favorite) return { favorite: true };
-    return { favorite: false };
-  } catch (e: any) {
-    return errorHandler(e);
-  }
-};
+//     // Check if the recipe is a favorite
+//     const favorite = await db.user.findFirst({
+//       where: {
+//         id: user.id,
+//         favoriteRecipes: {
+//           some: {
+//             id: recipeId,
+//           },
+//         },
+//       },
+//     });
+//     if (favorite) return { favorite: true };
+//     return { favorite: false };
+//   } catch (e: any) {
+//     return errorHandler(e);
+//   }
+// };
 
 // - Toggle favorite recipe
 type toggleFavoriteRecipe = { favorite: boolean } | error;
@@ -649,6 +686,7 @@ export const toggleFavoriteRecipe = async (
           },
         },
       });
+      revalidatePath("/receptes/${recipeId}");
       return { favorite: false };
     } else {
       await db.user.update({
@@ -663,6 +701,7 @@ export const toggleFavoriteRecipe = async (
           },
         },
       });
+      revalidatePath("/receptes/${recipeId}");
       return { favorite: true };
     }
   } catch (e: any) {

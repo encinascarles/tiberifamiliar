@@ -63,4 +63,5 @@ export type recipeAndAuthor = recipe & {
   author_name: string;
   author_image: string | null;
   author_id: string;
+  favorite: boolean;
 };

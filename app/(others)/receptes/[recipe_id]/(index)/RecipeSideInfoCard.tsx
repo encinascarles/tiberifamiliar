@@ -10,9 +10,10 @@ import {
 } from "@/components/ui/card";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { recipeAndAuthor } from "@/types";
-import { BookmarkPlus, Pencil, Printer, Share2 } from "lucide-react";
+import { Pencil, Printer } from "lucide-react";
 import Link from "next/link";
 import DeleteButton from "./DeleteButton";
+import FavoriteButton from "./FavoriteButton";
 import ShareButton from "./ShareButton";
 
 interface RecipeSideInfoCardProps {
@@ -56,10 +57,7 @@ const RecipeSideInfoCard: React.FC<RecipeSideInfoCardProps> = ({ recipe }) => {
             <b className="font-medium">Modificada:</b> 16/09/2021
           </p>
           <div className="pt-4 space-y-4">
-            <Button className="w-full gap-2">
-              <BookmarkPlus size={20} />
-              Guardar a preferides
-            </Button>
+            <FavoriteButton recipe={recipe} />
             <div className="flex items-center justify-stretch gap-4 ">
               <ShareButton />
               <Button
