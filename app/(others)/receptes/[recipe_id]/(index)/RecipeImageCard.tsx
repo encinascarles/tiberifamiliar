@@ -16,7 +16,7 @@ const RecipeImageCard: React.FC<RecipeSideInfoCardProps> = ({ recipe }) => {
     <Card className="w-full lg:w-8/12">
       <div className="aspect-[4/3] relative overflow-hidden">
         <Image
-          src={recipe.image ? recipe.image : "/demo_images/recipe_image.jpg"}
+          src={recipe.image ? recipe.image : "/default_recipe.png"}
           fill
           alt="family image"
           objectFit="cover"

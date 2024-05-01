@@ -23,7 +23,7 @@ const RecipeCard = async ({
       >
         <div className="relative aspect-square overflow-hidden">
           <Image
-            src={recipe.image ? recipe.image : "/demo_images/recipe_image.jpg"}
+            src={recipe.image ? recipe.image : "/default_recipe.png"}
             alt="Recipe Image"
             fill
             className="rounded-t-lg aspect-square object-cover"

@@ -68,7 +68,7 @@ const InvitationCard: React.FC<InvitationCardProps> = ({
   return (
     <Card className="flex justify-stretch">
       <Image
-        src={familyImage ? familyImage : "/demo_images/family.png"}
+        src={familyImage ? familyImage : "/default_family.png"}
         alt="family image"
         height="110"
         width="130"

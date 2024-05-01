@@ -23,7 +23,7 @@ const FamilyCard: React.FC<FamilyCardProps> = ({
       <Card className="w-full md:w-[600px] flex h-[180px] ">
         <div className="relative h-full w-[150px] xs:w-[180px] sm:w-[230px] flex-shrink-0 transition-all duration-300">
           <Image
-            src={image ? image : "/demo_images/family.png"}
+            src={image ? image : "/default_family.png"}
             alt={`${name} family image`}
             sizes="(max-width: 500px) 150px, (max-width: 640px) 180px, 230px"
             quality={50}
