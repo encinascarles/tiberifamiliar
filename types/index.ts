@@ -38,6 +38,7 @@ export interface recipe {
   title: string;
   prep_time: number;
   total_time: number;
+  servings: number;
   ingredients: string[];
   steps: string[];
   recommendations: string | null;
@@ -53,6 +54,7 @@ export interface draftRecipe {
   title: string | null;
   prep_time: number | null;
   total_time: number | null;
+  servings: number;
   ingredients: string[];
   steps: string[];
   recommendations: string | null;

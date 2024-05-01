@@ -20,18 +20,21 @@ import {
 } from "@/components/ui/alert-dialog";
 
 interface DeleteButtonProps {
-  recipe: recipeAndAuthor;
+  recipe_id: string;
   className?: string;
 }
 
-const DeleteButton: React.FC<DeleteButtonProps> = ({ recipe, className }) => {
+const DeleteButton: React.FC<DeleteButtonProps> = ({
+  recipe_id,
+  className,
+}) => {
   const { toast } = useToast();
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   const handleClick = () => {
     startTransition(() => {
-      deleteRecipe(recipe.id).then((response) => {
+      deleteRecipe(recipe_id).then((response) => {
         if ("error" in response) {
           toast({
             variant: "destructive",

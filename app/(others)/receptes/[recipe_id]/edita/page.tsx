@@ -31,8 +31,9 @@ import { Minus, PencilRuler, Plus, Save, Trash } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
+import { set, z } from "zod";
 import EditPageSkeleton from "./EditPageSkeleton";
+import DeleteButton from "../(index)/DeleteButton";
 
 type FormData = z.infer<typeof RecipeSchema>;
 
@@ -62,6 +63,9 @@ export default function EditRecipePage({
 
   // Image URL state
   const [image, setImage] = useState<string | null>(null);
+
+  //First time (only for development)
+  const [firstTime, setFirstTime] = useState(true);
 
   // Form handling
   const form = useForm<FormData>({
@@ -136,8 +140,13 @@ export default function EditRecipePage({
   };
 
   const getRecipe = useCallback(async () => {
+    console.log("getRecipe");
     // If it's a new recipe, return
-    if (newRecipe) return;
+    if (newRecipe) {
+      console.log("newRecipe");
+      setIsLoading(false);
+      return;
+    }
 
     // Get the recipe data
     const recipeData = await getRecipeToEdit(params.recipe_id);
@@ -147,6 +156,7 @@ export default function EditRecipePage({
     }
 
     // Set the recipe data to the form
+    if (form.getValues("ingredients").length === 0) return;
     const {
       title,
       ingredients,
@@ -156,10 +166,12 @@ export default function EditRecipePage({
       origin,
       prep_time,
       total_time,
+      servings,
     } = recipeData;
     form.setValue("title", title!);
     form.setValue("prep_time", prep_time!);
     form.setValue("total_time", total_time!);
+    form.setValue("servings", servings!);
     if (recommendations) {
       setShowRecommendations(true);
       form.setValue("recommendations", recommendations);
@@ -171,16 +183,17 @@ export default function EditRecipePage({
     form.setValue("visibility", visibility as "PUBLIC" | "FAMILY" | "PRIVATE");
     setImage(recipeData.image);
     if (ingredients.length > 0) {
+      removeIngredient(0); // Clear the default ingredient
       ingredients.forEach((ingredient) => {
         appendIngredient({ value: ingredient });
       });
     }
     if (steps.length > 0) {
+      removeStep(0); // Clear the default step
       steps.forEach((step) => {
         appendStep({ value: step });
       });
     }
-
     // Stop the loading state
     setIsLoading(false);
   }, [appendIngredient, appendStep, newRecipe, params.recipe_id, form]);
@@ -276,6 +289,74 @@ export default function EditRecipePage({
               )}
             />
           </div>
+          {/* Origen de la recepta */}
+          <div>
+            <FormLabel>
+              Origen de la recepta
+              <span className="text-orange-400"> (Opcional)</span>
+            </FormLabel>
+            {!showOrigin ? (
+              <Button
+                disabled={isPending}
+                variant="outline"
+                type="button"
+                className="mt-2 w-full"
+                onClick={() => {
+                  setShowOrigin(true);
+                  form.setValue("origin", "");
+                }}
+              >
+                <Plus />
+              </Button>
+            ) : (
+              <div>
+                <FormItem className="mt-2">
+                  <FormControl>
+                    <div className="flex items-center">
+                      <Textarea
+                        disabled={isPending}
+                        autoResize={true}
+                        {...form.register("origin")}
+                      />
+                      <Button
+                        disabled={isPending}
+                        type="button"
+                        onClick={() => setShowOrigin(false)}
+                        className="ml-2"
+                      >
+                        <Minus />
+                      </Button>
+                    </div>
+                  </FormControl>
+                </FormItem>
+              </div>
+            )}
+          </div>
+          {/* Porcions */}
+          <FormField
+            control={form.control}
+            name="servings"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Porcions</FormLabel>
+                <FormControl>
+                  <div className="relative">
+                    <Input
+                      disabled={isPending}
+                      type="number"
+                      {...field}
+                      onChange={(e) => {
+                        form.setValue("servings", parseInt(e.target.value));
+                      }}
+                    />
+                    <span className="absolute inset-y-0 left-8 text-gray-400 flex items-center text-base md:text-sm pointer-events-none">
+                      persones
+                    </span>
+                  </div>
+                </FormControl>
+              </FormItem>
+            )}
+          />
           {/* Ingredients */}
           <div>
             <FormLabel
@@ -292,14 +373,16 @@ export default function EditRecipePage({
                       {...form.register(`ingredients.${index}.value`)}
                       onKeyDown={handleIngEnter}
                     />
-                    <Button
-                      disabled={isPending}
-                      type="button"
-                      onClick={() => removeIngredient(index)}
-                      className="ml-2"
-                    >
-                      <Trash />
-                    </Button>
+                    {ingredientFields.length > 1 && (
+                      <Button
+                        disabled={isPending}
+                        type="button"
+                        onClick={() => removeIngredient(index)}
+                        className="ml-2"
+                      >
+                        <Trash />
+                      </Button>
+                    )}
                   </div>
                 </FormControl>
               </FormItem>
@@ -310,47 +393,6 @@ export default function EditRecipePage({
               type="button"
               className="mt-2 w-full"
               onClick={() => appendIngredient({ value: "" })}
-            >
-              <Plus />
-            </Button>
-          </div>
-          {/* Preparació */}
-          <div>
-            <FormLabel
-              className={form.formState.errors.steps && "text-red-500"}
-            >
-              Preparació
-            </FormLabel>
-            {stepFields.map((field, index) => (
-              <FormItem key={field.id} className="mt-2">
-                <FormControl>
-                  <div className="flex items-center">
-                    <span className="mr-3 text-orange-600 font-extrabold text-3xl w-10 text-center">
-                      {index + 1}
-                    </span>
-                    <Textarea
-                      disabled={isPending}
-                      autoResize={true}
-                      {...form.register(`steps.${index}.value`)}
-                    />
-                    <Button
-                      disabled={isPending}
-                      type="button"
-                      onClick={() => removeStep(index)}
-                      className="ml-2"
-                    >
-                      <Trash />
-                    </Button>
-                  </div>
-                </FormControl>
-              </FormItem>
-            ))}
-            <Button
-              disabled={isPending}
-              variant="outline"
-              type="button"
-              className="mt-2 w-full"
-              onClick={() => appendStep({ value: "" })}
             >
               <Plus />
             </Button>
@@ -397,49 +439,50 @@ export default function EditRecipePage({
               </div>
             )}
           </div>
-          {/* Origen de la recepta */}
+          {/* Preparació */}
           <div>
-            <FormLabel>
-              Origen de la recepta
-              <span className="text-orange-400"> (Opcional)</span>
+            <FormLabel
+              className={form.formState.errors.steps && "text-red-500"}
+            >
+              Preparació
             </FormLabel>
-            {!showOrigin ? (
-              <Button
-                disabled={isPending}
-                variant="outline"
-                type="button"
-                className="mt-2 w-full"
-                onClick={() => {
-                  setShowOrigin(true);
-                  form.setValue("origin", "");
-                }}
-              >
-                <Plus />
-              </Button>
-            ) : (
-              <div>
-                <FormItem className="mt-2">
-                  <FormControl>
-                    <div className="flex items-center">
-                      <Textarea
-                        disabled={isPending}
-                        autoResize={true}
-                        {...form.register("origin")}
-                      />
+            {stepFields.map((field, index) => (
+              <FormItem key={field.id} className="mt-2">
+                <FormControl>
+                  <div className="flex items-center">
+                    <span className="mr-3 text-orange-600 font-extrabold text-3xl w-10 text-center">
+                      {index + 1}
+                    </span>
+                    <Textarea
+                      disabled={isPending}
+                      autoResize={true}
+                      {...form.register(`steps.${index}.value`)}
+                    />
+                    {stepFields.length > 1 && (
                       <Button
                         disabled={isPending}
                         type="button"
-                        onClick={() => setShowOrigin(false)}
+                        onClick={() => removeStep(index)}
                         className="ml-2"
                       >
-                        <Minus />
+                        <Trash />
                       </Button>
-                    </div>
-                  </FormControl>
-                </FormItem>
-              </div>
-            )}
+                    )}
+                  </div>
+                </FormControl>
+              </FormItem>
+            ))}
+            <Button
+              disabled={isPending}
+              variant="outline"
+              type="button"
+              className="mt-2 w-full"
+              onClick={() => appendStep({ value: "" })}
+            >
+              <Plus />
+            </Button>
           </div>
+          {/* Visibilitat */}
           <FormField
             control={form.control}
             name="visibility"
@@ -468,7 +511,7 @@ export default function EditRecipePage({
           />
           <FormError message={error} />
           {/* Botons de guardar */}
-          <div className="flex flex-col gap-4 items-start md:flex-row">
+          <div className="flex flex-col items-center gap-4 md:items-start md:flex-row ">
             <Button disabled={isPending} type="submit" className="gap-2">
               <Save size={20} />
               Guardar la Recepta
@@ -483,6 +526,7 @@ export default function EditRecipePage({
               <PencilRuler size={20} />
               Guardar com a esborrany
             </Button>
+            <DeleteButton recipe_id={params.recipe_id} />
           </div>
         </form>
       </Form>

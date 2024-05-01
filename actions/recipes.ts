@@ -82,6 +82,7 @@ export const saveRecipe = async (
       recommendations,
       origin,
       visibility,
+      servings,
     } = validatedFields.data;
 
     // Get ingredients and steps
@@ -115,6 +116,7 @@ export const saveRecipe = async (
         title: title,
         prep_time: prep_time,
         total_time: total_time,
+        servings: servings,
         ingredients: ingredients,
         steps: steps,
         recommendations: recommendations,
@@ -151,6 +153,7 @@ export const saveDraftRecipe = async (
       recommendations,
       origin,
       visibility,
+      servings,
     } = values;
 
     // Get ingredients and steps
@@ -182,6 +185,7 @@ export const saveDraftRecipe = async (
         title: title,
         prep_time: prep_time,
         total_time: total_time,
+        servings: servings,
         ingredients: ingredients,
         steps: steps,
         recommendations: recommendations,
@@ -231,6 +235,7 @@ export const getPublicRecipes = async (): Promise<recipesResponse> => {
       title: recipe.title as string,
       prep_time: recipe.prep_time as number,
       total_time: recipe.total_time as number,
+      servings: recipe.servings as number,
       ingredients: recipe.ingredients,
       steps: recipe.steps,
       recommendations: recipe.recommendations,
@@ -283,6 +288,7 @@ export const getPersonalRecipes = async (): Promise<recipesResponse> => {
       title: recipe.title as string,
       prep_time: recipe.prep_time as number,
       total_time: recipe.total_time as number,
+      servings: recipe.servings as number,
       ingredients: recipe.ingredients,
       steps: recipe.steps,
       recommendations: recipe.recommendations,
@@ -339,6 +345,7 @@ export const getFamiliesRecipes = async (): Promise<recipesResponse> => {
       title: recipe.title as string, // non draft recipes will never have a null title ot times
       prep_time: recipe.prep_time as number,
       total_time: recipe.total_time as number,
+      servings: recipe.servings as number,
       ingredients: recipe.ingredients,
       steps: recipe.steps,
       recommendations: recipe.recommendations,
@@ -410,6 +417,7 @@ export const getFamilyRecipes = async (
       title: recipe.title as string,
       prep_time: recipe.prep_time as number,
       total_time: recipe.total_time as number,
+      servings: recipe.servings as number,
       ingredients: recipe.ingredients,
       steps: recipe.steps,
       recommendations: recipe.recommendations,
@@ -463,6 +471,7 @@ export const getFavoriteRecipes = async (): Promise<recipesResponse> => {
       title: recipe.title as string,
       prep_time: recipe.prep_time as number,
       total_time: recipe.total_time as number,
+      servings: recipe.servings as number,
       ingredients: recipe.ingredients,
       steps: recipe.steps,
       recommendations: recipe.recommendations,
@@ -509,6 +518,7 @@ export const getDraftRecipes = async (): Promise<recipesResponse> => {
       title: recipe.title as string,
       prep_time: recipe.prep_time as number,
       total_time: recipe.total_time as number,
+      servings: recipe.servings as number,
       ingredients: recipe.ingredients,
       steps: recipe.steps,
       recommendations: recipe.recommendations,
@@ -562,6 +572,7 @@ export const getRecipe = async (id: string): Promise<recipeResponse> => {
       title: recipe.title as string,
       prep_time: recipe.prep_time as number,
       total_time: recipe.total_time as number,
+      servings: recipe.servings as number,
       ingredients: recipe.ingredients,
       steps: recipe.steps,
       recommendations: recipe.recommendations,
@@ -621,6 +632,7 @@ export const getRecipeToEdit = async (
       title: recipe.title,
       prep_time: recipe.prep_time,
       total_time: recipe.total_time,
+      servings: recipe.servings as number,
       ingredients: recipe.ingredients,
       steps: recipe.steps,
       recommendations: recipe.recommendations,

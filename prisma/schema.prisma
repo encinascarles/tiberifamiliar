@@ -75,6 +75,7 @@ model Recipe {
   title           String?
   prep_time       Int?
   total_time      Int?
+  servings        Int?
   ingredients     String[]
   steps           String[]
   recommendations String?

@@ -50,6 +50,10 @@ export const RecipeSchema = z.object({
   total_time: z.number().refine((value) => value > 0, {
     message: "Temps no vàlid",
   }),
+  origin: z.string().optional(),
+  servings: z.number().refine((value) => value > 0 && value < 20, {
+    message: "Porcions no vàlides",
+  }),
   ingredients: z
     .array(
       z.object({
@@ -57,6 +61,7 @@ export const RecipeSchema = z.object({
       })
     )
     .nonempty({ message: "Ha d'haver-hi com a mínim un ingredient" }),
+  recommendations: z.string().optional(),
   steps: z
     .array(
       z.object({
@@ -64,8 +69,6 @@ export const RecipeSchema = z.object({
       })
     )
     .nonempty({ message: "Debe agregar al menos un paso de preparación." }),
-  recommendations: z.string().optional(),
-  origin: z.string().optional(),
   visibility: z.enum(["PUBLIC", "PRIVATE", "FAMILY"]),
 });
 
@@ -73,6 +76,7 @@ export const DraftRecipeSchema = z.object({
   title: z.string().optional(),
   prep_time: z.number().optional(),
   total_time: z.number().optional(),
+  servings: z.number().optional(),
   ingredients: z
     .array(
       z.object({

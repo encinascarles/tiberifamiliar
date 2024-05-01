@@ -44,7 +44,7 @@ const RecipeSideInfoCard: React.FC<RecipeSideInfoCardProps> = ({ recipe }) => {
                   Editar
                 </Link>
               </Button>
-              <DeleteButton recipe={recipe} className="flex-grow" />
+              <DeleteButton recipe_id={recipe.id} className="flex-grow" />
             </div>
           )}
         </div>
