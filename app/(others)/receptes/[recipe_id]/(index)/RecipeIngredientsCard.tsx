@@ -48,37 +48,60 @@ const RecipeIngredientsCard: React.FC<RecipeIngredientsCardProps> = ({
     }
   };
 
+  const parsedIngredients = (ingredient: string) => {
+    if (Number(servings) === recipe.servings) return ingredient;
+    const words = ingredient
+      .split(/(\d+[\.,]?\d*)/)
+      .filter(Boolean)
+      .map((word) => {
+        if (!isNaN(Number(word.replace(",", ".")))) {
+          const result =
+            (Number(word.replace(",", ".")) * Number(servings)) /
+            recipe.servings;
+          const formattedResult = Number.isInteger(result)
+            ? result.toString()
+            : result.toFixed(1).replace(".", ",");
+          return (
+            <span className="text-orange-500 font-semibold">
+              {formattedResult}
+            </span>
+          );
+        } else {
+          return word;
+        }
+      });
+
+    return <>{words}</>;
+  };
   return (
-    <Card>
+    <Card className="relative">
+      {/* Counter for settings desired servings */}
+      <Card className="absolute top-0 right-0 flex items-center flex-col bg-neutral-100 border-t-0 border-r-0 rounded-br-none rounded-tl-none">
+        <span className="text-lg font-semibold tracking-tigh">Porcions</span>
+        <div className="flex items-center">
+          <Button
+            className="rounded-none rounded-bl-lg h-8 w-7 p-0"
+            onClick={decrement}
+          >
+            <Minus size={20} strokeWidth={3} />
+          </Button>
+          <Input
+            type="text"
+            value={servings}
+            className={
+              "mx-2 w-8 text-center p-0 h-8 rounded-none m-0 text-lg md:text-lg font-semibold" +
+              (Number(servings) !== recipe.servings ? " text-orange-500" : "")
+            }
+            onChange={handleServingsChange}
+            onBlur={handleBlur}
+          />
+          <Button className="rounded-none  h-8 w-7 p-0" onClick={increment}>
+            <Plus size={20} strokeWidth={3} />
+          </Button>
+        </div>
+      </Card>
       <CardHeader className="flex flex-row justify-between space-y-0">
         <CardTitle>Ingredients</CardTitle>
-        {/* Counter for settings desired servings */}
-        <div className="flex items-center flex-col sm:flex-row sm:gap-2">
-          <span className="text-lg font-semibold tracking-tight">
-            Porcions:
-          </span>
-          <div className="flex items-center">
-            <Button
-              className="rounded-none rounded-l-lg h-8 w-7 p-0"
-              onClick={decrement}
-            >
-              <Minus size={20} strokeWidth={3} />
-            </Button>
-            <Input
-              type="text"
-              value={servings}
-              className="mx-2 w-8 text-center p-0 h-8 rounded-none m-0 text-lg md:text-lg"
-              onChange={handleServingsChange}
-              onBlur={handleBlur}
-            />
-            <Button
-              className="rounded-none rounded-r-lg h-8 w-7 p-0"
-              onClick={increment}
-            >
-              <Plus size={20} strokeWidth={3} />
-            </Button>
-          </div>
-        </div>
       </CardHeader>
       <CardContent>
         <ul className="list-none">
@@ -92,11 +115,11 @@ const RecipeIngredientsCard: React.FC<RecipeIngredientsCardProps> = ({
               <span
                 className={
                   checkedItems[i]
-                    ? "line-through decoration-orange-600 decoration-2"
+                    ? "line-through decoration-orange-500 decoration-2"
                     : ""
                 }
               >
-                {ingredient}
+                {parsedIngredients(ingredient)}
               </span>
             </li>
           ))}
