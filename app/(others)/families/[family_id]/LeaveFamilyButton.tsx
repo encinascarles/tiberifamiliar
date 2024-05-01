@@ -6,6 +6,17 @@ import { useToast } from "@/components/ui/use-toast";
 import { useTransition } from "react";
 import { leaveFamily } from "@/actions/families";
 import { useRouter } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export function LeaveFamilyButton({ familyId }: { familyId: string }) {
   const { toast } = useToast();
@@ -32,13 +43,24 @@ export function LeaveFamilyButton({ familyId }: { familyId: string }) {
   };
 
   return (
-    <Button
-      className="gap-2"
-      onClick={() => handleClick()}
-      disabled={isPending}
-    >
-      <LogOut size={20} />
-      Surt
-    </Button>
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button className="gap-2" disabled={isPending}>
+          <LogOut size={20} />
+          Surt
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            Estàs segur que vols sortir de la familia?
+          </AlertDialogTitle>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel·la</AlertDialogCancel>
+          <AlertDialogAction onClick={handleClick}>Continua</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

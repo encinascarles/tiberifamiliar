@@ -1,3 +1,4 @@
+"use client";
 import { deleteRecipe } from "@/actions/recipes";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
