@@ -29,7 +29,7 @@ import { RecipeSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Minus, PencilRuler, Plus, Save, Trash } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { use, useCallback, useEffect, useState, useTransition } from "react";
+import { useCallback, useEffect, useState, useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import EditPageSkeleton from "./EditPageSkeleton";
@@ -190,6 +190,14 @@ export default function EditRecipePage({
     getRecipe();
   }, [getRecipe]);
 
+  // Handle enter key on ingredients field
+  const handleIngEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      appendIngredient({ value: "" });
+    }
+  };
+
   // Loading skeleton
   if (isLoading) {
     return <EditPageSkeleton />;
@@ -282,6 +290,7 @@ export default function EditRecipePage({
                     <Input
                       disabled={isPending}
                       {...form.register(`ingredients.${index}.value`)}
+                      onKeyDown={handleIngEnter}
                     />
                     <Button
                       disabled={isPending}
