@@ -8,15 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useCurrentUser } from "@/hooks/use-current-user";
 import { recipeAndAuthor } from "@/types";
-import {
-  BookmarkPlus,
-  Delete,
-  Pencil,
-  Printer,
-  Share2,
-  Trash2,
-} from "lucide-react";
+import { BookmarkPlus, Pencil, Printer, Share2 } from "lucide-react";
+import Link from "next/link";
 import DeleteButton from "./DeleteButton";
 
 interface RecipeSideInfoCardProps {
@@ -24,6 +19,7 @@ interface RecipeSideInfoCardProps {
 }
 
 const RecipeSideInfoCard: React.FC<RecipeSideInfoCardProps> = ({ recipe }) => {
+  const user = useCurrentUser();
   return (
     <Card className="w-full lg:w-4/12 flex flex-col gap-4 justify-stretch">
       <CardHeader>
@@ -38,13 +34,17 @@ const RecipeSideInfoCard: React.FC<RecipeSideInfoCardProps> = ({ recipe }) => {
           <p className="text-lg">
             <b className="font-semibold">Temps Total:</b> {recipe.total_time}min
           </p>
-          <div className="flex items-center justify-stretch gap-4 pt-2 pb-6">
-            <Button className="gap-2 flex-grow">
-              <Pencil size={20} />
-              Editar
-            </Button>
-            <DeleteButton recipe={recipe} className="flex-grow" />
-          </div>
+          {recipe.author_id === user?.id && (
+            <div className="flex items-center justify-stretch gap-4 pt-2 pb-6">
+              <Button className="gap-2 flex-grow" asChild>
+                <Link href={`/receptes/${recipe.id}/edita`}>
+                  <Pencil size={20} />
+                  Editar
+                </Link>
+              </Button>
+              <DeleteButton recipe={recipe} className="flex-grow" />
+            </div>
+          )}
         </div>
         <div className="space-y-2">
           {/* <div className="w-full border-b-2"></div> */}

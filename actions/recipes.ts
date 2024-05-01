@@ -9,6 +9,7 @@ import * as z from "zod";
 import { checkUserFamilyMember } from "./families";
 import { MAX_RECIPE_IMAGE_UPLOAD_SIZE } from "@/config";
 import { revalidatePath } from "next/cache";
+import { auth } from "@/auth";
 
 //--------------- GLOBAL TYPES --------------:
 
@@ -220,6 +221,7 @@ export const getPublicRecipes = async (): Promise<recipesResponse> => {
       image: recipe.image,
       author_name: recipe.author.name,
       author_image: recipe.author.image,
+      author_id: recipe.authorId,
     }));
 
     return recipesToSend;
@@ -265,6 +267,7 @@ export const getPersonalRecipes = async (): Promise<recipesResponse> => {
       image: recipe.image,
       author_name: recipe.author.name,
       author_image: recipe.author.image,
+      author_id: recipe.authorId,
     }));
     return recipesToSend;
   } catch (e: any) {
@@ -314,6 +317,7 @@ export const getFamiliesRecipes = async (): Promise<recipesResponse> => {
       image: recipe.image,
       author_name: recipe.author.name,
       author_image: recipe.author.image,
+      author_id: recipe.authorId,
     }));
     return recipesToSend;
   } catch (e: any) {
@@ -378,6 +382,7 @@ export const getFamilyRecipes = async (
       image: recipe.image,
       author_name: recipe.author.name,
       author_image: recipe.author.image,
+      author_id: recipe.authorId,
     }));
     return recipesToSend;
   } catch (e: any) {
@@ -429,6 +434,7 @@ export const getFavoriteRecipes = async (): Promise<recipesResponse> => {
       image: recipe.image,
       author_name: recipe.author.name,
       author_image: recipe.author.image,
+      author_id: recipe.authorId,
     }));
     return recipesToSend;
   } catch (e: any) {
@@ -473,6 +479,7 @@ export const getDraftRecipes = async (): Promise<recipesResponse> => {
       image: recipe.image,
       author_name: recipe.author.name,
       author_image: recipe.author.image,
+      author_id: recipe.authorId,
     }));
     return recipesToSend;
   } catch (e: any) {
@@ -519,6 +526,7 @@ export const getRecipe = async (id: string): Promise<recipeResponse> => {
       image: recipe.image,
       author_name: recipe.author.name,
       author_image: recipe.author.image,
+      author_id: recipe.authorId,
     };
 
     // Accept if user is the author
