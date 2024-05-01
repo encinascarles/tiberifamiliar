@@ -11,7 +11,7 @@ const RecipeRecommendationsCard: React.FC<RecipeRecommendationsCardProps> = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Recomanacions de l'autor</CardTitle>
+        <CardTitle>Recomanacions de l{"'"}autor</CardTitle>
       </CardHeader>
       <CardContent>
         <p>
