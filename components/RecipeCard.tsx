@@ -36,9 +36,9 @@ const RecipeCard = async ({
             />
           )}
         </div>
-        <CardHeader>
+        <CardHeader className="pb-5">
           <CardTitle className="flex items-center justify-between">
-            <span className="truncate w-full">{recipe.title}</span>
+            <span className="truncate w-full h-7">{recipe.title}</span>
             {!personal && (
               <Avatar className="cursor-pointer h-12 w-12">
                 <AvatarImage
