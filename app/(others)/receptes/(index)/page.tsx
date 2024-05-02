@@ -24,12 +24,25 @@ export default async function HomePage() {
   return (
     <div className="md:container">
       <RecipesCarousel
+        recipes={familiesRecipes}
+        title="Descobreix receptes dels teus familiars"
+      />
+      <RecipesCarousel
+        recipes={publicRecipes}
+        title="Descobreix receptes d'altres usuaris de Tiberi"
+      />
+      <RecipesCarousel
         recipes={personalRecipes}
-        title="Receptes Personals"
+        title="Les teves receptes"
         personal
       />
-      <RecipesCarousel recipes={familiesRecipes} title="Receptes Familiars" />
-      <RecipesCarousel recipes={publicRecipes} title="Receptes Publiques" />
+      <h1 className="ml-8 2xl:ml-0 text-4xl font-bold my-10 mr-10">
+        Continua on ho has deixat
+      </h1>
+      <div></div>
+      <h1 className="ml-8 2xl:ml-0 text-4xl font-bold my-10 mr-10">
+        Contribueix amb una nova recepta
+      </h1>
     </div>
   );
 }

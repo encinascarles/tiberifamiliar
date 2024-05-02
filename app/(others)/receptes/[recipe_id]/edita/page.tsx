@@ -340,13 +340,13 @@ export default function EditRecipePage({
               </div>
             )}
           </div>
-          {/* Porcions */}
+          {/* Racions */}
           <FormField
             control={form.control}
             name="servings"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormLabel>Porcions</FormLabel>
+                <FormLabel>Racions</FormLabel>
                 <FormControl>
                   <div className="relative">
                     <Input

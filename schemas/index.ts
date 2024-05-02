@@ -52,7 +52,7 @@ export const RecipeSchema = z.object({
   }),
   origin: z.string().optional(),
   servings: z.number().refine((value) => value > 0 && value < 20, {
-    message: "Porcions no vàlides",
+    message: "Racions no vàlides",
   }),
   ingredients: z
     .array(

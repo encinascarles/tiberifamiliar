@@ -24,7 +24,6 @@ const RecipeIngredientsCard: React.FC<RecipeIngredientsCardProps> = ({
     setServings((Number(servings) > 1 ? Number(servings) - 1 : 1).toString());
 
   const handleCheckChange = (index: number) => {
-    console.log(index);
     setCheckedItems((prevState) => {
       const newState = [...prevState];
       newState[index] = !newState[index];
@@ -77,7 +76,7 @@ const RecipeIngredientsCard: React.FC<RecipeIngredientsCardProps> = ({
     <Card className="relative">
       {/* Counter for settings desired servings */}
       <Card className="absolute top-0 right-0 flex items-center flex-col bg-neutral-100 border-t-0 border-r-0 rounded-br-none rounded-tl-none">
-        <span className="text-lg font-semibold tracking-tigh">Porcions</span>
+        <span className="text-lg font-semibold tracking-tigh">Racions</span>
         <div className="flex items-center">
           <Button
             className="rounded-none rounded-bl-lg h-8 w-7 p-0"

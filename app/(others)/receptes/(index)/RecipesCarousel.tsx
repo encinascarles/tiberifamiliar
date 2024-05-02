@@ -7,6 +7,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { recipeAndAuthor } from "@/types";
+import SeeMoreCard from "./SeeMoreCard";
 
 export default async function RecipesCarousel({
   title,
@@ -37,6 +38,9 @@ export default async function RecipesCarousel({
               <RecipeCard key={i} recipe={recipe} personal={personal} />
             </CarouselItem>
           ))}
+          <CarouselItem key={"jkds"} className="md:basis-1/2 lg:basis-1/3">
+            <SeeMoreCard />
+          </CarouselItem>
         </CarouselContent>
         <CarouselPrevious className="hidden sm:flex" />
         <CarouselNext className="hidden sm:flex" />
