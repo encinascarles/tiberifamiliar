@@ -1,12 +1,16 @@
-import FavoriteRecipesGrid from "./FavoriteRecipesGrid";
+import { getFavoriteRecipes } from "@/actions/recipes";
+import ShowRecipesLayout from "@/components/recipes/ShowRecipesLayout";
 
-export default async function FavoriteRecipesPage() {
+export default async function FavoriteRecipesPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   return (
-    <div className="container">
-      <div className="flex justify-start items-center gap-6">
-        <h1 className="text-4xl font-bold my-10 mr-10">Receptes Preferides</h1>
-      </div>
-      <FavoriteRecipesGrid />
-    </div>
+    <ShowRecipesLayout
+      pageParams={searchParams.page}
+      getRecipes={getFavoriteRecipes}
+      title="Receptes Preferides"
+    />
   );
 }

@@ -289,6 +289,8 @@ export const getPersonalRecipes = async (
           },
         },
       },
+      take: take,
+      skip: (page - 1) * take,
     });
 
     // Get total number of recipes
@@ -473,7 +475,10 @@ export const getFamilyRecipes = async (
 
 // - Get all favorite recipes
 // TYPE: recipesResponse = recipeAndAuthor[] | error;
-export const getFavoriteRecipes = async (): Promise<recipesResponse> => {
+export const getFavoriteRecipes = async (
+  page: number,
+  take: number
+): Promise<getPaginationRecipesResponse> => {
   try {
     // Get favorite recipes
     const user = await safeGetSessionUser();
@@ -496,10 +501,23 @@ export const getFavoriteRecipes = async (): Promise<recipesResponse> => {
               },
             },
           },
+          take: take,
+          skip: (page - 1) * take,
         },
       },
     });
     if (!fullUser) throw new Error("show: Usuari no trobat!");
+
+    // Count the user total favorite recipes
+    const total = await db.recipe.count({
+      where: {
+        favoritedBy: {
+          some: {
+            id: user.id,
+          },
+        },
+      },
+    });
 
     // Prepare response
     const recipesToSend = fullUser.favoriteRecipes.map((recipe) => ({
@@ -519,7 +537,7 @@ export const getFavoriteRecipes = async (): Promise<recipesResponse> => {
       author_id: recipe.authorId,
       favorite: true,
     }));
-    return recipesToSend;
+    return { recipes: recipesToSend, total };
   } catch (e: any) {
     return errorHandler(e);
   }
