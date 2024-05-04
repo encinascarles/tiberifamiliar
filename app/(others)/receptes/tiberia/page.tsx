@@ -49,7 +49,11 @@ export default async function TiberIaRecipesPage({
       <Pagination className="mt-8">
         <PaginationContent>
           <PaginationItem>
-            <PaginationPrevious href={page > 1 ? `?page=${page - 1}` : "#"} />
+            {}
+            <PaginationPrevious
+              title="Anterior"
+              href={page > 1 ? `?page=${page - 1}` : "#"}
+            />
           </PaginationItem>
           {pageNumbers.map((pageNumber) => (
             <PaginationItem key={pageNumber}>
@@ -66,6 +70,7 @@ export default async function TiberIaRecipesPage({
           </PaginationItem>
           <PaginationItem>
             <PaginationNext
+              title="Següent"
               href={page < totalPages ? `?page=${page + 1}` : "#"}
             />
           </PaginationItem>
