@@ -538,8 +538,16 @@ export const getDraftRecipes = async (): Promise<recipesResponse> => {
 };
 
 // - Get all AI recipes
-// TYPE: recipesResponse = recipeAndAuthor[] | error;
-export const getAIRecipes = async (): Promise<recipesResponse> => {
+type getAIRecipesResponse =
+  | {
+      recipes: recipeAndAuthor[];
+      total: number;
+    }
+  | error;
+export const getAIRecipes = async (
+  page: number,
+  take: number
+): Promise<getAIRecipesResponse> => {
   try {
     // Get current user if exists
     const user = await currentUser();
@@ -562,7 +570,18 @@ export const getAIRecipes = async (): Promise<recipesResponse> => {
           },
         },
       },
-      take: 30,
+      orderBy: {
+        title: "asc",
+      },
+      take: take,
+      skip: (page - 1) * take,
+    });
+
+    // Get total number of public recipes
+    const total = await db.recipe.count({
+      where: {
+        visibility: "AI",
+      },
     });
 
     // Prepare response
@@ -584,7 +603,7 @@ export const getAIRecipes = async (): Promise<recipesResponse> => {
       favorite: user ? recipe.favoritedBy.some((f) => f.id === user.id) : false,
     }));
 
-    return recipesToSend;
+    return { recipes: recipesToSend, total };
   } catch (e: any) {
     return errorHandler(e);
   }
