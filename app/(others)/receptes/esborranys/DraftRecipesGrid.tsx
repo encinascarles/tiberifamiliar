@@ -12,8 +12,8 @@ const DraftRecipesGrid = async () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
-      {recipes.map((recipe: recipeAndAuthor) => (
-        <DraftCard recipe={recipe} />
+      {recipes.map((recipe: recipeAndAuthor, key) => (
+        <DraftCard recipe={recipe} key={key} />
       ))}
     </div>
   );
