@@ -55,6 +55,7 @@ export default function EditRecipePage({
   // States for showing or hiding recommendations and origin
   const [showRecommendations, setShowRecommendations] = useState(false);
   const [showOrigin, setShowOrigin] = useState(false);
+  const [showPrepTime, setShowPrepTime] = useState(false);
 
   // Transition to disable inputs while submitting
   const [isPending, startTransition] = useTransition();
@@ -248,31 +249,7 @@ export default function EditRecipePage({
             )}
           />
           {/* Temps de preparació i total */}
-          <div className="flex justify-between w-full gap-8">
-            <FormField
-              control={form.control}
-              name="prep_time"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Temps de Preparació</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        disabled={isPending}
-                        type="number"
-                        {...field}
-                        onChange={(e) => {
-                          form.setValue("prep_time", parseInt(e.target.value));
-                        }}
-                      />
-                      <span className="absolute inset-y-0 left-12 text-gray-400 flex items-center text-base md:text-sm pointer-events-none">
-                        minuts
-                      </span>
-                    </div>
-                  </FormControl>
-                </FormItem>
-              )}
-            />
+          <div className="flex justify-between w-full gap-8 flex-col sm:flex-row">
             <FormField
               control={form.control}
               name="total_time"
@@ -297,6 +274,83 @@ export default function EditRecipePage({
                 </FormItem>
               )}
             />
+            {/* <FormField
+              control={form.control}
+              name="prep_time"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>
+                    Temps de Preparació
+                    <span className="text-orange-400"> (Opcional)</span>
+                  </FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        disabled={isPending}
+                        type="number"
+                        {...field}
+                        onChange={(e) => {
+                          form.setValue("prep_time", parseInt(e.target.value));
+                        }}
+                      />
+                      <span className="absolute inset-y-0 left-12 text-gray-400 flex items-center text-base md:text-sm pointer-events-none">
+                        minuts
+                      </span>
+                    </div>
+                  </FormControl>
+                </FormItem>
+              )}
+            /> */}
+            <div className="w-full">
+              <FormLabel>
+                Temps de Preparació
+                <span className="text-orange-400"> (Opcional)</span>
+              </FormLabel>
+              {!showPrepTime ? (
+                <Button
+                  disabled={isPending}
+                  variant="outline"
+                  type="button"
+                  className="mt-2 w-full"
+                  onClick={() => {
+                    setShowPrepTime(true);
+                    form.resetField("prep_time");
+                  }}
+                >
+                  <Plus />
+                </Button>
+              ) : (
+                <div>
+                  <FormItem className="mt-2">
+                    <FormControl>
+                      <div className="flex items-center relative">
+                        <Input
+                          disabled={isPending}
+                          type="number"
+                          onChange={(e) => {
+                            form.setValue(
+                              "prep_time",
+                              parseInt(e.target.value)
+                            );
+                          }}
+                        />
+                        <span className="absolute inset-y-0 left-12 text-gray-400 flex items-center text-base md:text-sm pointer-events-none">
+                          minuts
+                        </span>
+                        <Button
+                          disabled={isPending}
+                          type="button"
+                          onClick={() => setShowPrepTime(false)}
+                          className="ml-2"
+                        >
+                          <Minus />
+                        </Button>
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                </div>
+              )}
+            </div>
           </div>
           {/* Origen de la recepta */}
           <div>

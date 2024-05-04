@@ -44,9 +44,12 @@ export const NewPasswordSchema = z
 
 export const RecipeSchema = z.object({
   title: z.string().min(1, "El títol no pot estar buit"),
-  prep_time: z.number().refine((value) => value > 0, {
-    message: "Temps no vàlid",
-  }),
+  prep_time: z
+    .number()
+    .refine((value) => value > 0, {
+      message: "Temps no vàlid",
+    })
+    .optional(),
   total_time: z.number().refine((value) => value > 0, {
     message: "Temps no vàlid",
   }),

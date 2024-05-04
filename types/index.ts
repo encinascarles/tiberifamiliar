@@ -36,7 +36,7 @@ export type actionResponse = error | success;
 export interface recipe {
   id: string;
   title: string;
-  prep_time: number;
+  prep_time: number | null;
   total_time: number;
   servings: number;
   ingredients: string[];

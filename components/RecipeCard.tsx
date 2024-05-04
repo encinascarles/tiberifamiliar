@@ -16,7 +16,7 @@ const RecipeCard = async ({
   draft?: boolean;
 }) => {
   return (
-    <Card className="w-[400] h-[400]">
+    <Card className="flex flex-col justify-between">
       <Link
         href={`/receptes/${recipe.id}${draft ? "/edita" : ""}`}
         className="cursor-pointer"
@@ -68,12 +68,14 @@ const RecipeCard = async ({
             </span>
           )}
           <div className="flex gap-2 flex-shrink-0">
-            <div className="flex items-center">
-              <ChefHat className="h-7 text-orange-500" />
-              <p className="font-bold tracking-tighter">
-                {recipe.prep_time + "'"}
-              </p>
-            </div>
+            {recipe.prep_time && (
+              <div className="flex items-center">
+                <ChefHat className="h-7 text-orange-500" />
+                <p className="font-bold tracking-tighter">
+                  {recipe.prep_time + "'"}
+                </p>
+              </div>
+            )}
             <div className="flex items-center">
               <CookingPot className="h-6 text-orange-500" />
               <p className="font-bold tracking-tighter">
