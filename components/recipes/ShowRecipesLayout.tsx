@@ -17,18 +17,26 @@ export default async function RecipesGridWithPagination({
   getRecipes,
   addRecipe,
   personal,
+  search,
 }: {
   pageParams: string | string[] | undefined;
   getRecipes: (
     page: number,
-    take: number
+    take: number,
+    search?: string
   ) => Promise<getPaginationRecipesResponse>;
   addRecipe?: boolean;
   personal?: boolean;
+  search?: string | string[] | undefined;
 }) {
   const take = 18;
   const page = pageParams ? Number(pageParams) : 1;
-  const recipeResponse = await getRecipes(page, take);
+  let recipeResponse;
+  if (search) {
+    recipeResponse = await getRecipes(page, take, search as string);
+  } else {
+    recipeResponse = await getRecipes(page, take);
+  }
   if ("error" in recipeResponse) return null;
   const recipes = recipeResponse.recipes;
   const totalPages = Math.ceil(recipeResponse.total / take);
@@ -64,13 +72,15 @@ export default async function RecipesGridWithPagination({
               <PaginationPrevious
                 title="Anterior"
                 className="text-orange-500"
-                href={page > 1 ? `?page=${page - 1}` : "#"}
+                href={
+                  page > 1 ? `?page=${page - 1}&search=${search || ""}` : "#"
+                }
               />
             </PaginationItem>
             {pageNumbers.map((pageNumber) => (
               <PaginationItem key={pageNumber}>
                 <PaginationLink
-                  href={`?page=${pageNumber}`}
+                  href={`?page=${pageNumber}&search=${search || ""}`}
                   isActive={pageNumber === page}
                   className="border-orange-500"
                 >
@@ -85,7 +95,11 @@ export default async function RecipesGridWithPagination({
               <PaginationNext
                 title="Següent"
                 className="text-orange-500"
-                href={page < totalPages ? `?page=${page + 1}` : "#"}
+                href={
+                  page < totalPages
+                    ? `?page=${page + 1}&search=${search || ""}`
+                    : "#"
+                }
               />
             </PaginationItem>
           </PaginationContent>
