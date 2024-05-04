@@ -209,7 +209,10 @@ export const saveDraftRecipe = async (
 
 // - Get all public recipes
 // TYPE: recipesResponse = recipeAndAuthor[] | error;
-export const getPublicRecipes = async (): Promise<recipesResponse> => {
+export const getPublicRecipes = async (
+  page: number,
+  take: number
+): Promise<getPaginationRecipesResponse> => {
   try {
     // Get current user if exists
     const user = await currentUser();
@@ -233,6 +236,16 @@ export const getPublicRecipes = async (): Promise<recipesResponse> => {
           },
         },
       },
+      take: take,
+      skip: (page - 1) * take,
+    });
+
+    // Get total number of public recipes
+    const total = await db.recipe.count({
+      where: {
+        visibility: "PUBLIC",
+        draft: false,
+      },
     });
 
     // Prepare response
@@ -254,7 +267,7 @@ export const getPublicRecipes = async (): Promise<recipesResponse> => {
       favorite: user ? recipe.favoritedBy.some((f) => f.id === user.id) : false,
     }));
 
-    return recipesToSend;
+    return { recipes: recipesToSend, total };
   } catch (e: any) {
     return errorHandler(e);
   }

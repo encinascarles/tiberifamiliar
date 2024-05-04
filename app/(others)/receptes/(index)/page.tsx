@@ -10,7 +10,7 @@ export default async function HomePage() {
   const [personalRecipes, familiesRecipes, publicRecipes] = await Promise.all([
     getPersonalRecipes(1, 20),
     getFamiliesRecipes(1, 20),
-    getPublicRecipes(),
+    getPublicRecipes(1, 20),
   ]);
 
   // Check if there was an error fetching the recipes
@@ -28,7 +28,7 @@ export default async function HomePage() {
         title="Descobreix receptes dels teus familiars"
       />
       <RecipesCarousel
-        recipes={publicRecipes}
+        recipes={publicRecipes.recipes}
         title="Descobreix receptes d'altres usuaris de Tiberi"
       />
       <RecipesCarousel
