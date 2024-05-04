@@ -7,7 +7,15 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { Earth, Heart, PencilRuler, Plus, User, Users } from "lucide-react";
+import {
+  BrainCircuit,
+  Earth,
+  Heart,
+  PencilRuler,
+  Plus,
+  User,
+  Users,
+} from "lucide-react";
 import TopMenuItem from "./TopMenuItem";
 
 const TopNavigation = () => {
@@ -15,7 +23,9 @@ const TopNavigation = () => {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Receptes</NavigationMenuTrigger>
+          <NavigationMenuTrigger className="bg-transparent">
+            Receptes
+          </NavigationMenuTrigger>
           <NavigationMenuContent>
             <div className="flex flex-col">
               <TopMenuItem href="/receptes/personals">
@@ -38,6 +48,10 @@ const TopNavigation = () => {
                 <Earth size={20} />
                 Receptes publiques
               </TopMenuItem>
+              <TopMenuItem href="/receptes/tiberia">
+                <BrainCircuit size={20} />
+                Receptes tiberIA
+              </TopMenuItem>
               <TopMenuItem href="/receptes/nova">
                 <Plus size={20} />
                 Crear recepta
@@ -46,7 +60,9 @@ const TopNavigation = () => {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Families</NavigationMenuTrigger>
+          <NavigationMenuTrigger className="bg-transparent">
+            Families
+          </NavigationMenuTrigger>
           <NavigationMenuContent>
             <div className="flex flex-col">
               <TopMenuItem href="/families">

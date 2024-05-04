@@ -8,6 +8,7 @@ import {
 import { useCurrentUser } from "@/hooks/use-current-user";
 import {
   Bell,
+  BrainCircuit,
   Earth,
   Heart,
   LogOut,
@@ -59,6 +60,10 @@ export default function MobileDrawerMenu() {
               <MobileMenuItem href="/receptes/publiques">
                 <Earth className="mr-2 h-4 w-4" />
                 Receptes publiques
+              </MobileMenuItem>
+              <MobileMenuItem href="/receptes/tiberia">
+                <BrainCircuit className="mr-2 h-4 w-4" />
+                Receptes tiberIA
               </MobileMenuItem>
               <MobileMenuItem href="/receptes/nova">
                 <Plus className="mr-2 h-4 w-4" />
