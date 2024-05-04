@@ -1,4 +1,4 @@
-import AddRecipeCard from "@/components/AddRecipeCard";
+import AddRecipeCard from "@/components/recipes/AddRecipeCard";
 import { recipeAndAuthor } from "@/types";
 import RecipeCard from "./RecipeCard";
 

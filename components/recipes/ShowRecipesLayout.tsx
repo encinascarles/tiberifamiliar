@@ -1,5 +1,5 @@
 import { getAIRecipesResponse } from "@/actions/recipes";
-import RecipesGrid from "@/components/RecipesGrid";
+import RecipesGrid from "@/components/recipes/RecipesGrid";
 import {
   Pagination,
   PaginationContent,

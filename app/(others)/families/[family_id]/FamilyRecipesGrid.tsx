@@ -1,7 +1,7 @@
 "use server";
 
 import { getFamilyRecipes } from "@/actions/recipes";
-import RecipesGrid from "@/components/RecipesGrid";
+import RecipesGrid from "@/components/recipes/RecipesGrid";
 
 interface FamilyRecipesGridProps {
   familyId: string;

@@ -1,7 +1,7 @@
 "use server";
 
 import { getPublicRecipes } from "@/actions/recipes";
-import RecipesGrid from "@/components/RecipesGrid";
+import RecipesGrid from "@/components/recipes/RecipesGrid";
 
 const PublicRecipesGrid = async () => {
   const recipes = await getPublicRecipes();

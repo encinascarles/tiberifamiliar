@@ -1,5 +1,5 @@
 import { getAIRecipes } from "@/actions/recipes";
-import ShowRecipesLayout from "@/components/ShowRecipesLayout";
+import ShowRecipesLayout from "@/components/recipes/ShowRecipesLayout";
 
 export default async function TiberIaRecipesPage({
   searchParams,
