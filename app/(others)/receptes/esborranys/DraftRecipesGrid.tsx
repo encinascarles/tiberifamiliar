@@ -3,6 +3,7 @@
 import { getDraftRecipes } from "@/actions/recipes";
 import { recipeAndAuthor } from "@/types";
 import DraftCard from "@/components/recipes/DraftCard";
+import DraftGridLayout from "./DraftGridLayout";
 
 const DraftRecipesGrid = async () => {
   const recipes = await getDraftRecipes();
@@ -11,11 +12,11 @@ const DraftRecipesGrid = async () => {
   if (recipes.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
+    <DraftGridLayout>
       {recipes.map((recipe: recipeAndAuthor, key) => (
         <DraftCard recipe={recipe} key={key} />
       ))}
-    </div>
+    </DraftGridLayout>
   );
 };
 
