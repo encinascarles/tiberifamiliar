@@ -1,5 +1,4 @@
 import { getPaginationRecipesResponse } from "@/actions/recipes";
-import RecipesGrid from "@/components/recipes/RecipesGrid";
 import {
   Pagination,
   PaginationContent,
@@ -9,20 +8,23 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import AddRecipeCard from "./AddRecipeCard";
+import RecipeCard from "./RecipeCard";
+import RecipesGrid from "./RecipesGrid";
 
-export default async function ShowRecipesLayout({
+export default async function RecipesGridWithPagination({
   pageParams,
   getRecipes,
-  title,
   addRecipe,
+  personal,
 }: {
   pageParams: string | string[] | undefined;
   getRecipes: (
     page: number,
     take: number
   ) => Promise<getPaginationRecipesResponse>;
-  title: string;
   addRecipe?: boolean;
+  personal?: boolean;
 }) {
   const take = 18;
   const page = pageParams ? Number(pageParams) : 1;
@@ -47,11 +49,13 @@ export default async function ShowRecipesLayout({
   );
 
   return (
-    <div className="container">
-      <div className="flex justify-start items-center gap-6">
-        <h1 className="text-4xl font-bold my-10 mr-10">{title}</h1>
-      </div>
-      <RecipesGrid recipes={recipes} addRecipe={addRecipe} />
+    <>
+      <RecipesGrid>
+        {addRecipe && <AddRecipeCard />}
+        {recipes.map((recipe, i) => (
+          <RecipeCard key={i} recipe={recipe} personal={personal} />
+        ))}
+      </RecipesGrid>
       {totalPages > 1 && (
         <Pagination className="mt-8">
           <PaginationContent>
@@ -87,6 +91,6 @@ export default async function ShowRecipesLayout({
           </PaginationContent>
         </Pagination>
       )}
-    </div>
+    </>
   );
 }

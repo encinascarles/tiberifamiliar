@@ -1,5 +1,6 @@
 import { getFamiliesRecipes } from "@/actions/recipes";
-import ShowRecipesLayout from "@/components/recipes/ShowRecipesLayout";
+import TitleLayout from "@/components/TitleLayout";
+import RecipesGridWithPagination from "@/components/recipes/ShowRecipesLayout";
 
 export default async function FamiliesRecipesPage({
   searchParams,
@@ -7,10 +8,11 @@ export default async function FamiliesRecipesPage({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   return (
-    <ShowRecipesLayout
-      pageParams={searchParams.page}
-      getRecipes={getFamiliesRecipes}
-      title="Receptes Generades pel TiberIA"
-    />
+    <TitleLayout title="Receptes dels teus familiars">
+      <RecipesGridWithPagination
+        pageParams={searchParams.page}
+        getRecipes={getFamiliesRecipes}
+      />
+    </TitleLayout>
   );
 }

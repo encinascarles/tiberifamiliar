@@ -1,5 +1,6 @@
 import { getPersonalRecipes } from "@/actions/recipes";
-import ShowRecipesLayout from "@/components/recipes/ShowRecipesLayout";
+import TitleLayout from "@/components/TitleLayout";
+import RecipesGridWithPagination from "@/components/recipes/ShowRecipesLayout";
 
 export default async function PersonalRecipesPage({
   searchParams,
@@ -7,10 +8,11 @@ export default async function PersonalRecipesPage({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   return (
-    <ShowRecipesLayout
-      pageParams={searchParams.page}
-      getRecipes={getPersonalRecipes}
-      title="Receptes Personals"
-    />
+    <TitleLayout title="Receptes personals">
+      <RecipesGridWithPagination
+        pageParams={searchParams.page}
+        getRecipes={getPersonalRecipes}
+      />
+    </TitleLayout>
   );
 }

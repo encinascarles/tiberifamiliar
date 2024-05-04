@@ -1,26 +1,11 @@
-import AddRecipeCard from "@/components/recipes/AddRecipeCard";
-import { recipeAndAuthor } from "@/types";
-import RecipeCard from "./RecipeCard";
-
 type recipesGridProps = {
-  recipes: recipeAndAuthor[];
-  addRecipe?: boolean;
-  personal?: boolean;
-  draft?: boolean;
+  children: React.ReactNode;
 };
 
-const RecipesGrid: React.FC<recipesGridProps> = ({
-  recipes,
-  addRecipe,
-  personal = false,
-  draft = false,
-}) => {
+const RecipesGrid: React.FC<recipesGridProps> = ({ children }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-4">
-      {addRecipe && <AddRecipeCard />}
-      {recipes.map((recipe, i) => (
-        <RecipeCard key={i} recipe={recipe} personal={personal} draft={draft} />
-      ))}
+      {children}
     </div>
   );
 };

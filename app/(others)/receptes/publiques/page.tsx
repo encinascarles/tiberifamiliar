@@ -1,5 +1,6 @@
 import { getPublicRecipes } from "@/actions/recipes";
-import ShowRecipesLayout from "@/components/recipes/ShowRecipesLayout";
+import TitleLayout from "@/components/TitleLayout";
+import RecipesGridWithPagination from "@/components/recipes/ShowRecipesLayout";
 
 export default async function PublicRecipesPage({
   searchParams,
@@ -7,10 +8,11 @@ export default async function PublicRecipesPage({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   return (
-    <ShowRecipesLayout
-      pageParams={searchParams.page}
-      getRecipes={getPublicRecipes}
-      title="Receptes Publiques"
-    />
+    <TitleLayout title="Receptes Publiques">
+      <RecipesGridWithPagination
+        pageParams={searchParams.page}
+        getRecipes={getPublicRecipes}
+      />
+    </TitleLayout>
   );
 }

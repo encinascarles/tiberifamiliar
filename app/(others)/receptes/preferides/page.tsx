@@ -1,5 +1,6 @@
 import { getFavoriteRecipes } from "@/actions/recipes";
-import ShowRecipesLayout from "@/components/recipes/ShowRecipesLayout";
+import TitleLayout from "@/components/TitleLayout";
+import RecipesGridWithPagination from "@/components/recipes/ShowRecipesLayout";
 
 export default async function FavoriteRecipesPage({
   searchParams,
@@ -7,10 +8,11 @@ export default async function FavoriteRecipesPage({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   return (
-    <ShowRecipesLayout
-      pageParams={searchParams.page}
-      getRecipes={getFavoriteRecipes}
-      title="Receptes Preferides"
-    />
+    <TitleLayout title="Receptes preferides">
+      <RecipesGridWithPagination
+        pageParams={searchParams.page}
+        getRecipes={getFavoriteRecipes}
+      />
+    </TitleLayout>
   );
 }
