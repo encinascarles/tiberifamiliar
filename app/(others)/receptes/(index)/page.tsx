@@ -9,7 +9,7 @@ export default async function HomePage() {
   // Fetch all recipes
   const [personalRecipes, familiesRecipes, publicRecipes] = await Promise.all([
     getPersonalRecipes(),
-    getFamiliesRecipes(),
+    getFamiliesRecipes(1, 20),
     getPublicRecipes(),
   ]);
 
@@ -24,7 +24,7 @@ export default async function HomePage() {
   return (
     <div className="md:container">
       <RecipesCarousel
-        recipes={familiesRecipes}
+        recipes={familiesRecipes.recipes}
         title="Descobreix receptes dels teus familiars"
       />
       <RecipesCarousel

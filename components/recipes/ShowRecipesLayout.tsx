@@ -1,4 +1,4 @@
-import { getAIRecipesResponse } from "@/actions/recipes";
+import { getPaginationRecipesResponse } from "@/actions/recipes";
 import RecipesGrid from "@/components/recipes/RecipesGrid";
 import {
   Pagination,
@@ -16,7 +16,10 @@ export default async function ShowRecipesLayout({
   title,
 }: {
   pageParams: string | string[] | undefined;
-  getRecipes: (page: number, take: number) => Promise<getAIRecipesResponse>;
+  getRecipes: (
+    page: number,
+    take: number
+  ) => Promise<getPaginationRecipesResponse>;
   title: string;
 }) {
   const take = 18;

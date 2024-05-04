@@ -19,6 +19,12 @@ import { revalidatePath } from "next/cache";
 //--------------- GLOBAL TYPES --------------:
 
 export type recipesResponse = recipeAndAuthor[] | error;
+export type getPaginationRecipesResponse =
+  | {
+      recipes: recipeAndAuthor[];
+      total: number;
+    }
+  | error;
 
 //------------------ UTILS ------------------:
 
@@ -308,7 +314,10 @@ export const getPersonalRecipes = async (): Promise<recipesResponse> => {
 
 // - Get all families recipes
 // TYPE: recipesResponse = recipeAndAuthor[] | error;
-export const getFamiliesRecipes = async (): Promise<recipesResponse> => {
+export const getFamiliesRecipes = async (
+  page: number,
+  take: number
+): Promise<getPaginationRecipesResponse> => {
   try {
     // Get all family members
     const { users, userId } = await getUserFamiliesMembers();
@@ -337,6 +346,21 @@ export const getFamiliesRecipes = async (): Promise<recipesResponse> => {
           },
         },
       },
+      take: take,
+      skip: (page - 1) * take,
+    });
+
+    // Get total number of recipes
+    const total = await db.recipe.count({
+      where: {
+        authorId: {
+          in: users,
+        },
+        draft: false,
+        NOT: {
+          visibility: "PRIVATE",
+        },
+      },
     });
 
     // Prepare response
@@ -357,7 +381,8 @@ export const getFamiliesRecipes = async (): Promise<recipesResponse> => {
       author_id: recipe.authorId,
       favorite: recipe.favoritedBy.some((f) => f.id === userId),
     }));
-    return recipesToSend;
+
+    return { recipes: recipesToSend, total };
   } catch (e: any) {
     return errorHandler(e);
   }
@@ -538,16 +563,10 @@ export const getDraftRecipes = async (): Promise<recipesResponse> => {
 };
 
 // - Get all AI recipes
-export type getAIRecipesResponse =
-  | {
-      recipes: recipeAndAuthor[];
-      total: number;
-    }
-  | error;
 export const getAIRecipes = async (
   page: number,
   take: number
-): Promise<getAIRecipesResponse> => {
+): Promise<getPaginationRecipesResponse> => {
   try {
     // Get current user if exists
     const user = await currentUser();
