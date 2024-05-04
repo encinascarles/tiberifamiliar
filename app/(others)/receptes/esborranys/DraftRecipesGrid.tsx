@@ -2,7 +2,7 @@
 
 import { getDraftRecipes } from "@/actions/recipes";
 import { recipeAndAuthor } from "@/types";
-import DraftCard from "./DraftCard";
+import DraftCard from "@/components/recipes/DraftCard";
 
 const DraftRecipesGrid = async () => {
   const recipes = await getDraftRecipes();
