@@ -82,9 +82,11 @@ model Recipe {
   origin          String?
   image           String?
 
+  cookId String?
+
   draft Boolean @default(false)
 
-  visibility Visibility @default(FAMILY)
+  visibility Visibility @default(PUBLIC)
 
   authorId    String
   author      User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
@@ -92,8 +94,6 @@ model Recipe {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
-
-  @@unique([authorId, title])
 }
 
 model Family {
@@ -132,6 +132,7 @@ enum Visibility {
   PUBLIC
   FAMILY
   PRIVATE
+  AI
 }
 
 enum Role {

@@ -69,7 +69,7 @@ export const RecipeSchema = z.object({
       })
     )
     .nonempty({ message: "Debe agregar al menos un paso de preparación." }),
-  visibility: z.enum(["PUBLIC", "PRIVATE", "FAMILY"]),
+  visibility: z.enum(["PUBLIC", "PRIVATE", "FAMILY", "AI"]),
 });
 
 export const DraftRecipeSchema = z.object({
@@ -93,7 +93,7 @@ export const DraftRecipeSchema = z.object({
     .optional(),
   recommendations: z.string().optional(),
   origin: z.string().optional(),
-  visibility: z.enum(["PUBLIC", "PRIVATE", "FAMILY"]).optional(),
+  visibility: z.enum(["PUBLIC", "PRIVATE", "FAMILY", "AI"]).optional(),
 });
 
 export const FamilySchema = z.object({

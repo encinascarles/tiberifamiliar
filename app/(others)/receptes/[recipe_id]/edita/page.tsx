@@ -34,6 +34,7 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { set, z } from "zod";
 import EditPageSkeleton from "./EditPageSkeleton";
 import DeleteButton from "../(index)/DeleteButton";
+import { Visibility } from "@prisma/client";
 
 type FormData = z.infer<typeof RecipeSchema>;
 
@@ -180,7 +181,7 @@ export default function EditRecipePage({
       setShowOrigin(true);
       form.setValue("origin", origin);
     }
-    form.setValue("visibility", visibility as "PUBLIC" | "FAMILY" | "PRIVATE");
+    form.setValue("visibility", visibility as Visibility);
     setImage(recipeData.image);
     if (ingredients.length > 0) {
       removeIngredient(0); // Clear the default ingredient
