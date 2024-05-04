@@ -1,10 +1,16 @@
-import PersonalRecipesGrid from "./PersonalRecipesGrid";
+import { getPersonalRecipes } from "@/actions/recipes";
+import ShowRecipesLayout from "@/components/recipes/ShowRecipesLayout";
 
-export default async function PersonalRecipesPage() {
+export default async function PersonalRecipesPage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   return (
-    <div className="container">
-      <h1 className="text-4xl font-bold my-10">Receptes Personals</h1>
-      <PersonalRecipesGrid />
-    </div>
+    <ShowRecipesLayout
+      pageParams={searchParams.page}
+      getRecipes={getPersonalRecipes}
+      title="Receptes Personals"
+    />
   );
 }

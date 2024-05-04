@@ -8,7 +8,7 @@ import RecipesCarousel from "./RecipesCarousel";
 export default async function HomePage() {
   // Fetch all recipes
   const [personalRecipes, familiesRecipes, publicRecipes] = await Promise.all([
-    getPersonalRecipes(),
+    getPersonalRecipes(1, 20),
     getFamiliesRecipes(1, 20),
     getPublicRecipes(),
   ]);
@@ -32,7 +32,7 @@ export default async function HomePage() {
         title="Descobreix receptes d'altres usuaris de Tiberi"
       />
       <RecipesCarousel
-        recipes={personalRecipes}
+        recipes={personalRecipes.recipes}
         title="Les teves receptes"
         personal
       />

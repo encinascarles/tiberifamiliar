@@ -14,6 +14,7 @@ export default async function ShowRecipesLayout({
   pageParams,
   getRecipes,
   title,
+  addRecipe,
 }: {
   pageParams: string | string[] | undefined;
   getRecipes: (
@@ -21,6 +22,7 @@ export default async function ShowRecipesLayout({
     take: number
   ) => Promise<getPaginationRecipesResponse>;
   title: string;
+  addRecipe?: boolean;
 }) {
   const take = 18;
   const page = pageParams ? Number(pageParams) : 1;
@@ -49,7 +51,7 @@ export default async function ShowRecipesLayout({
       <div className="flex justify-start items-center gap-6">
         <h1 className="text-4xl font-bold my-10 mr-10">{title}</h1>
       </div>
-      <RecipesGrid recipes={recipes} />
+      <RecipesGrid recipes={recipes} addRecipe={addRecipe} />
       {totalPages > 1 && (
         <Pagination className="mt-8">
           <PaginationContent>

@@ -262,7 +262,10 @@ export const getPublicRecipes = async (): Promise<recipesResponse> => {
 
 // - Get all personal recipes
 // TYPE: recipesResponse = recipeAndAuthor[] | error;
-export const getPersonalRecipes = async (): Promise<recipesResponse> => {
+export const getPersonalRecipes = async (
+  page: number,
+  take: number
+): Promise<getPaginationRecipesResponse> => {
   try {
     // Get current user
     const user = await safeGetSessionUser();
@@ -288,6 +291,14 @@ export const getPersonalRecipes = async (): Promise<recipesResponse> => {
       },
     });
 
+    // Get total number of recipes
+    const total = await db.recipe.count({
+      where: {
+        authorId: user?.id,
+        draft: false,
+      },
+    });
+
     // Prepare response
     const recipesToSend = recipes.map((recipe) => ({
       id: recipe.id,
@@ -306,7 +317,7 @@ export const getPersonalRecipes = async (): Promise<recipesResponse> => {
       author_id: recipe.authorId,
       favorite: recipe.favoritedBy.some((f) => f.id === user.id),
     }));
-    return recipesToSend;
+    return { recipes: recipesToSend, total };
   } catch (e: any) {
     return errorHandler(e);
   }
