@@ -529,6 +529,7 @@ export const getDraftRecipes = async (): Promise<recipesResponse> => {
       author_image: recipe.author.image,
       author_id: recipe.authorId,
       favorite: false,
+      updated_at: recipe.updatedAt,
     }));
     return recipesToSend;
   } catch (e: any) {
