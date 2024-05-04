@@ -538,7 +538,7 @@ export const getDraftRecipes = async (): Promise<recipesResponse> => {
 };
 
 // - Get all AI recipes
-type getAIRecipesResponse =
+export type getAIRecipesResponse =
   | {
       recipes: recipeAndAuthor[];
       total: number;
@@ -719,33 +719,6 @@ export const getRecipeToEdit = async (
     return errorHandler(e);
   }
 };
-
-// - Check if recipe is in favorites
-// type isFavoriteResponse = { favorite: boolean } | error;
-// export const isFavoriteRecipe = async (
-//   recipeId: string
-// ): Promise<isFavoriteResponse> => {
-//   try {
-//     // Get current user
-//     const user = await safeGetSessionUser();
-
-//     // Check if the recipe is a favorite
-//     const favorite = await db.user.findFirst({
-//       where: {
-//         id: user.id,
-//         favoriteRecipes: {
-//           some: {
-//             id: recipeId,
-//           },
-//         },
-//       },
-//     });
-//     if (favorite) return { favorite: true };
-//     return { favorite: false };
-//   } catch (e: any) {
-//     return errorHandler(e);
-//   }
-// };
 
 // - Toggle favorite recipe
 type toggleFavoriteRecipe = { favorite: boolean } | error;
