@@ -16,7 +16,7 @@ const RecipeCard = async ({
   draft?: boolean;
 }) => {
   return (
-    <Card className="flex flex-col justify-between">
+    <Card className="flex flex-col justify-between h-full">
       <Link
         href={`/receptes/${recipe.id}${draft ? "/edita" : ""}`}
         className="cursor-pointer"
