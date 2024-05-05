@@ -1,6 +1,6 @@
 "use server";
 
-import { getUserFamilies } from "@/actions/families";
+import { getUserFamilies } from "@/actions/families/getUserFamilies";
 import FamilyCard from "./FamilyCard";
 import NewFamilyCard from "./NewFamilyCard";
 

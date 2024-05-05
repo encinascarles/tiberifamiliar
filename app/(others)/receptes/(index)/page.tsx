@@ -1,9 +1,7 @@
-import {
-  getFamiliesRecipes,
-  getPersonalRecipes,
-  getPublicRecipes,
-} from "@/actions/recipes";
 import RecipesCarousel from "./RecipesCarousel";
+import { getPublicRecipes } from "@/actions/recipes/getPublicRecipes";
+import { getPersonalRecipes } from "@/actions/recipes/getPersonalRecipes";
+import { getFamiliesRecipes } from "@/actions/recipes/getFamiliesRecipes";
 
 export default async function HomePage() {
   // Fetch all recipes

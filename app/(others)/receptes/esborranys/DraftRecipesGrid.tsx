@@ -1,9 +1,8 @@
 "use server";
-
-import { getDraftRecipes } from "@/actions/recipes";
 import { recipeAndAuthor } from "@/types";
 import DraftCard from "@/components/recipes/DraftCard";
 import DraftGridLayout from "./DraftGridLayout";
+import { getDraftRecipes } from "@/actions/recipes/getDraftRecipes";
 
 const DraftRecipesGrid = async () => {
   const recipes = await getDraftRecipes();

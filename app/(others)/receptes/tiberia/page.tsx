@@ -1,4 +1,4 @@
-import { getAIRecipes } from "@/actions/recipes";
+import { getAIRecipes } from "@/actions/recipes/getAiRecipes";
 import TitleLayout from "@/components/TitleLayout";
 import RecipesGridWithPagination from "@/components/recipes/ShowRecipesLayout";
 

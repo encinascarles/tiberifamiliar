@@ -1,16 +1,14 @@
 "use client";
 
-import {
-  demoteUser,
-  getFamilyMembersResponse,
-  kickUser,
-  promoteUser,
-} from "@/actions/families";
 import { useToast } from "@/components/ui/use-toast";
 import { member } from "@/types";
 import { useEffect, useState } from "react";
-import { ScrollArea } from "../../../../../components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import MemberItem from "./MemberItem";
+import { getFamilyMembersResponse } from "@/actions/families/getFamilyMembers";
+import { promoteUser } from "@/actions/families/promoteUser";
+import { demoteUser } from "@/actions/families/demoteUser";
+import { kickUser } from "@/actions/families/kickUser";
 
 interface MemberScrollProps {
   familyId: string;

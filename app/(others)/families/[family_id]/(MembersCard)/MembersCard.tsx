@@ -1,8 +1,8 @@
 "use server";
-import { getFamilyMembers } from "@/actions/families";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { InviteUserButton } from "../InviteUserButton";
 import MemberScroll from "./MemberScroll";
+import { getFamilyMembers } from "@/actions/families/getFamilyMembers";
 
 interface UserScrollProps {
   familyId: string;

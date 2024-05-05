@@ -1,5 +1,4 @@
 "use client";
-import { createFamily } from "@/actions/families";
 import { FormError } from "@/components/formMessages/FormError";
 import { FormSuccess } from "@/components/formMessages/FormSuccess";
 import { Button } from "@/components/ui/button";
@@ -21,6 +20,7 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import FamilyImageDropZone from "./FamilyImageDropzone";
+import { createFamily } from "@/actions/families/createFamily";
 
 type FormData = z.infer<typeof FamilySchema>;
 

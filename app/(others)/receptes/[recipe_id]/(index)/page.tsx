@@ -1,4 +1,4 @@
-import { getRecipe } from "@/actions/recipes";
+import { getRecipe } from "@/actions/recipes/getRecipe";
 import RecipeImageCard from "./RecipeImageCard";
 import RecipeIngredientsCard from "./RecipeIngredientsCard";
 import RecipeOriginCard from "./RecipeOriginCard";

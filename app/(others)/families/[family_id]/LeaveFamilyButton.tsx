@@ -1,22 +1,21 @@
 "use client";
 
-import { LogOut } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-import { useTransition } from "react";
-import { leaveFamily } from "@/actions/families";
-import { useRouter } from "next/navigation";
+import { leaveFamily } from "@/actions/families/leaveFamily";
 import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
+import { LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 
 export function LeaveFamilyButton({ familyId }: { familyId: string }) {
   const { toast } = useToast();

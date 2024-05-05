@@ -1,5 +1,4 @@
 "use client";
-import { getUserInvitations } from "@/actions/invitations";
 import {
   Dialog,
   DialogContent,
@@ -7,11 +6,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-
+import { getUserInvitations } from "@/actions/invitacions/getUserInvites";
 import { useInvitationsModal } from "@/stores/useInvitationsModal";
+import { invitation } from "@/types";
 import { useEffect, useState } from "react";
 import InvitationCard from "./InvitationCard";
-import { invitation } from "@/types";
 
 const InvitationsModal = () => {
   const { isOpen, close } = useInvitationsModal();

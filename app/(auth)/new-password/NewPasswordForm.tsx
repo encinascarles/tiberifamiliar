@@ -1,6 +1,6 @@
 "use client";
 
-import { newPassword } from "@/actions/authentication";
+import { newPassword } from "@/actions/authentication/newPassword";
 import { FormError } from "@/components/formMessages/FormError";
 import { Button } from "@/components/ui/button";
 import {

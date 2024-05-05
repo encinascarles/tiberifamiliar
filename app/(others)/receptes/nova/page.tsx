@@ -1,5 +1,5 @@
+import { createEmptyRecipe } from "@/actions/recipes/createEmptyRecipe";
 import { redirect } from "next/navigation";
-import { createEmptyRecipe } from "@/actions/recipes";
 
 const NewRecipePage = async () => {
   const id = await createEmptyRecipe();

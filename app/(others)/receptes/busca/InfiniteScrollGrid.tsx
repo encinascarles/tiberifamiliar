@@ -1,6 +1,5 @@
 "use client";
-
-import { position, searchRecipes } from "@/actions/recipes";
+import { position, searchRecipes } from "@/actions/recipes/searchRecipes";
 import RecipeCard from "@/components/recipes/RecipeCard";
 import RecipesGrid from "@/components/recipes/RecipesGrid";
 import { recipeAndAuthor } from "@/types";

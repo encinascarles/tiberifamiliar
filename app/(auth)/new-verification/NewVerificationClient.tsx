@@ -1,6 +1,6 @@
 "use client";
 
-import { newVerification } from "@/actions/authentication";
+import { verifyEmail } from "@/actions/authentication/verifyEmail";
 import { FormError } from "@/components/formMessages/FormError";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
@@ -30,7 +30,7 @@ const NewVerificationClient = () => {
     }
 
     // Verify the user with the token
-    newVerification(token).then((response) => {
+    verifyEmail(token).then((response) => {
       if ("error" in response) {
         setError(response.error);
         return;

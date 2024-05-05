@@ -1,6 +1,5 @@
 "use client";
-
-import { getRecipeSignedImageURLResponse } from "@/actions/recipes";
+import { getRecipeSignedImageURLResponse } from "@/actions/recipes/getRecipeSignedImageURL";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { computeSHA256 } from "@/lib/utils";

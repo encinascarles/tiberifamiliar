@@ -1,12 +1,5 @@
 "use client";
-import { deleteRecipe } from "@/actions/recipes";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
-import { cn } from "@/lib/utils";
-import { recipeAndAuthor } from "@/types";
-import { Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { deleteRecipe } from "@/actions/recipes/deleteRecipe";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,6 +11,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
+import { cn } from "@/lib/utils";
+import { Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 
 interface DeleteButtonProps {
   recipe_id: string;

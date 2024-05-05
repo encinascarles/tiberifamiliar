@@ -1,6 +1,5 @@
 "use server";
-
-import { getFamilyRecipes } from "@/actions/recipes";
+import { getFamilyRecipes } from "@/actions/recipes/getFamilyRecipes";
 import RecipeCard from "@/components/recipes/RecipeCard";
 import RecipesGrid from "@/components/recipes/RecipesGrid";
 

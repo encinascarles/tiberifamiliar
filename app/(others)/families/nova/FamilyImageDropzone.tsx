@@ -1,4 +1,5 @@
-import { deleteFamilyImage, getFamilySignedImageURL } from "@/actions/families";
+import { deleteFamilyImage } from "@/actions/families/deleteFamilyImage";
+import { getFamilySignedImageURL } from "@/actions/families/getFamilySignedImageURL";
 import ImageDropZone from "@/components/ImageDropZone";
 import { MAX_FAMILY_IMAGE_UPLOAD_SIZE } from "@/config";
 import React from "react";

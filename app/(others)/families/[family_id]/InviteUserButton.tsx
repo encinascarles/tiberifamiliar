@@ -1,5 +1,5 @@
 "use client";
-import { inviteUser } from "@/actions/families";
+import { inviteUser } from "@/actions/families/inviteUser";
 import { FormError } from "@/components/formMessages/FormError";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogFooter } from "@/components/ui/dialog";

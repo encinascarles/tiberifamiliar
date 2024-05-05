@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { LoginSchema } from "@/schemas";
-import { login } from "@/actions/authentication";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
@@ -20,6 +19,7 @@ import * as z from "zod";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { login } from "@/actions/authentication/login";
 
 export const LoginForm = () => {
   const router = useRouter();

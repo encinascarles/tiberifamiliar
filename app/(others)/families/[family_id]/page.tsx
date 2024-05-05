@@ -1,5 +1,4 @@
 "use server";
-import { getFamily } from "@/actions/families";
 import { EditFamilyButton } from "./EditFamilyButton";
 import { LeaveFamilyButton } from "./LeaveFamilyButton";
 import Image from "next/image";
@@ -14,6 +13,7 @@ import FamilyRecipesGrid from "./FamilyRecipesGrid";
 import MembersCard from "./(MembersCard)/MembersCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Suspense } from "react";
+import { getFamily } from "@/actions/families/fetFamily";
 
 interface FamilyPageProps {
   params: { family_id: string };

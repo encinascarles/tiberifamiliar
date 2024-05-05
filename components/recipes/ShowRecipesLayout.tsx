@@ -1,4 +1,3 @@
-import { getPaginationRecipesResponse } from "@/actions/recipes";
 import {
   Pagination,
   PaginationContent,
@@ -11,6 +10,7 @@ import {
 import AddRecipeCard from "./AddRecipeCard";
 import RecipeCard from "./RecipeCard";
 import RecipesGrid from "./RecipesGrid";
+import { recipesPaginationResponse } from "@/actions/recipes/TYPES";
 
 export default async function RecipesGridWithPagination({
   pageParams,
@@ -24,7 +24,7 @@ export default async function RecipesGridWithPagination({
     page: number,
     take: number,
     search?: string
-  ) => Promise<getPaginationRecipesResponse>;
+  ) => Promise<recipesPaginationResponse>;
   addRecipe?: boolean;
   personal?: boolean;
   search?: string | string[] | undefined;

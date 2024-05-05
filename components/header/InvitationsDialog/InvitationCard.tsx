@@ -6,8 +6,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { acceptInvitation, rejectInvitation } from "@/actions/invitations";
 import { invitation } from "@/types";
+import { acceptInvitation } from "@/actions/invitacions/acceptInvitation";
+import { rejectInvitation } from "@/actions/invitacions/rejectInvitation";
 
 interface InvitationCardProps extends invitation {
   refresh: () => void;

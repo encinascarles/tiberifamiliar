@@ -1,5 +1,5 @@
 "use client";
-import { toggleFavoriteRecipe } from "@/actions/recipes";
+import { toggleFavoriteRecipe } from "@/actions/recipes/toggleFavoriteRecipe";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useIsFavorite } from "@/stores/useIsFavorite";

@@ -1,9 +1,6 @@
 "use client";
-import {
-  getRecipeToEdit,
-  saveDraftRecipe,
-  saveRecipe,
-} from "@/actions/recipes";
+import { saveDraftRecipe } from "@/actions/recipes/saveDraftRecipe";
+import { saveRecipe } from "@/actions/recipes/saveRecipe";
 import { RecipeImageDropZone } from "@/app/(others)/receptes/[recipe_id]/edita/RecipeImageDropzone";
 import { FormError } from "@/components/formMessages/FormError";
 import { Button } from "@/components/ui/button";
@@ -27,14 +24,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { RecipeSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Visibility } from "@prisma/client";
 import { Minus, PencilRuler, Plus, Save, Trash } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { set, z } from "zod";
-import EditPageSkeleton from "./EditPageSkeleton";
+import { z } from "zod";
 import DeleteButton from "../(index)/DeleteButton";
-import { Visibility } from "@prisma/client";
+import EditPageSkeleton from "./EditPageSkeleton";
+import { getRecipeToEdit } from "@/actions/recipes/getRecipeToEdit";
 
 type FormData = z.infer<typeof RecipeSchema>;
 

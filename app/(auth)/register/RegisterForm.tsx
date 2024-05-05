@@ -1,6 +1,6 @@
 "use client";
 
-import { register } from "@/actions/authentication";
+import { register } from "@/actions/authentication/register";
 import { FormError } from "@/components/formMessages/FormError";
 import { FormSuccess } from "@/components/formMessages/FormSuccess";
 import { Button } from "@/components/ui/button";
