@@ -6,7 +6,7 @@ import { Bookmark, ChefHat, CookingPot } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const RecipeCard = async ({
+const RecipeCard = ({
   recipe,
   personal = false,
   draft = false,

@@ -978,79 +978,339 @@ export const deleteRecipe = async (
 };
 
 // - Search recipes
-// TYPE: recipesResponse = recipeAndAuthor[] | error;
-export const searchRecipes = async (
-  page: number,
-  take: number,
-  query?: string
-): Promise<getPaginationRecipesResponse> => {
-  if (!query) return { recipes: [], total: 0 };
+export interface position {
+  place: "personal" | "families" | "public" | "ai" | "end";
+  num: number;
+}
+export type searchRecipesResponse =
+  | {
+      recipes: {
+        personal: recipeAndAuthor[];
+        families: recipeAndAuthor[];
+        public: recipeAndAuthor[];
+        ai: recipeAndAuthor[];
+      };
+      position: position;
+    }
+  | error;
+export const searchRecipes = async ({
+  take,
+  query,
+  position,
+}: {
+  take: number;
+  query?: string;
+  position?: position;
+}): Promise<searchRecipesResponse> => {
+  if (!query)
+    return {
+      recipes: { personal: [], families: [], public: [], ai: [] },
+      position: { place: "end", num: 0 },
+    };
   try {
     // Get current user
     const user = await currentUser();
 
-    // Search recipes
-    const recipes = await db.recipe.findMany({
-      where: {
-        draft: false,
-        title: {
-          search: query.replace(/\s+/g, " | "),
-        },
-      },
-      orderBy: {
-        _relevance: {
-          fields: ["title"],
-          search: query.replace(/\s+/g, " & "),
-          sort: "desc",
-        },
-      },
-      include: {
-        author: {
-          select: {
-            name: true,
-            image: true,
+    let newPosition: position;
+    if (position) {
+      newPosition = position;
+    } else {
+      if (user?.id) {
+        newPosition = { place: "personal", num: 0 };
+      } else {
+        newPosition = { place: "public", num: 0 };
+      }
+    }
+
+    let batchCount = 0;
+
+    let personalRecipesToSend: recipeAndAuthor[] = [];
+    let familiesRecipesToSend: recipeAndAuthor[] = [];
+    let publicRecipesToSend: recipeAndAuthor[] = [];
+    let aiRecipesToSend: recipeAndAuthor[] = [];
+
+    // Search personal recipes
+    if (user?.id && newPosition.place === "personal") {
+      const personalRecipes = await db.recipe.findMany({
+        where: {
+          draft: false,
+          authorId: user.id,
+          title: {
+            search: query.replace(/\s+/g, " | "),
           },
         },
-        favoritedBy: {
-          select: {
-            id: true,
+        orderBy: {
+          _relevance: {
+            fields: ["title"],
+            search: query.replace(/\s+/g, " & "),
+            sort: "desc",
           },
         },
-      },
-      take: take,
-      skip: (page - 1) * take,
-    });
-
-    // Get total number of recipes
-    const total = await db.recipe.count({
-      where: {
-        draft: false,
-        title: {
-          search: query.replace(/\s+/g, " | "),
+        include: {
+          author: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+          favoritedBy: {
+            select: {
+              id: true,
+            },
+          },
         },
-      },
-    });
-    console.log("found recipes: ", total);
+        take: take,
+        skip: newPosition.num,
+      });
 
-    // Prepare response
-    const recipesToSend = recipes.map((recipe) => ({
-      id: recipe.id,
-      title: recipe.title as string,
-      prep_time: recipe.prep_time as number,
-      total_time: recipe.total_time as number,
-      servings: recipe.servings as number,
-      ingredients: recipe.ingredients,
-      steps: recipe.steps,
-      recommendations: recipe.recommendations,
-      origin: recipe.origin,
-      visibility: recipe.visibility,
-      image: recipe.image,
-      author_name: recipe.author.name,
-      author_image: recipe.author.image,
-      author_id: recipe.authorId,
-      favorite: user ? recipe.favoritedBy.some((f) => f.id === user.id) : false,
-    }));
-    return { recipes: recipesToSend, total };
+      // Prepare response
+      personalRecipesToSend = personalRecipes.map((recipe) => ({
+        id: recipe.id,
+        title: recipe.title as string,
+        prep_time: recipe.prep_time as number,
+        total_time: recipe.total_time as number,
+        servings: recipe.servings as number,
+        ingredients: recipe.ingredients,
+        steps: recipe.steps,
+        recommendations: recipe.recommendations,
+        origin: recipe.origin,
+        visibility: recipe.visibility,
+        image: recipe.image,
+        author_name: recipe.author.name,
+        author_image: recipe.author.image,
+        author_id: recipe.authorId,
+        favorite: user
+          ? recipe.favoritedBy.some((f) => f.id === user.id)
+          : false,
+      }));
+
+      batchCount += personalRecipes.length;
+      if (batchCount < take) {
+        newPosition = { place: "families", num: 0 };
+      } else {
+        newPosition = {
+          place: "personal",
+          num: newPosition.num + personalRecipes.length,
+        };
+      }
+    }
+
+    // Search families recipes
+    if (user?.id && newPosition?.place === "families") {
+      // Get all family members
+      const { users } = await getUserFamiliesMembers();
+
+      // Get all public or family recipes from the family members
+      const familiesRecipes = await db.recipe.findMany({
+        where: {
+          authorId: {
+            in: users,
+          },
+          draft: false,
+          NOT: {
+            visibility: "PRIVATE",
+          },
+          title: {
+            search: query.replace(/\s+/g, " | "),
+          },
+        },
+        orderBy: {
+          _relevance: {
+            fields: ["title"],
+            search: query.replace(/\s+/g, " & "),
+            sort: "desc",
+          },
+        },
+        include: {
+          author: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+          favoritedBy: {
+            select: {
+              id: true,
+            },
+          },
+        },
+        take: take - batchCount,
+        skip: newPosition.num,
+      });
+
+      // Prepare response
+      familiesRecipesToSend = familiesRecipes.map((recipe) => ({
+        id: recipe.id,
+        title: recipe.title as string,
+        prep_time: recipe.prep_time as number,
+        total_time: recipe.total_time as number,
+        servings: recipe.servings as number,
+        ingredients: recipe.ingredients,
+        steps: recipe.steps,
+        recommendations: recipe.recommendations,
+        origin: recipe.origin,
+        visibility: recipe.visibility,
+        image: recipe.image,
+        author_name: recipe.author.name,
+        author_image: recipe.author.image,
+        author_id: recipe.authorId,
+        favorite: user
+          ? recipe.favoritedBy.some((f) => f.id === user.id)
+          : false,
+      }));
+
+      batchCount += familiesRecipes.length;
+      if (batchCount < take) {
+        newPosition = { place: "public", num: 0 };
+      } else {
+        newPosition = {
+          place: "families",
+          num: newPosition.num + familiesRecipes.length,
+        };
+      }
+    }
+
+    // Search public recipes
+    if (newPosition?.place === "public") {
+      const publicRecipes = await db.recipe.findMany({
+        where: {
+          draft: false,
+          visibility: "PUBLIC",
+          title: {
+            search: query.replace(/\s+/g, " | "),
+          },
+        },
+        orderBy: {
+          _relevance: {
+            fields: ["title"],
+            search: query.replace(/\s+/g, " & "),
+            sort: "desc",
+          },
+        },
+        include: {
+          author: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+          favoritedBy: {
+            select: {
+              id: true,
+            },
+          },
+        },
+        take: take - batchCount,
+        skip: newPosition.num,
+      });
+
+      // Prepare response
+      publicRecipesToSend = publicRecipes.map((recipe) => ({
+        id: recipe.id,
+        title: recipe.title as string,
+        prep_time: recipe.prep_time as number,
+        total_time: recipe.total_time as number,
+        servings: recipe.servings as number,
+        ingredients: recipe.ingredients,
+        steps: recipe.steps,
+        recommendations: recipe.recommendations,
+        origin: recipe.origin,
+        visibility: recipe.visibility,
+        image: recipe.image,
+        author_name: recipe.author.name,
+        author_image: recipe.author.image,
+        author_id: recipe.authorId,
+        favorite: user
+          ? recipe.favoritedBy.some((f) => f.id === user.id)
+          : false,
+      }));
+
+      batchCount += publicRecipes.length;
+      if (batchCount < take) {
+        newPosition = { place: "ai", num: 0 };
+      } else {
+        newPosition = {
+          place: "public",
+          num: newPosition.num + publicRecipes.length,
+        };
+      }
+    }
+
+    // Search ai recipes
+    if (newPosition?.place === "ai") {
+      const aiRecipes = await db.recipe.findMany({
+        where: {
+          draft: false,
+          visibility: "AI",
+          title: {
+            search: query.replace(/\s+/g, " | "),
+          },
+        },
+        orderBy: {
+          _relevance: {
+            fields: ["title"],
+            search: query.replace(/\s+/g, " & "),
+            sort: "desc",
+          },
+        },
+        include: {
+          author: {
+            select: {
+              name: true,
+              image: true,
+            },
+          },
+          favoritedBy: {
+            select: {
+              id: true,
+            },
+          },
+        },
+        take: take - batchCount,
+        skip: newPosition.num,
+      });
+
+      // Prepare response
+      aiRecipesToSend = aiRecipes.map((recipe) => ({
+        id: recipe.id,
+        title: recipe.title as string,
+        prep_time: recipe.prep_time as number,
+        total_time: recipe.total_time as number,
+        servings: recipe.servings as number,
+        ingredients: recipe.ingredients,
+        steps: recipe.steps,
+        recommendations: recipe.recommendations,
+        origin: recipe.origin,
+        visibility: recipe.visibility,
+        image: recipe.image,
+        author_name: recipe.author.name,
+        author_image: recipe.author.image,
+        author_id: recipe.authorId,
+        favorite: user
+          ? recipe.favoritedBy.some((f) => f.id === user.id)
+          : false,
+      }));
+
+      batchCount += aiRecipes.length;
+      if (batchCount < take) {
+        newPosition = { place: "end", num: 0 };
+      } else {
+        newPosition = {
+          place: "ai",
+          num: newPosition.num + aiRecipes.length,
+        };
+      }
+    }
+    console.log(newPosition);
+    return {
+      recipes: {
+        personal: personalRecipesToSend,
+        families: familiesRecipesToSend,
+        public: publicRecipesToSend,
+        ai: aiRecipesToSend,
+      },
+      position: newPosition,
+    };
   } catch (e: any) {
     return errorHandler(e);
   }
