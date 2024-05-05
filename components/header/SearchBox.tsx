@@ -16,14 +16,17 @@ const SearchBox = () => {
     e.target[0].value = "";
   };
   return (
-    <form onSubmit={handleSearch}>
-      <div className="flex w-full md:w-fit">
+    <form onSubmit={handleSearch} className="w-full md:w-fit">
+      <div className="relative flex w-full md:w-fit">
         <Input
           type="text"
           placeholder="Cerca receptes"
-          className="w-full md:w-[200px] h-9 rounded-r-none"
+          className="w-full md:w-[240px] pr-[40px] h-9"
         />
-        <Button type="submit" className="w-[35px] p-0 h-9 rounded-l-none">
+        <Button
+          type="submit"
+          className="absolute right-0 top-0 w-[35px] p-0 h-9 rounded-l-none"
+        >
           <Search size={20} />
         </Button>
       </div>
