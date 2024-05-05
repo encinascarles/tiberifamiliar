@@ -1,59 +1,50 @@
 "use client";
 
-import {
-  position,
-  searchRecipes,
-  searchRecipesResponse,
-} from "@/actions/recipes";
+import { position, searchRecipes } from "@/actions/recipes";
 import RecipeCard from "@/components/recipes/RecipeCard";
 import RecipesGrid from "@/components/recipes/RecipesGrid";
 import { recipeAndAuthor } from "@/types";
 import { LoaderCircle } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useInView } from "react-intersection-observer";
 
-const InfiniteScrollGrid = ({
-  search,
-  initialRecipesResponse,
-}: {
-  search: string;
-  initialRecipesResponse: searchRecipesResponse;
-}) => {
-  if ("error" in initialRecipesResponse) return null;
+const InfiniteScrollGrid = () => {
+  const searchParams = useSearchParams();
 
-  const [personalRecipes, setPersonalRecipes] = useState<recipeAndAuthor[]>(
-    initialRecipesResponse.recipes.personal
-  );
-  const [familiesRecipes, setFamiliesRecipes] = useState<recipeAndAuthor[]>(
-    initialRecipesResponse.recipes.families
-  );
-  const [publicRecipes, setPublicRecipes] = useState<recipeAndAuthor[]>(
-    initialRecipesResponse.recipes.public
-  );
-  const [aiRecipes, setAiRecipes] = useState<recipeAndAuthor[]>(
-    initialRecipesResponse.recipes.ai
-  );
-  const [end, setEnd] = useState(
-    initialRecipesResponse.position.place === "end"
-  );
-  const position = useRef<position>(initialRecipesResponse.position);
-  const done = useRef<string[]>(initialRecipesResponse.done);
+  const [personalRecipes, setPersonalRecipes] = useState<recipeAndAuthor[]>([]);
+  const [familiesRecipes, setFamiliesRecipes] = useState<recipeAndAuthor[]>([]);
+  const [publicRecipes, setPublicRecipes] = useState<recipeAndAuthor[]>([]);
+  const [aiRecipes, setAiRecipes] = useState<recipeAndAuthor[]>([]);
+  const [end, setEnd] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const position = useRef<position>({ place: "personal", num: 0 });
+  const done = useRef<string[]>([]);
+  const [ref, inView] = useInView();
 
-  const [page, setPage] = useState(1);
-
-  const spinnerRef = useRef<HTMLDivElement>(null);
-
-  const loadRecipesTest = (entries: IntersectionObserverEntry[]) => {
-    const [entry] = entries;
-    if (entry.isIntersecting) {
-      loadMoreRecipes();
-    }
-  };
+  useEffect(() => {
+    setLoading(true);
+    searchRecipes({
+      take: 4,
+      query: searchParams.get("search")!,
+    }).then((response) => {
+      if ("error" in response) throw new Error(response.error);
+      setLoading(false);
+      setPersonalRecipes(response.recipes.personal);
+      setFamiliesRecipes(response.recipes.families);
+      setPublicRecipes(response.recipes.public);
+      setAiRecipes(response.recipes.ai);
+      position.current = response.position;
+      done.current = response.done;
+      setEnd(response.position.place === "end");
+    });
+  }, [searchParams]);
 
   const loadMoreRecipes = async () => {
     console.log(position.current);
     const recipesResponse = await searchRecipes({
       take: 4,
-      query: search,
+      query: searchParams.get("search")!,
       position: position.current,
       done: done.current,
     });
@@ -80,49 +71,55 @@ const InfiniteScrollGrid = ({
   };
 
   useEffect(() => {
-    const observer = new IntersectionObserver(loadRecipesTest, {
-      root: null,
-      rootMargin: "0px",
-      threshold: 1.0,
-    });
-    if (spinnerRef.current) observer.observe(spinnerRef.current);
-    return () => {
-      if (spinnerRef.current) observer.unobserve(spinnerRef.current);
-    };
-  }, [spinnerRef]);
+    if (inView) {
+      loadMoreRecipes();
+    }
+  }, [inView]);
 
   return (
     <>
-      Personal:
-      <RecipesGrid>
-        {personalRecipes.map((recipe) => (
-          <RecipeCard key={"personal-" + recipe.id} recipe={recipe} />
-        ))}
-      </RecipesGrid>
-      Families:
-      <RecipesGrid>
-        {familiesRecipes.map((recipe) => (
-          <RecipeCard key={"families-" + recipe.id} recipe={recipe} />
-        ))}
-      </RecipesGrid>
-      Public:
-      <RecipesGrid>
-        {publicRecipes.map((recipe) => (
-          <RecipeCard key={"public-" + recipe.id} recipe={recipe} />
-        ))}
-      </RecipesGrid>
-      AI:
-      <RecipesGrid>
-        {aiRecipes.map((recipe) => (
-          <RecipeCard key={"ai-" + recipe.id} recipe={recipe} />
-        ))}
-      </RecipesGrid>
-      {!end && (
+      {loading ? (
+        <div className="col-span-1 mt-16 flex items-center justify-center sm:col-span-2 md:col-span-3 lg:col-span-4">
+          <LoaderCircle size={40} className="text-orange-500 animate-spin" />
+        </div>
+      ) : (
         <>
-          <div ref={spinnerRef} />
-          <div className="col-span-1 mt-16 flex items-center justify-center sm:col-span-2 md:col-span-3 lg:col-span-4">
-            <LoaderCircle size={40} className="text-orange-500 animate-spin" />
-          </div>
+          {" "}
+          Personal:
+          <RecipesGrid>
+            {personalRecipes.map((recipe) => (
+              <RecipeCard key={recipe.id} recipe={recipe} />
+            ))}
+          </RecipesGrid>
+          Families:
+          <RecipesGrid>
+            {familiesRecipes.map((recipe) => (
+              <RecipeCard key={recipe.id} recipe={recipe} />
+            ))}
+          </RecipesGrid>
+          Public:
+          <RecipesGrid>
+            {publicRecipes.map((recipe) => (
+              <RecipeCard key={recipe.id} recipe={recipe} />
+            ))}
+          </RecipesGrid>
+          AI:
+          <RecipesGrid>
+            {aiRecipes.map((recipe) => (
+              <RecipeCard key={recipe.id} recipe={recipe} />
+            ))}
+          </RecipesGrid>
+          {!end && (
+            <div
+              ref={ref}
+              className="col-span-1 mt-16 flex items-center justify-center sm:col-span-2 md:col-span-3 lg:col-span-4"
+            >
+              <LoaderCircle
+                size={40}
+                className="text-orange-500 animate-spin"
+              />
+            </div>
+          )}{" "}
         </>
       )}
     </>
