@@ -3,7 +3,7 @@ import { currentUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import errorHandler from "@/lib/errorHandler";
 import { error, recipeAndAuthor } from "@/types";
-import { getUserFamiliesMembers } from "./UTILS";
+import { getUserFamiliesMembers, prepareRecipeResponse } from "./UTILS";
 
 //------------------ DESCRIPTION ------------------:
 
@@ -111,25 +111,7 @@ export const searchRecipes = async ({
       // Prepare response
       personalRecipesToSend = personalRecipes.map((recipe) => {
         doneRecipes.push(recipe.id);
-        return {
-          id: recipe.id,
-          title: recipe.title as string,
-          prep_time: recipe.prep_time as number,
-          total_time: recipe.total_time as number,
-          servings: recipe.servings as number,
-          ingredients: recipe.ingredients,
-          steps: recipe.steps,
-          recommendations: recipe.recommendations,
-          origin: recipe.origin,
-          visibility: recipe.visibility,
-          image: recipe.image,
-          author_name: recipe.author.name,
-          author_image: recipe.author.image,
-          author_id: recipe.authorId,
-          favorite: user
-            ? recipe.favoritedBy.some((f) => f.id === user.id)
-            : false,
-        };
+        return prepareRecipeResponse(recipe, user.id);
       });
 
       batchCount += personalRecipes.length;
@@ -192,25 +174,7 @@ export const searchRecipes = async ({
       // Prepare response
       familiesRecipesToSend = familiesRecipes.map((recipe) => {
         doneRecipes.push(recipe.id);
-        return {
-          id: recipe.id,
-          title: recipe.title as string,
-          prep_time: recipe.prep_time as number,
-          total_time: recipe.total_time as number,
-          servings: recipe.servings as number,
-          ingredients: recipe.ingredients,
-          steps: recipe.steps,
-          recommendations: recipe.recommendations,
-          origin: recipe.origin,
-          visibility: recipe.visibility,
-          image: recipe.image,
-          author_name: recipe.author.name,
-          author_image: recipe.author.image,
-          author_id: recipe.authorId,
-          favorite: user
-            ? recipe.favoritedBy.some((f) => f.id === user.id)
-            : false,
-        };
+        return prepareRecipeResponse(recipe, user.id);
       });
 
       batchCount += familiesRecipes.length;
@@ -264,25 +228,7 @@ export const searchRecipes = async ({
       // Prepare response
       publicRecipesToSend = publicRecipes.map((recipe) => {
         doneRecipes.push(recipe.id);
-        return {
-          id: recipe.id,
-          title: recipe.title as string,
-          prep_time: recipe.prep_time as number,
-          total_time: recipe.total_time as number,
-          servings: recipe.servings as number,
-          ingredients: recipe.ingredients,
-          steps: recipe.steps,
-          recommendations: recipe.recommendations,
-          origin: recipe.origin,
-          visibility: recipe.visibility,
-          image: recipe.image,
-          author_name: recipe.author.name,
-          author_image: recipe.author.image,
-          author_id: recipe.authorId,
-          favorite: user
-            ? recipe.favoritedBy.some((f) => f.id === user.id)
-            : false,
-        };
+        return prepareRecipeResponse(recipe, user?.id);
       });
 
       batchCount += publicRecipes.length;
@@ -336,25 +282,7 @@ export const searchRecipes = async ({
       // Prepare response
       aiRecipesToSend = aiRecipes.map((recipe) => {
         doneRecipes.push(recipe.id);
-        return {
-          id: recipe.id,
-          title: recipe.title as string,
-          prep_time: recipe.prep_time as number,
-          total_time: recipe.total_time as number,
-          servings: recipe.servings as number,
-          ingredients: recipe.ingredients,
-          steps: recipe.steps,
-          recommendations: recipe.recommendations,
-          origin: recipe.origin,
-          visibility: recipe.visibility,
-          image: recipe.image,
-          author_name: recipe.author.name,
-          author_image: recipe.author.image,
-          author_id: recipe.authorId,
-          favorite: user
-            ? recipe.favoritedBy.some((f) => f.id === user.id)
-            : false,
-        };
+        return prepareRecipeResponse(recipe, user?.id);
       });
 
       batchCount += aiRecipes.length;

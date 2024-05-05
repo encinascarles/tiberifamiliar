@@ -1,6 +1,7 @@
 "use server";
 import { safeGetSessionUser } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { User } from "next-auth";
 
 //------------------ UTILS ------------------:
 
@@ -41,3 +42,31 @@ export const getUserFamiliesMembers =
     // Return array of unique Ids
     return { users: uniqueContacts, userId: user.id };
   };
+
+// - Prepare recipe response
+export const prepareRecipeResponse = (
+  recipe: any,
+  userId: string | undefined
+) => {
+  return {
+    id: recipe.id,
+    title: recipe.title as string,
+    prep_time: recipe.prep_time as number,
+    total_time: recipe.total_time as number,
+    servings: recipe.servings as number,
+    ingredients: recipe.ingredients,
+    steps: recipe.steps,
+    recommendations: recipe.recommendations,
+    origin: recipe.origin,
+    visibility: recipe.visibility,
+    image: recipe.image,
+    author_name: recipe.author.name,
+    author_image: recipe.author.image,
+    author_id: recipe.authorId,
+    favorite: userId
+      ? recipe.favoritedBy
+        ? recipe.favoritedBy.some((f: any) => f.id === userId)
+        : false
+      : false,
+  };
+};
