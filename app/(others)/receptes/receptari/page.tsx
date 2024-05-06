@@ -8,7 +8,7 @@ export default async function TiberIaRecipesPage({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   return (
-    <TitleLayout title="Receptes Generades pel TiberIA">
+    <TitleLayout title="Receptari de receptes generades per IA">
       <RecipesGridWithPagination
         pageParams={searchParams.page}
         getRecipes={getAIRecipes}

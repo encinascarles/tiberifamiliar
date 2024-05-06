@@ -61,9 +61,9 @@ export default function MobileDrawerMenu() {
                 <Earth className="mr-2 h-4 w-4" />
                 Receptes publiques
               </MobileMenuItem>
-              <MobileMenuItem href="/receptes/tiberia">
+              <MobileMenuItem href="/receptes/receptari">
                 <BrainCircuit className="mr-2 h-4 w-4" />
-                Receptes tiberIA
+                Receptari IA
               </MobileMenuItem>
               <MobileMenuItem href="/receptes/nova">
                 <Plus className="mr-2 h-4 w-4" />

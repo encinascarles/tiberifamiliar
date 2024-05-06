@@ -48,9 +48,9 @@ const TopNavigation = () => {
                 <Earth size={20} />
                 Receptes publiques
               </TopMenuItem>
-              <TopMenuItem href="/receptes/tiberia">
+              <TopMenuItem href="/receptes/receptari">
                 <BrainCircuit size={20} />
-                Receptes tiberIA
+                Receptari IA
               </TopMenuItem>
               <TopMenuItem href="/receptes/nova">
                 <Plus size={20} />
