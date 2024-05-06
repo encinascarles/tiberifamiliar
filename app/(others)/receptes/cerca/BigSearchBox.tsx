@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { SizeableInput } from "@/components/ui/personalized/SizeableInput";
 import { Search } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { use, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 
 const BigSearchBox = () => {
@@ -13,17 +13,20 @@ const BigSearchBox = () => {
   const [text, setText] = useState(searchQuery || "");
   const [debouncedText] = useDebounce(text, 300);
 
-  const handleSearch = (inputText: string) => {
-    if (inputText) {
-      router.push("/receptes/cerca?search=" + inputText);
-    }
-  };
+  const handleSearch = useCallback(
+    (inputText: string) => {
+      if (inputText) {
+        router.push("/receptes/cerca?search=" + inputText);
+      }
+    },
+    [router]
+  );
 
   useEffect(() => {
     if (debouncedText) {
       handleSearch(debouncedText);
     }
-  }, [debouncedText]);
+  }, [debouncedText, handleSearch]);
 
   return (
     <div className="relative flex max-w-[800px] mx-auto">
