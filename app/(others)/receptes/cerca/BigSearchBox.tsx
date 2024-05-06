@@ -11,7 +11,7 @@ const BigSearchBox = () => {
   const search = useSearchParams();
   const searchQuery = search.get("search");
   const [text, setText] = useState(searchQuery || "");
-  const [debouncedText] = useDebounce(text, 300);
+  const [debouncedText] = useDebounce(text, 600);
 
   const handleSearch = useCallback(
     (inputText: string) => {
