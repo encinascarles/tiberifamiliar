@@ -1,8 +1,8 @@
 "use server";
-import { recipeAndAuthor } from "@/types";
-import DraftCard from "@/components/recipes/DraftCard";
-import DraftGridLayout from "./DraftGridLayout";
 import { getDraftRecipes } from "@/actions/recipes/getDraftRecipes";
+import DraftCard from "@/components/recipes/DraftCard";
+import { recipe } from "@/types";
+import DraftGridLayout from "./DraftGridLayout";
 
 const DraftRecipesGrid = async () => {
   const recipes = await getDraftRecipes();
@@ -12,7 +12,7 @@ const DraftRecipesGrid = async () => {
 
   return (
     <DraftGridLayout>
-      {recipes.map((recipe: recipeAndAuthor, key) => (
+      {recipes.map((recipe: recipe, key) => (
         <DraftCard recipe={recipe} key={key} />
       ))}
     </DraftGridLayout>

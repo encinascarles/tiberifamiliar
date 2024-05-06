@@ -1,10 +1,10 @@
 import { Card, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { recipeAndAuthor } from "@/types";
+import { recipe } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 
-const DraftCard = async ({ recipe }: { recipe: recipeAndAuthor }) => {
+const DraftCard = async ({ recipe }: { recipe: recipe }) => {
   return (
     <Link href={`/receptes/${recipe.id}/edita`}>
       <Card className="w-full flex h-[180px] ">

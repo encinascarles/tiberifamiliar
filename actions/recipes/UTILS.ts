@@ -49,7 +49,7 @@ export const prepareRecipeResponse = (
       name: string;
       image: string | null;
     };
-    favoritedBy: {
+    favoritedBy?: {
       id: string;
     }[];
   } & Recipe,
@@ -75,5 +75,7 @@ export const prepareRecipeResponse = (
         ? recipe.favoritedBy.some((f: any) => f.id === userId)
         : false
       : false,
+    created_at: recipe.createdAt,
+    updated_at: recipe.updatedAt,
   };
 };

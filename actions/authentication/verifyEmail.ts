@@ -1,7 +1,7 @@
 "use server";
 import { db } from "@/lib/db";
 import errorHandler from "@/lib/errorHandler";
-import { sendVerificationEmail } from "@/lib/mail";
+import { sendVerificationEmail, sendWelcomeEmail } from "@/lib/mail";
 import { generateVerificationToken } from "@/lib/tokens";
 import { actionResponse } from "@/types";
 
@@ -50,6 +50,9 @@ export const verifyEmail = async (token: string): Promise<actionResponse> => {
     await db.verificationToken.delete({
       where: { id: existingToken.id },
     });
+
+    // Send welcome email
+    await sendWelcomeEmail(existingToken.email);
 
     return { success: "Correu electrònic verificat, inicia sessió!" };
   } catch (e: any) {

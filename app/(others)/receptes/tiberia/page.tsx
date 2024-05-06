@@ -12,6 +12,7 @@ export default async function TiberIaRecipesPage({
       <RecipesGridWithPagination
         pageParams={searchParams.page}
         getRecipes={getAIRecipes}
+        notFound={<p>No hi ha cap recepta de tiberIA</p>}
       />
     </TitleLayout>
   );

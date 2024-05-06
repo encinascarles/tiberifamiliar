@@ -18,6 +18,7 @@ export default async function RecipesGridWithPagination({
   addRecipe,
   personal,
   search,
+  notFound,
 }: {
   pageParams: string | string[] | undefined;
   getRecipes: (
@@ -28,6 +29,7 @@ export default async function RecipesGridWithPagination({
   addRecipe?: boolean;
   personal?: boolean;
   search?: string | string[] | undefined;
+  notFound: React.ReactNode;
 }) {
   const take = 18;
   const page = pageParams ? Number(pageParams) : 1;
@@ -58,52 +60,60 @@ export default async function RecipesGridWithPagination({
 
   return (
     <>
-      <RecipesGrid>
-        {addRecipe && <AddRecipeCard />}
-        {recipes.map((recipe, i) => (
-          <RecipeCard key={i} recipe={recipe} personal={personal} />
-        ))}
-      </RecipesGrid>
-      {totalPages > 1 && (
-        <Pagination className="mt-8">
-          <PaginationContent>
-            <PaginationItem>
-              {}
-              <PaginationPrevious
-                title="Anterior"
-                className="text-orange-500"
-                href={
-                  page > 1 ? `?page=${page - 1}&search=${search || ""}` : "#"
-                }
-              />
-            </PaginationItem>
-            {pageNumbers.map((pageNumber) => (
-              <PaginationItem key={pageNumber}>
-                <PaginationLink
-                  href={`?page=${pageNumber}&search=${search || ""}`}
-                  isActive={pageNumber === page}
-                  className="border-orange-500"
-                >
-                  {pageNumber}
-                </PaginationLink>
-              </PaginationItem>
+      {recipes.length === 0 ? (
+        notFound
+      ) : (
+        <>
+          <RecipesGrid>
+            {addRecipe && <AddRecipeCard />}
+            {recipes.map((recipe, i) => (
+              <RecipeCard key={i} recipe={recipe} personal={personal} />
             ))}
-            <PaginationItem>
-              {endPage < totalPages && <PaginationEllipsis />}
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext
-                title="Següent"
-                className="text-orange-500"
-                href={
-                  page < totalPages
-                    ? `?page=${page + 1}&search=${search || ""}`
-                    : "#"
-                }
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+          </RecipesGrid>
+          {totalPages > 1 && (
+            <Pagination className="mt-8">
+              <PaginationContent>
+                <PaginationItem>
+                  {}
+                  <PaginationPrevious
+                    title="Anterior"
+                    className="text-orange-500"
+                    href={
+                      page > 1
+                        ? `?page=${page - 1}&search=${search || ""}`
+                        : "#"
+                    }
+                  />
+                </PaginationItem>
+                {pageNumbers.map((pageNumber) => (
+                  <PaginationItem key={pageNumber}>
+                    <PaginationLink
+                      href={`?page=${pageNumber}&search=${search || ""}`}
+                      isActive={pageNumber === page}
+                      className="border-orange-500"
+                    >
+                      {pageNumber}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                <PaginationItem>
+                  {endPage < totalPages && <PaginationEllipsis />}
+                </PaginationItem>
+                <PaginationItem>
+                  <PaginationNext
+                    title="Següent"
+                    className="text-orange-500"
+                    href={
+                      page < totalPages
+                        ? `?page=${page + 1}&search=${search || ""}`
+                        : "#"
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
+        </>
       )}
     </>
   );

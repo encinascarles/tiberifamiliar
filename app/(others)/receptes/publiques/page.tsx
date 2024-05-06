@@ -12,6 +12,7 @@ export default async function PublicRecipesPage({
       <RecipesGridWithPagination
         pageParams={searchParams.page}
         getRecipes={getPublicRecipes}
+        notFound={<p>No hi ha cap recepta publica</p>}
       />
     </TitleLayout>
   );

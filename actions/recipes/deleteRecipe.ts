@@ -3,6 +3,7 @@ import { safeGetSessionUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import errorHandler from "@/lib/errorHandler";
 import { actionResponse } from "@/types";
+import { revalidatePath } from "next/cache";
 
 //------------------ DESCRIPTION ------------------:
 
@@ -30,7 +31,7 @@ export const deleteRecipe = async (
     });
 
     // Revalidate the recipes page and the users personal recipes page
-
+    revalidatePath("/receptes");
     return { success: "Recepta eliminada amb èxit!" };
   } catch (e: any) {
     return errorHandler(e);

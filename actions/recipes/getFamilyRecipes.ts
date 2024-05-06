@@ -43,6 +43,7 @@ export const getFamilyRecipes = async (
       where: {
         authorId: {
           in: familyMembers,
+          not: user.id,
         },
         draft: false,
       },

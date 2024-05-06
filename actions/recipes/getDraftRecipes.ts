@@ -2,8 +2,7 @@
 import { safeGetSessionUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import errorHandler from "@/lib/errorHandler";
-import { recipesResponse } from "./TYPES";
-import { prepareRecipeResponse } from "./UTILS";
+import { error, recipe } from "@/types";
 
 //------------------ DESCRIPTION ------------------:
 
@@ -11,11 +10,11 @@ import { prepareRecipeResponse } from "./UTILS";
 
 //------------------ RESPONSE TYPE ------------------:
 
-// TYPE: recipesResponse = recipeAndAuthor[] | error;
+export type draftResponse = recipe[] | error;
 
 //------------------ ACTION ------------------:
 
-export const getDraftRecipes = async (): Promise<recipesResponse> => {
+export const getDraftRecipes = async (): Promise<draftResponse> => {
   try {
     // Get current user
     const user = await safeGetSessionUser();
@@ -26,20 +25,25 @@ export const getDraftRecipes = async (): Promise<recipesResponse> => {
         authorId: user?.id,
         draft: true,
       },
-      include: {
-        author: {
-          select: {
-            name: true,
-            image: true,
-          },
-        },
-      },
     });
 
     // Prepare response
-    const recipesToSend = recipes.map((recipe) =>
-      prepareRecipeResponse(recipe, user?.id)
-    );
+    const recipesToSend = recipes.map((recipe) => ({
+      id: recipe.id,
+      title: recipe.title as string,
+      prep_time: recipe.prep_time as number,
+      total_time: recipe.total_time as number,
+      servings: recipe.servings as number,
+      ingredients: recipe.ingredients,
+      steps: recipe.steps,
+      recommendations: recipe.recommendations,
+      origin: recipe.origin,
+      visibility: recipe.visibility,
+      image: recipe.image,
+      created_at: recipe.createdAt,
+      updated_at: recipe.updatedAt,
+    }));
+
     return recipesToSend;
   } catch (e: any) {
     return errorHandler(e);

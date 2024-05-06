@@ -12,6 +12,7 @@ export default async function FavoriteRecipesPage({
       <RecipesGridWithPagination
         pageParams={searchParams.page}
         getRecipes={getFavoriteRecipes}
+        notFound={<p>Encara no tens cap recepta prederida</p>}
       />
     </TitleLayout>
   );
