@@ -5,7 +5,7 @@ import RecipesGrid from "@/components/recipes/RecipesGrid";
 import { recipeAndAuthor } from "@/types";
 import { LoaderCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 const InfiniteScrollGrid = () => {
@@ -21,26 +21,7 @@ const InfiniteScrollGrid = () => {
   const done = useRef<string[]>([]);
   const [ref, inView] = useInView();
 
-  useEffect(() => {
-    setLoading(true);
-    searchRecipes({
-      take: 4,
-      query: searchParams.get("search")!,
-    }).then((response) => {
-      if ("error" in response) throw new Error(response.error);
-      setLoading(false);
-      setPersonalRecipes(response.recipes.personal);
-      setFamiliesRecipes(response.recipes.families);
-      setPublicRecipes(response.recipes.public);
-      setAiRecipes(response.recipes.ai);
-      position.current = response.position;
-      done.current = response.done;
-      setEnd(response.position.place === "end");
-    });
-  }, [searchParams]);
-
-  const loadMoreRecipes = async () => {
-    console.log(position.current);
+  const loadMoreRecipes = useCallback(async () => {
     const recipesResponse = await searchRecipes({
       take: 4,
       query: searchParams.get("search")!,
@@ -67,13 +48,31 @@ const InfiniteScrollGrid = () => {
       ...recipesResponse.recipes.ai,
     ]);
     setEnd(recipesResponse.position.place === "end");
-  };
+  }, [searchParams]); // Asegúrate de incluir todas las dependencias necesarias aquí
+
+  useEffect(() => {
+    setLoading(true);
+    searchRecipes({
+      take: 4,
+      query: searchParams.get("search")!,
+    }).then((response) => {
+      if ("error" in response) throw new Error(response.error);
+      setLoading(false);
+      setPersonalRecipes(response.recipes.personal);
+      setFamiliesRecipes(response.recipes.families);
+      setPublicRecipes(response.recipes.public);
+      setAiRecipes(response.recipes.ai);
+      position.current = response.position;
+      done.current = response.done;
+      setEnd(response.position.place === "end");
+    });
+  }, [searchParams, loadMoreRecipes]);
 
   useEffect(() => {
     if (inView) {
       loadMoreRecipes();
     }
-  }, [inView]);
+  }, [inView, loadMoreRecipes]);
 
   return (
     <>

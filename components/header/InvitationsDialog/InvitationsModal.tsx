@@ -9,15 +9,14 @@ import {
 import { getUserInvitations } from "@/actions/invitacions/getUserInvites";
 import { useInvitationsModal } from "@/stores/useInvitationsModal";
 import { invitation } from "@/types";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import InvitationCard from "./InvitationCard";
 
 const InvitationsModal = () => {
   const { isOpen, close, open } = useInvitationsModal();
   const [invitations, setInvitations] = useState<Array<invitation>>([]);
 
-  const getInvitations = async () => {
-    console.log("getInvitations");
+  const getInvitations = useCallback(async () => {
     const invitationsResponse = await getUserInvitations();
     if ("error" in invitationsResponse) return;
     setInvitations(invitationsResponse);
@@ -25,23 +24,23 @@ const InvitationsModal = () => {
       // If some invite is not seen, open the dialog
       open();
     }
-  };
+  }, [setInvitations, open]);
 
   useEffect(() => {
-    // Llama a getInvitations cada vez que se abre el diálogo
+    // Call getInvitations when the dialog is opened
     if (isOpen) {
       getInvitations();
     }
-  }, [isOpen]);
+  }, [isOpen, getInvitations]);
 
   useEffect(() => {
     getInvitations();
-    // Configura un intervalo para llamar a getInvitations cada 60 segundos
+    // Configure an interval to call getInvitations every 60 seconds
     //const intervalId = setInterval(getInvitations, 60000); // 60000 ms = 1 minuto
 
-    // Limpia el intervalo cuando el componente se desmonte
+    // Clean the interval when component is dismounted
     //return () => clearInterval(intervalId);
-  }, []);
+  }, [getInvitations]);
 
   return (
     <Dialog onOpenChange={close} open={isOpen} modal defaultOpen={isOpen}>

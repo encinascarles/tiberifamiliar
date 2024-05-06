@@ -295,8 +295,6 @@ export const searchRecipes = async ({
         };
       }
     }
-    console.log(newPosition);
-    console.log(aiRecipesToSend);
     return {
       recipes: {
         personal: personalRecipesToSend,

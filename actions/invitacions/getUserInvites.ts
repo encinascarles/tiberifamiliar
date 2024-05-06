@@ -56,7 +56,6 @@ export const getUserInvitations =
           seen: invitation.status === "SEEN",
         };
       });
-      console.log("invitacio");
       return invitationsToSend;
     } catch (e: any) {
       return errorHandler(e);

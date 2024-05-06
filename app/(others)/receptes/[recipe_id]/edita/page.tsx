@@ -140,10 +140,8 @@ export default function EditRecipePage({
   };
 
   const getRecipe = useCallback(async () => {
-    console.log("getRecipe");
     // If it's a new recipe, return
     if (newRecipe) {
-      console.log("newRecipe");
       setIsLoading(false);
       return;
     }
