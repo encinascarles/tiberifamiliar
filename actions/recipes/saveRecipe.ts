@@ -57,7 +57,7 @@ export const saveRecipe = async (
       },
     });
     if (existingRecipe) {
-      throw new Error("show: Ja existeix una recepta amb aquest títol!");
+      throw new Error("show: Ja tens una recepta amb aquest títol!");
     }
 
     // Edit recipe

@@ -7,6 +7,7 @@ import { LoaderCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import SeeMoreCard from "./SeeMoreCard";
 
 const InfiniteScrollGrid = () => {
   const searchParams = useSearchParams();
@@ -48,12 +49,12 @@ const InfiniteScrollGrid = () => {
       ...recipesResponse.recipes.ai,
     ]);
     setEnd(recipesResponse.position.place === "end");
-  }, [searchParams]); // Asegúrate de incluir todas las dependencias necesarias aquí
+  }, [searchParams]);
 
   useEffect(() => {
     setLoading(true);
     searchRecipes({
-      take: 4,
+      take: 18,
       query: searchParams.get("search")!,
     }).then((response) => {
       if ("error" in response) throw new Error(response.error);
@@ -82,27 +83,28 @@ const InfiniteScrollGrid = () => {
         </div>
       ) : (
         <>
-          {" "}
-          Personal:
           <RecipesGrid>
+            {personalRecipes.length > 0 && (
+              <SeeMoreCard name="Resultats en les teves receptes" />
+            )}
             {personalRecipes.map((recipe) => (
               <RecipeCard key={recipe.id} recipe={recipe} />
             ))}
-          </RecipesGrid>
-          Families:
-          <RecipesGrid>
+            {familiesRecipes.length > 0 && (
+              <SeeMoreCard name="Resultats en receptes familiars" />
+            )}
             {familiesRecipes.map((recipe) => (
               <RecipeCard key={recipe.id} recipe={recipe} />
             ))}
-          </RecipesGrid>
-          Public:
-          <RecipesGrid>
+            {publicRecipes.length > 0 && (
+              <SeeMoreCard name="Resultats publics" />
+            )}
             {publicRecipes.map((recipe) => (
               <RecipeCard key={recipe.id} recipe={recipe} />
             ))}
-          </RecipesGrid>
-          AI:
-          <RecipesGrid>
+            {aiRecipes.length > 0 && (
+              <SeeMoreCard name="Resultats del receptari IA" />
+            )}
             {aiRecipes.map((recipe) => (
               <RecipeCard key={recipe.id} recipe={recipe} />
             ))}
@@ -117,7 +119,7 @@ const InfiniteScrollGrid = () => {
                 className="text-orange-500 animate-spin"
               />
             </div>
-          )}{" "}
+          )}
         </>
       )}
     </>

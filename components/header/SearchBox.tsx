@@ -1,17 +1,22 @@
 "use client";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 
 const SearchBox = () => {
   const router = useRouter();
+  const pathname = usePathname();
 
+  // If in Search page, not show the search box in the header
+  if (pathname === "/receptes/cerca") {
+    return <div className="w-full" />;
+  }
   const handleSearch = (e: any) => {
     e.preventDefault();
     const search = e.target[0].value;
     if (search) {
-      router.push("/receptes/busca?search=" + search);
+      router.push("/receptes/cerca?search=" + search);
     }
     e.target[0].value = "";
   };

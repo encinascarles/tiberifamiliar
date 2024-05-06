@@ -1,10 +1,11 @@
-import TitleLayout from "@/components/TitleLayout";
+import BigSearchBox from "./BigSearchBox";
 import InfiniteScrollGrid from "./InfiniteScrollGrid";
 
 export default async function SearchRecipesPage() {
   return (
-    <TitleLayout title="Cerca">
+    <div className="container mt-10 space-y-10">
+      <BigSearchBox />
       <InfiniteScrollGrid />
-    </TitleLayout>
+    </div>
   );
 }

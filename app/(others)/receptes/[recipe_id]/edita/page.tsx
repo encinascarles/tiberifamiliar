@@ -100,6 +100,7 @@ export default function EditRecipePage({
 
   // On submit function to save the recipe
   const onSubmit = async (values: z.infer<typeof RecipeSchema>) => {
+    console.log("onSubmit");
     startTransition(() => {
       // Reset the error message
       setError("");
@@ -167,9 +168,12 @@ export default function EditRecipePage({
       servings,
     } = recipeData;
     form.setValue("title", title!);
-    form.setValue("prep_time", prep_time!);
     form.setValue("total_time", total_time!);
     form.setValue("servings", servings!);
+    if (prep_time) {
+      setShowPrepTime(true);
+      form.setValue("prep_time", prep_time!);
+    }
     if (recommendations) {
       setShowRecommendations(true);
       form.setValue("recommendations", recommendations);
@@ -323,6 +327,7 @@ export default function EditRecipePage({
                         <Input
                           disabled={isPending}
                           type="number"
+                          {...form.register("prep_time")}
                           onChange={(e) => {
                             form.setValue(
                               "prep_time",
