@@ -13,19 +13,34 @@ import { useEffect, useState } from "react";
 import InvitationCard from "./InvitationCard";
 
 const InvitationsModal = () => {
-  const { isOpen, close } = useInvitationsModal();
+  const { isOpen, close, open } = useInvitationsModal();
   const [invitations, setInvitations] = useState<Array<invitation>>([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   const getInvitations = async () => {
-    const invitations = await getUserInvitations();
-    if ("error" in invitations) return;
-    setInvitations(invitations);
-    setIsLoading(false);
+    console.log("getInvitations");
+    const invitationsResponse = await getUserInvitations();
+    if ("error" in invitationsResponse) return;
+    setInvitations(invitationsResponse);
+    if (invitationsResponse.some((invitation) => !invitation.seen)) {
+      // If some invite is not seen, open the dialog
+      open();
+    }
   };
 
   useEffect(() => {
+    // Llama a getInvitations cada vez que se abre el diálogo
+    if (isOpen) {
+      getInvitations();
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
     getInvitations();
+    // Configura un intervalo para llamar a getInvitations cada 60 segundos
+    //const intervalId = setInterval(getInvitations, 60000); // 60000 ms = 1 minuto
+
+    // Limpia el intervalo cuando el componente se desmonte
+    //return () => clearInterval(intervalId);
   }, []);
 
   return (
@@ -34,9 +49,7 @@ const InvitationsModal = () => {
         <DialogHeader>
           <DialogTitle>Invitacions:</DialogTitle>
           <DialogDescription>
-            {isLoading ? (
-              <p>Loading...</p>
-            ) : invitations && invitations.length === 0 ? (
+            {invitations && invitations.length === 0 ? (
               <p>No tens cap invitació</p>
             ) : (
               invitations &&

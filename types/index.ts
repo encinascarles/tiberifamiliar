@@ -21,6 +21,7 @@ export interface invitation {
   inviterName: string;
   familyName: string;
   familyImage: string | null;
+  seen: boolean;
 }
 
 export interface error {

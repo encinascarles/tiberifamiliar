@@ -143,6 +143,7 @@ enum Role {
 
 enum InvitationStatus {
   PENDING
+  SEEN
   ACCEPTED
   DECLINED
 }

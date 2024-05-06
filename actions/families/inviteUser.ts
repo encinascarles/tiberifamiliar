@@ -5,6 +5,7 @@ import { InviteUserSchema } from "@/schemas";
 import { actionResponse } from "@/types";
 import * as z from "zod";
 import { checkUserFamilyMember } from "./UTILS";
+import { sendInviteEmail } from "@/lib/mail";
 
 //------------------ DESCRIPTION ------------------:
 
@@ -59,6 +60,19 @@ export const inviteUser = async (
         },
       });
     });
+    // Send email to invited user
+    db.family
+      .findUnique({
+        where: { id: familyId },
+      })
+      .then(async (family) => {
+        await sendInviteEmail(
+          email,
+          user.name as string,
+          family?.name as string
+        );
+      })
+      .then(() => {});
     return { success: "Usuari convidat a la familia!" };
   } catch (e: any) {
     return errorHandler(e);

@@ -2,6 +2,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import NextAuth from "next-auth";
 import authConfig from "./auth.config";
 import { db } from "./lib/db";
+import { sendWelcomeEmail } from "./lib/mail";
 
 export const {
   handlers: { GET, POST },
@@ -17,12 +18,15 @@ export const {
   events: {
     async linkAccount({ user }) {
       // set email to verified for new oauth accounts
-      await db.user.update({
+      const newuser = await db.user.update({
         where: { id: user.id },
         data: {
           emailVerified: new Date(),
         },
       });
+
+      // send welcome email to user
+      await sendWelcomeEmail(newuser.email);
     },
   },
   callbacks: {

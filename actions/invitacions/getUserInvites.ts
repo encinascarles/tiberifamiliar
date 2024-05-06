@@ -24,11 +24,24 @@ export const getUserInvitations =
       const invitations = await db.invitation.findMany({
         where: {
           inviteeId: user?.id,
-          status: "PENDING",
+          status: {
+            in: ["PENDING", "SEEN"],
+          },
         },
         include: {
           inviter: true,
           family: true,
+        },
+      });
+
+      // Change status to seen
+      await db.invitation.updateMany({
+        where: {
+          inviteeId: user?.id,
+          status: "PENDING",
+        },
+        data: {
+          status: "SEEN",
         },
       });
 
@@ -40,9 +53,10 @@ export const getUserInvitations =
           inviterName: invitation.inviter.name,
           familyName: invitation.family.name,
           familyImage: invitation.family.image,
+          seen: invitation.status === "SEEN",
         };
       });
-
+      console.log("invitacio");
       return invitationsToSend;
     } catch (e: any) {
       return errorHandler(e);
