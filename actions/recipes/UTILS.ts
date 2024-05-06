@@ -1,7 +1,6 @@
-"use server";
 import { safeGetSessionUser } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { User } from "next-auth";
+import { Recipe } from "@prisma/client";
 
 //------------------ UTILS ------------------:
 
@@ -45,7 +44,15 @@ export const getUserFamiliesMembers =
 
 // - Prepare recipe response
 export const prepareRecipeResponse = (
-  recipe: any,
+  recipe: {
+    author: {
+      name: string;
+      image: string | null;
+    };
+    favoritedBy: {
+      id: string;
+    }[];
+  } & Recipe,
   userId: string | undefined
 ) => {
   return {

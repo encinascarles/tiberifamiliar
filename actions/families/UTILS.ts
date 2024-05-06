@@ -1,4 +1,3 @@
-"use server";
 import { safeGetSessionUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 
