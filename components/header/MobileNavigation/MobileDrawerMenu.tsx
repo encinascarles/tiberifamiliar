@@ -81,9 +81,9 @@ export default function MobileDrawerMenu() {
               </MobileMenuItem>
             </NavSection>
             <NavSection title={user?.name as string}>
-              <MobileMenuItem href="/perfil">
+              <MobileMenuItem href="/perfil/edita">
                 <User className="mr-2 h-4 w-4" />
-                <Link href="/perfil">Perfil</Link>
+                Perfil
               </MobileMenuItem>
               <MobileMenuItem href="/perfil/invitacions">
                 <Bell className="mr-2 h-4 w-4" />

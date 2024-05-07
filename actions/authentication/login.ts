@@ -34,6 +34,7 @@ export const login = async (
     const existingUser = await db.user.findUnique({
       where: { email },
     });
+    if (!existingUser) throw new Error("show: Usuari no trobat!");
 
     // Check if user is registered with google
     if (!existingUser?.password)

@@ -26,6 +26,42 @@ export const RegisterSchema = z
     path: ["confirmPassword"], // this will point the error to 'confirmPassword' field
   });
 
+export const EditProfileSchema = z
+  .object({
+    name: z
+      .string()
+      .min(2, { message: "El nom ha de tenir 2 o més caràcters" }),
+    email: z
+      .string()
+      .email({ message: "El correu electrònic no és vàlid." })
+      .transform((email) => email.toLowerCase()),
+    originalPassword: z
+      .string()
+      .min(5, { message: "La contrassenya ha de tenir 5 o més caràcters" })
+      .optional(),
+    newPassword: z
+      .string()
+      .min(5, { message: "La contrassenya ha de tenir 5 o més caràcters" })
+      .optional(),
+    confirmPassword: z.string().optional(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Les contrassenyes han de coincidir.",
+    path: ["confirmPassword"], // this will point the error to 'confirmPassword' field
+  })
+  .refine(
+    (data) =>
+      (data.originalPassword !== undefined &&
+        data.newPassword !== undefined &&
+        data.confirmPassword !== undefined) ||
+      (data.originalPassword === undefined &&
+        data.newPassword === undefined &&
+        data.confirmPassword === undefined),
+    {
+      message: "Has d'introduir totes les contrassenyes o cap d'elles.",
+      path: ["originalPassword"],
+    }
+  );
 export const PasswordResetSchema = z.object({
   email: z.string().email({ message: "El correu electrònic no és vàlid." }),
 });

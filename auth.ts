@@ -9,6 +9,7 @@ export const {
   auth,
   signIn,
   signOut,
+  unstable_update,
 } = NextAuth({
   //secret: "WH/zShoHiG9NoVdaibKrhw85lJFtH9H/2hhOSkCxHCM=", //TODO it fails if not set here
   pages: {
@@ -46,6 +47,14 @@ export const {
         session.user.id = token.sub;
       }
       return session;
+    },
+    jwt({ token, trigger, session }) {
+      if (trigger === "update" && session?.name) {
+        // Note, that `session` can be any arbitrary object, remember to validate it!
+        token.name = session.name;
+        token.email = session.email;
+      }
+      return token;
     },
   },
   adapter: PrismaAdapter(db),

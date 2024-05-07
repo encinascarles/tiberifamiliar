@@ -1,5 +1,4 @@
 "use client";
-import { useCurrentUser } from "@/hooks/use-current-user";
 import { LogOut, Settings, User } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
@@ -12,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import InvitationsButton from "./InvitationsDialog/InvitationsButton";
+import Link from "next/link";
 
 export const UserDropdownMenu = () => {
   //const user = useCurrentUser();
@@ -29,10 +29,12 @@ export const UserDropdownMenu = () => {
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>{user?.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <User className="mr-2 h-4 w-4" />
-          <span>Perfil</span>
-        </DropdownMenuItem>
+        <Link href="/perfil/edita">
+          <DropdownMenuItem>
+            <User className="mr-2 h-4 w-4" />
+            <span>Perfil</span>
+          </DropdownMenuItem>
+        </Link>
         <DropdownMenuItem>
           <InvitationsButton />
         </DropdownMenuItem>
