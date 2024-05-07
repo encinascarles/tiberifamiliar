@@ -1,6 +1,11 @@
-export const publicRoutes = ["/new-verification"];
-export const authRoutes = [
+export const publicRoutes = [
+  "/new-verification",
   "/",
+  "/receptes/publiques",
+  "/receptes/receptari",
+  "/receptes/cerca",
+];
+export const authRoutes = [
   "/login",
   "/register",
   "/autherror",
