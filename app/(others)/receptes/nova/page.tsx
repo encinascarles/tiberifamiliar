@@ -1,3 +1,5 @@
+export const fetchCache = "force-no-store";
+
 import { createEmptyRecipe } from "@/actions/recipes/createEmptyRecipe";
 import { redirect } from "next/navigation";
 
@@ -9,8 +11,6 @@ const NewRecipePage = async () => {
   }
 
   redirect(`/receptes/${id.id}/edita?nou=true`);
-
-  return;
 };
 
 export default NewRecipePage;
