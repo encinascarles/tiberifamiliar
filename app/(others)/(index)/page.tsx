@@ -6,11 +6,11 @@ export default function Home() {
   return (
     <div className="container space-y-4">
       <h1>Benvingut a TiberiFamiliar</h1>
-      <p>"Explicació de la web amb fotos"</p>
+      <p>-Explicació de la web amb fotos-</p>
       <div>
         Nou a la app?
         <Link href="/register">
-          <Button>Registra't</Button>
+          <Button>Registra&quot;t</Button>
         </Link>
       </div>
       <div>
