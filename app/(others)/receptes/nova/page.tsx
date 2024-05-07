@@ -12,3 +12,5 @@ const NewRecipePage = async () => {
 };
 
 export default NewRecipePage;
+
+export const revalidate = 0;

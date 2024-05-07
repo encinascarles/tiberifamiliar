@@ -19,7 +19,6 @@ type createEmptyRecipeResponse = { id: string } | error;
 export const createEmptyRecipe =
   async (): Promise<createEmptyRecipeResponse> => {
     // Disable caching here
-    const _cookies = cookies();
     try {
       // Get current user
       const user = await safeGetSessionUser();
@@ -32,6 +31,7 @@ export const createEmptyRecipe =
       });
       if (!recipe) throw new Error("show: Error al crear la recepta!");
       // Revalidate path
+
       revalidatePath("/receptes/nova");
       return { id: recipe.id };
     } catch (e: any) {
