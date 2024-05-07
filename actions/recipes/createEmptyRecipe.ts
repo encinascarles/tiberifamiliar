@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import errorHandler from "@/lib/errorHandler";
 import { error } from "@/types";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 
 //------------------ DESCRIPTION ------------------:
 
@@ -17,6 +18,8 @@ type createEmptyRecipeResponse = { id: string } | error;
 
 export const createEmptyRecipe =
   async (): Promise<createEmptyRecipeResponse> => {
+    // Disable caching here
+    const _cookies = cookies();
     try {
       // Get current user
       const user = await safeGetSessionUser();
