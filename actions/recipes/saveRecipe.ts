@@ -67,18 +67,18 @@ export const saveRecipe = async (
       },
       data: {
         title: title,
-        prep_time: prep_time,
+        prep_time: prep_time || null,
         total_time: total_time,
         servings: servings,
         ingredients: ingredients,
         steps: steps,
-        recommendations: recommendations,
-        origin: origin,
+        recommendations: recommendations || null,
+        origin: origin || null,
         visibility: visibility,
         draft: false,
       },
     });
-    revalidatePath("/receptes/${recipeId}");
+    revalidatePath(`/receptes/${recipeId}`);
     return { success: "Recepta guardada amb èxit!" };
   } catch (e: any) {
     return errorHandler(e);

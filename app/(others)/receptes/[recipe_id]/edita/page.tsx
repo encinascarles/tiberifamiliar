@@ -74,6 +74,7 @@ export default function EditRecipePage({
       ingredients: [{ value: "" }],
       steps: [{ value: "" }],
       visibility: "PUBLIC",
+      prep_time: undefined,
     },
   });
 
@@ -274,33 +275,6 @@ export default function EditRecipePage({
                 </FormItem>
               )}
             />
-            {/* <FormField
-              control={form.control}
-              name="prep_time"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>
-                    Temps de Preparació
-                    <span className="text-orange-400"> (Opcional)</span>
-                  </FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        disabled={isPending}
-                        type="number"
-                        {...field}
-                        onChange={(e) => {
-                          form.setValue("prep_time", parseInt(e.target.value));
-                        }}
-                      />
-                      <span className="absolute inset-y-0 left-12 text-gray-400 flex items-center text-base md:text-sm pointer-events-none">
-                        minuts
-                      </span>
-                    </div>
-                  </FormControl>
-                </FormItem>
-              )}
-            /> */}
             <div className="w-full">
               <FormLabel>
                 Temps de Preparació
@@ -314,42 +288,48 @@ export default function EditRecipePage({
                   className="mt-2 w-full"
                   onClick={() => {
                     setShowPrepTime(true);
-                    form.resetField("prep_time");
                   }}
                 >
                   <Plus />
                 </Button>
               ) : (
-                <div>
-                  <FormItem className="mt-2">
-                    <FormControl>
-                      <div className="flex items-center relative">
-                        <Input
-                          disabled={isPending}
-                          type="number"
-                          {...form.register("prep_time")}
-                          onChange={(e) => {
-                            form.setValue(
-                              "prep_time",
-                              parseInt(e.target.value)
-                            );
-                          }}
-                        />
-                        <span className="absolute inset-y-0 left-12 text-gray-400 flex items-center text-base md:text-sm pointer-events-none">
-                          minuts
-                        </span>
-                        <Button
-                          disabled={isPending}
-                          type="button"
-                          onClick={() => setShowPrepTime(false)}
-                          className="ml-2"
-                        >
-                          <Minus />
-                        </Button>
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                </div>
+                <FormField
+                  control={form.control}
+                  name="prep_time"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <div className="flex items-center relative">
+                          <Input
+                            disabled={isPending}
+                            type="number"
+                            {...field}
+                            onChange={(e) => {
+                              form.setValue(
+                                "prep_time",
+                                parseInt(e.target.value)
+                              );
+                            }}
+                          />
+                          <span className="absolute inset-y-0 left-12 text-gray-400 flex items-center text-base md:text-sm pointer-events-none">
+                            minuts
+                          </span>
+                          <Button
+                            disabled={isPending}
+                            type="button"
+                            onClick={() => {
+                              form.resetField("prep_time");
+                              setShowPrepTime(false);
+                            }}
+                            className="ml-2"
+                          >
+                            <Minus />
+                          </Button>
+                        </div>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
               )}
             </div>
           </div>

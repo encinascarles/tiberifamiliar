@@ -3,6 +3,7 @@ import { safeGetSessionUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import errorHandler from "@/lib/errorHandler";
 import { error } from "@/types";
+import { revalidatePath } from "next/cache";
 
 //------------------ DESCRIPTION ------------------:
 
@@ -27,6 +28,8 @@ export const createEmptyRecipe =
         },
       });
       if (!recipe) throw new Error("show: Error al crear la recepta!");
+      // Revalidate path
+      revalidatePath("/receptes/nova");
       return { id: recipe.id };
     } catch (e: any) {
       return errorHandler(e);
