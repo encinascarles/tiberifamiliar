@@ -29,10 +29,12 @@ const RecipeSideInfoCard: React.FC<RecipeSideInfoCardProps> = ({ recipe }) => {
       </CardHeader>
       <CardContent className="flex-grow flex flex-col justify-between pb-2">
         <div className="space-y-4">
-          <p className="text-lg">
-            <b className="font-semibold">Temps de Preparació:</b>{" "}
-            {recipe.prep_time}min
-          </p>
+          {recipe.prep_time && (
+            <p className="text-lg">
+              <b className="font-semibold">Temps de Preparació:</b>{" "}
+              {recipe.prep_time}min
+            </p>
+          )}
           <p className="text-lg">
             <b className="font-semibold">Temps Total:</b> {recipe.total_time}min
           </p>
